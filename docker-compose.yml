@@ -1,0 +1,25 @@
+services:
+  lease-manager:
+    build:
+      context: .
+      args:
+        VITE_APP_TITLE: ${APP_TITLE:-OpenLeaseOps}
+        VITE_APP_SUBTITLE: ${APP_SUBTITLE:-租赁运营后台}
+        VITE_APP_MARK: ${APP_MARK:-LM}
+    container_name: ${CONTAINER_NAME:-lease-manager}
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      - DATA_DIR=/data
+      - TZ=Asia/Shanghai
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      - APP_VERSION=${APP_VERSION:-local}
+      - CONTRACT_NO_PREFIX=${CONTRACT_NO_PREFIX:-LEASE}
+      - DATA_ENCRYPTION_ENABLED=${DATA_ENCRYPTION_ENABLED:-false}
+      - DATA_ENCRYPTION_KEY=${DATA_ENCRYPTION_KEY:-}
