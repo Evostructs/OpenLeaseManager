@@ -47,8 +47,8 @@
 需要 Docker Engine / Docker Desktop（含 Compose）及 Python 3。首次部署需联网下载依赖并构建镜像。
 
 ```sh
-git clone https://github.com/Evostructs/OpenLeaseOps.git
-cd OpenLeaseOps
+git clone https://github.com/Evostructs/OpenLeaseManager.git
+cd OpenLeaseManager
 python scripts/configure.py
 docker compose up -d --build --wait
 ```

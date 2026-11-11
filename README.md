@@ -47,8 +47,8 @@ These screenshots come from an isolated demo installation. Buildings, customers,
 Requires Docker Engine / Docker Desktop with Compose, plus Python 3. The first build needs network access to download dependencies and build the image.
 
 ```sh
-git clone https://github.com/Evostructs/OpenLeaseOps.git
-cd OpenLeaseOps
+git clone https://github.com/Evostructs/OpenLeaseManager.git
+cd OpenLeaseManager
 python scripts/configure.py
 docker compose up -d --build --wait
 ```
