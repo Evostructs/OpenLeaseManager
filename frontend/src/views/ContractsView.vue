@@ -1,4 +1,5 @@
 <script setup>
+import { t } from '../i18n/index.js'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { api, openDownload } from '../lib/api'
 import { formatArea, formatCurrencyFixed, formatDate, formatIssueType } from '../lib/format'
@@ -205,7 +206,7 @@ const lifecycleTotal = computed(() => {
   const statusTotal = Object.values(statusCounts.value || {}).reduce((sum, value) => sum + Number(value || 0), 0)
   return Math.max(Number(props.stats?.total ?? state.total ?? 0), statusTotal)
 })
-const lifecycleFilterHint = computed(() => (state.status ? `当前筛选：${state.status}` : '点击色带可筛选台账'))
+const lifecycleFilterHint = computed(() => (state.status ? `当前筛选：${t(state.status)}` : '点击色带可筛选台账'))
 const expiring90Count = computed(() => {
   const statuses = statusCounts.value || {}
   if (Array.isArray(props.stats?.expiring_soon)) {
@@ -1060,29 +1061,29 @@ onMounted(async () => {
     <article class="card table-card contracts-shell">
       <div class="card-header page-block">
         <div>
-          <div class="section-label">合同台账</div>
-          <h3 class="card-title">合同处理台</h3>
-          <p class="helper-text">收款登记请前往“月度应收”。</p>
+          <div class="section-label">{{ $t("合同台账") }}</div>
+          <h3 class="card-title">{{ $t("合同处理台") }}</h3>
+          <p class="helper-text">{{ $t("收款登记请前往“月度应收”。") }}</p>
         </div>
-        <span v-if="isContractsRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
+        <span v-if="isContractsRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
       </div>
 
-      <ResponsiveDisclosure title="生命周期与待办概览">
+      <ResponsiveDisclosure :title="$t(&quot;生命周期与待办概览&quot;)">
       <div class="page-block contract-lifecycle-board contract-lifecycle-summary" data-testid="contracts-lifecycle-visual">
         <div class="contract-lifecycle-overview" data-testid="contracts-lifecycle-summary">
           <div class="contract-lifecycle-total" data-testid="contracts-workspace-summary">
-            <span class="section-label">生命周期总览</span>
-            <strong>{{ lifecycleTotal }}</strong>
-            <small>{{ lifecycleFilterHint }}</small>
+            <span class="section-label">{{ $t("生命周期总览") }}</span>
+            <strong>{{ $t(lifecycleTotal) }}</strong>
+            <small>{{ $t(lifecycleFilterHint) }}</small>
           </div>
           <button type="button" class="contract-lifecycle-lead" :class="contractWorkspaceLead.tone" data-testid="contracts-pressure-lead" @click="openWorkspaceLead">
-            <span>合同侧重点</span>
-            <strong>{{ contractWorkspaceLead.title }} · {{ contractWorkspaceLead.value }}</strong>
-            <small>{{ contractWorkspaceLead.reason }}</small>
+            <span>{{ $t("合同侧重点") }}</span>
+            <strong>{{ $t(contractWorkspaceLead.title) }} · {{ $t(contractWorkspaceLead.value) }}</strong>
+            <small>{{ $t(contractWorkspaceLead.reason) }}</small>
           </button>
         </div>
 
-        <div v-if="hasLifecycleData" class="contract-lifecycle-bars" role="list" aria-label="合同生命周期分布">
+        <div v-if="hasLifecycleData" class="contract-lifecycle-bars" role="list" :aria-label="$t(&quot;合同生命周期分布&quot;)">
           <button
             v-for="item in contractLifecycleRows"
             :key="item.status"
@@ -1095,12 +1096,12 @@ onMounted(async () => {
             role="listitem"
             @click="setStatusFilter(item.status)"
           >
-            <span>{{ item.status }}</span>
-            <strong>{{ item.count }}</strong>
-            <small>{{ item.percent }}%</small>
+            <span>{{ $t(item.status) }}</span>
+            <strong>{{ $t(item.count) }}</strong>
+            <small>{{ $t(item.percent) }}%</small>
           </button>
         </div>
-        <div v-else class="compact-empty slim">暂无合同</div>
+        <div v-else class="compact-empty slim">{{ $t("暂无合同") }}</div>
 
       </div>
 
@@ -1108,10 +1109,10 @@ onMounted(async () => {
         <section class="contract-action-queue">
           <div class="contract-action-queue-head">
             <div>
-              <span class="section-label">行动队列</span>
-              <strong>需要先看的合同</strong>
+              <span class="section-label">{{ $t("行动队列") }}</span>
+              <strong>{{ $t("需要先看的合同") }}</strong>
             </div>
-            <span class="metric-pill warning">关注 {{ filteredSummary.attention }}</span>
+            <span class="metric-pill warning">{{ $t("关注 ") }}{{ $t(filteredSummary.attention) }}</span>
           </div>
           <div v-if="contractActionQueue.length" class="contract-action-queue-list">
             <button
@@ -1123,14 +1124,14 @@ onMounted(async () => {
               @click="openDetail(item.row)"
             >
               <span class="contract-action-main">
-                <strong>{{ item.action.label }} · {{ item.row.contract_no }}</strong>
+                <strong>{{ $t(item.action.label) }} · {{ item.row.contract_no }}</strong>
                 <small>{{ item.row.tenant_name || '--' }}</small>
               </span>
-              <span class="contract-action-reason">{{ item.reason }}</span>
-              <span class="contract-action-cta">看详情</span>
+              <span class="contract-action-reason">{{ $t(item.reason) }}</span>
+              <span class="contract-action-cta">{{ $t("看详情") }}</span>
             </button>
           </div>
-          <div v-else class="compact-empty slim">暂无需要处理的合同</div>
+          <div v-else class="compact-empty slim">{{ $t("暂无需要处理的合同") }}</div>
         </section>
       </div>
 
@@ -1138,8 +1139,8 @@ onMounted(async () => {
 
       <details v-if="canEdit" class="demo-secondary-details contract-document-details">
         <summary>
-          <span>资料维护</span>
-          <strong>PDF 归档 / 完整性检查</strong>
+          <span>{{ $t("资料维护") }}</span>
+          <strong>{{ $t("PDF 归档 / 完整性检查") }}</strong>
         </summary>
       <div class="page-block contract-document-panel" data-testid="contracts-document-panel">
         <section
@@ -1150,31 +1151,31 @@ onMounted(async () => {
         >
           <div class="contract-document-head">
             <div>
-              <span class="section-label">合同资料</span>
-              <h3>PDF 归档</h3>
-              <p>批量上传合同文件，系统按合同号自动匹配。</p>
+              <span class="section-label">{{ $t("合同资料") }}</span>
+              <h3>{{ $t("PDF 归档") }}</h3>
+              <p>{{ $t("批量上传合同文件，系统按合同号自动匹配。") }}</p>
             </div>
-            <button class="btn btn-primary" data-testid="contracts-pdf-upload-button" @click="triggerContractBatchPdfUpload">上传 PDF</button>
+            <button class="btn btn-primary" data-testid="contracts-pdf-upload-button" @click="triggerContractBatchPdfUpload">{{ $t("上传 PDF") }}</button>
             <input ref="contractBatchPdfInput" class="visually-hidden" type="file" multiple accept=".pdf" @change="uploadContractBatchPdf" />
           </div>
           <div class="pill-group">
-            <span class="metric-pill info">待补资料 {{ contractPendingPdfCount }}</span>
-            <span v-if="contractOrphanPdfs.length" class="metric-pill warning">未关联 {{ contractOrphanPdfs.length }}</span>
-            <span v-if="contractMissingPdfs.length" class="metric-pill warning">缺 PDF {{ contractMissingPdfs.length }}</span>
+            <span class="metric-pill info">{{ $t("待补资料 ") }}{{ $t(contractPendingPdfCount) }}</span>
+            <span v-if="contractOrphanPdfs.length" class="metric-pill warning">{{ $t("未关联 ") }}{{ $t(contractOrphanPdfs.length) }}</span>
+            <span v-if="contractMissingPdfs.length" class="metric-pill warning">{{ $t("缺 PDF ") }}{{ $t(contractMissingPdfs.length) }}</span>
           </div>
 
           <div v-if="contractPdfBatchResult" class="upload-summary compact-stats">
             <div class="mini-stat">
-              <span>总文件</span>
-              <strong>{{ contractPdfBatchResult.total }}</strong>
+              <span>{{ $t("总文件") }}</span>
+              <strong>{{ $t(contractPdfBatchResult.total) }}</strong>
             </div>
             <div class="mini-stat">
-              <span>已匹配</span>
-              <strong>{{ contractPdfBatchResult.matched_count }}</strong>
+              <span>{{ $t("已匹配") }}</span>
+              <strong>{{ $t(contractPdfBatchResult.matched_count) }}</strong>
             </div>
             <div class="mini-stat">
-              <span>待人工关联</span>
-              <strong>{{ contractPdfBatchResult.unmatched_count }}</strong>
+              <span>{{ $t("待人工关联") }}</span>
+              <strong>{{ $t(contractPdfBatchResult.unmatched_count) }}</strong>
             </div>
           </div>
 
@@ -1183,24 +1184,24 @@ onMounted(async () => {
               <strong>{{ item.filename }}</strong>
               <div class="toolbar stacked-mobile">
                 <select v-model="item.match_id" class="select">
-                  <option value="">选择合同</option>
+                  <option value="">{{ $t("选择合同") }}</option>
                   <option v-for="contract in contractUnmatchedPdfOptions" :key="contract.id" :value="contract.id">
                     {{ contract.contract_no }} - {{ contract.tenant_name }}
                   </option>
                 </select>
-                <button class="btn btn-primary" :disabled="!item.match_id" @click="matchContractPdf(item)">关联</button>
+                <button class="btn btn-primary" :disabled="!item.match_id" @click="matchContractPdf(item)">{{ $t("关联") }}</button>
               </div>
             </div>
             <div v-for="item in contractPdfUnmatchedRows" :key="`batch-${item.filename}`" class="manual-match-card">
               <strong>{{ item.filename }}</strong>
               <div class="toolbar stacked-mobile">
                 <select v-model="item.match_id" class="select">
-                  <option value="">选择合同</option>
+                  <option value="">{{ $t("选择合同") }}</option>
                   <option v-for="contract in contractUnmatchedPdfOptions" :key="contract.id" :value="contract.id">
                     {{ contract.contract_no }} - {{ contract.tenant_name }}
                   </option>
                 </select>
-                <button class="btn btn-primary" :disabled="!item.match_id" @click="matchContractPdf(item)">关联</button>
+                <button class="btn btn-primary" :disabled="!item.match_id" @click="matchContractPdf(item)">{{ $t("关联") }}</button>
               </div>
             </div>
             <div v-for="item in contractPdfMatchedRows" :key="`matched-${item.filename}`" class="compact-list-item">
@@ -1208,48 +1209,44 @@ onMounted(async () => {
                 <strong>{{ item.filename }}</strong>
                 <p>{{ item.contract_no }} / {{ item.tenant_name }}</p>
               </div>
-              <span class="badge success">已匹配</span>
+              <span class="badge success">{{ $t("已匹配") }}</span>
             </div>
           </div>
-          <div v-else class="inline-status-row compact-empty-tight" data-testid="contracts-pdf-empty-inline">
-            当前没有待关联 PDF
-          </div>
+          <div v-else class="inline-status-row compact-empty-tight" data-testid="contracts-pdf-empty-inline">{{ $t(" 当前没有待关联 PDF ") }}</div>
         </section>
 
         <section class="contract-document-card" data-testid="contracts-integrity-panel">
           <div class="contract-document-head">
             <div>
-              <span class="section-label">资料检查</span>
-              <h3>完整性检查</h3>
-              <p>核对执行中合同是否缺文件或未完成关联。</p>
+              <span class="section-label">{{ $t("资料检查") }}</span>
+              <h3>{{ $t("完整性检查") }}</h3>
+              <p>{{ $t("核对执行中合同是否缺文件或未完成关联。") }}</p>
             </div>
-            <button class="btn" data-testid="contracts-integrity-refresh" @click="refreshContractDocumentPanel">重新检查</button>
+            <button class="btn" data-testid="contracts-integrity-refresh" @click="refreshContractDocumentPanel">{{ $t("重新检查") }}</button>
           </div>
           <div class="pill-group">
-            <span class="metric-pill" :class="contractDisplayedIntegrityIssueCount ? 'warning' : 'success'">资料缺口 {{ contractDisplayedIntegrityIssueCount }}</span>
-            <span class="metric-pill info">缺 PDF {{ contractMissingPdfs.length }}</span>
+            <span class="metric-pill" :class="contractDisplayedIntegrityIssueCount ? 'warning' : 'success'">{{ $t("资料缺口 ") }}{{ $t(contractDisplayedIntegrityIssueCount) }}</span>
+            <span class="metric-pill info">{{ $t("缺 PDF ") }}{{ $t(contractMissingPdfs.length) }}</span>
           </div>
 
           <div v-if="contractDisplayedIntegrityIssues.length" class="contract-document-list">
             <article v-for="issue in contractDisplayedIntegrityIssues" :key="`${issue.type}-${issue.contract_no}-${issue.detail}`" class="integrity-card">
               <div class="integrity-card-top">
-                <span class="badge warning">{{ formatIssueType(issue.type) }}</span>
+                <span class="badge warning">{{ $t(formatIssueType(issue.type)) }}</span>
                 <button
                   v-if="['orphan_pdfs', 'missing_contract_pdfs'].includes(issue.type)"
                   class="btn"
                   :data-testid="`contracts-integrity-process-${issue.type}`"
                   @click="focusContractPdfPanel(issue.type)"
-                >
-                  去处理
-                </button>
+                >{{ $t(" 去处理 ") }}</button>
               </div>
               <strong>{{ issue.contract_no || '未关联合同' }}</strong>
-              <p>{{ issue.detail }}</p>
+              <p>{{ $t(issue.detail) }}</p>
             </article>
           </div>
           <div v-else class="inline-status-row compact-empty-tight">
-            <span class="badge success">状态正常</span>
-            <span>资料检查通过</span>
+            <span class="badge success">{{ $t("状态正常") }}</span>
+            <span>{{ $t("资料检查通过") }}</span>
           </div>
         </section>
       </div>
@@ -1262,31 +1259,31 @@ onMounted(async () => {
             <input
               v-model="state.keyword"
               class="input"
-              placeholder="合同编号 / 室号 / 客户"
-              aria-label="查找合同、客户或房号"
+              :placeholder="$t(&quot;合同编号 / 室号 / 客户&quot;)"
+              :aria-label="$t(&quot;查找合同、客户或房号&quot;)"
               data-testid="contracts-search-input"
               @keyup.enter="fetchContractsFromFirstPage"
             />
-            <button class="btn btn-primary contract-search-btn" data-testid="contracts-search-button" @click="fetchContractsFromFirstPage">查询</button>
+            <button class="btn btn-primary contract-search-btn" data-testid="contracts-search-button" @click="fetchContractsFromFirstPage">{{ $t("查询") }}</button>
             <select v-model="state.tower" class="select" data-testid="contracts-tower-filter" @change="fetchContractsFromFirstPage">
-              <option value="">全部分区</option>
-              <option v-for="option in contractSpaceOptions" :key="option.code" :value="option.value">{{ option.label }}</option>
+              <option value="">{{ $t("全部分区") }}</option>
+              <option v-for="option in contractSpaceOptions" :key="option.code" :value="option.value">{{ $t(option.label) }}</option>
             </select>
             <select v-model="state.status" class="select" data-testid="contracts-status-filter" @change="fetchContractsFromFirstPage">
-              <option value="">全部状态</option>
-              <option value="在租">在租</option>
-              <option value="即将到期">即将到期</option>
-              <option value="已到期">已到期</option>
-              <option value="已续租">已续租</option>
-              <option value="已变更">已变更</option>
-              <option value="已退租">已退租</option>
-              <option value="逾期占用">逾期占用</option>
-              <option value="待生效">待生效</option>
+              <option value="">{{ $t("全部状态") }}</option>
+              <option value="在租">{{ $t("在租") }}</option>
+              <option value="即将到期">{{ $t("即将到期") }}</option>
+              <option value="已到期">{{ $t("已到期") }}</option>
+              <option value="已续租">{{ $t("已续租") }}</option>
+              <option value="已变更">{{ $t("已变更") }}</option>
+              <option value="已退租">{{ $t("已退租") }}</option>
+              <option value="逾期占用">{{ $t("逾期占用") }}</option>
+              <option value="待生效">{{ $t("待生效") }}</option>
             </select>
           </div>
-          <ResponsiveDisclosure :title="`筛选分布与本页关注 · ${state.status || '全部状态'}`">
+          <ResponsiveDisclosure :title="$t(`筛选分布与本页关注 · ${state.status || '全部状态'}`)">
           <div class="contract-status-chips" data-testid="contracts-status-chips">
-            <button type="button" :class="{ active: !state.status }" @click="setStatusFilter('')">全部 {{ props.stats?.total ?? state.total }}</button>
+            <button type="button" :class="{ active: !state.status }" @click="setStatusFilter('')">{{ $t("全部 ") }}{{ $t(props.stats?.total ?? state.total) }}</button>
             <button
               v-for="status in statusOptions"
               :key="status"
@@ -1294,19 +1291,19 @@ onMounted(async () => {
               :class="{ active: state.status === status }"
               @click="setStatusFilter(status)"
             >
-              {{ status }} {{ statusCount(status) }}
+              {{ $t(status) }} {{ $t(statusCount(status)) }}
             </button>
           </div>
           <div class="contract-attention-strip">
-            <span class="metric-pill warning">本页关注 {{ filteredSummary.attention }}</span>
-            <span class="metric-pill info">本页90天到期 {{ filteredSummary.expiring }}</span>
-            <span class="metric-pill warning">缺 PDF {{ filteredSummary.missingPdf }}</span>
-            <span class="metric-pill info">押金提醒 {{ filteredSummary.deposit }}</span>
+            <span class="metric-pill warning">{{ $t("本页关注 ") }}{{ $t(filteredSummary.attention) }}</span>
+            <span class="metric-pill info">{{ $t("本页90天到期 ") }}{{ $t(filteredSummary.expiring) }}</span>
+            <span class="metric-pill warning">{{ $t("缺 PDF ") }}{{ $t(filteredSummary.missingPdf) }}</span>
+            <span class="metric-pill info">{{ $t("押金提醒 ") }}{{ $t(filteredSummary.deposit) }}</span>
           </div>
           <div class="contract-next-action-strip" data-testid="contracts-next-action-strip">
-            <span>下一步</span>
+            <span>{{ $t("下一步") }}</span>
             <strong v-for="item in contractNextActionRows" :key="item.label" :class="item.tone">
-              {{ item.label }} {{ item.count }}
+              {{ $t(item.label) }} {{ $t(item.count) }}
             </strong>
           </div>
           </ResponsiveDisclosure>
@@ -1314,8 +1311,8 @@ onMounted(async () => {
 
         <div class="action-cluster contract-action-cluster">
           <input ref="importInput" class="visually-hidden" type="file" accept=".xlsx,.xls" @change="importExcel" />
-          <button v-if="props.user?.role !== 'viewer'" class="btn" @click="emit('select-tab', 'receivables')">月度应收</button>
-          <button v-if="canEdit" class="btn btn-primary" @click="openCreate">新建合同</button>
+          <button v-if="props.user?.role !== 'viewer'" class="btn" @click="emit('select-tab', 'receivables')">{{ $t("月度应收") }}</button>
+          <button v-if="canEdit" class="btn btn-primary" @click="openCreate">{{ $t("新建合同") }}</button>
           <div
             v-if="canEdit || canExport"
             class="contract-batch-actions"
@@ -1329,9 +1326,7 @@ onMounted(async () => {
               aria-controls="contract-batch-panel"
               :aria-expanded="String(contractBatchActionsOpen)"
               @click="toggleContractBatchActions"
-            >
-              批量处理
-            </button>
+            >{{ $t(" 批量处理 ") }}</button>
             <div
               v-if="contractBatchActionsOpen"
               id="contract-batch-panel"
@@ -1339,35 +1334,33 @@ onMounted(async () => {
               data-testid="contract-batch-panel"
             >
               <div class="contract-batch-head">
-                <strong>批量处理</strong>
-                <button type="button" class="icon-btn" title="关闭" @click="closeContractBatchActions">×</button>
+                <strong>{{ $t("批量处理") }}</strong>
+                <button type="button" class="icon-btn" :title="$t(&quot;关闭&quot;)" @click="closeContractBatchActions">×</button>
               </div>
               <div class="contract-batch-grid">
                 <section v-if="canEdit" class="contract-batch-section">
-                  <span>合同资料</span>
+                  <span>{{ $t("合同资料") }}</span>
                   <div class="contract-batch-buttons">
-                    <button class="btn" @click="openDownload('/api/contracts/export/template'); closeContractBatchActions()">模板</button>
-                    <button class="btn" @click="triggerImport(); closeContractBatchActions()">导入</button>
-                    <button v-if="canExport" class="btn" @click="exportExcel(); closeContractBatchActions()">导出</button>
+                    <button class="btn" @click="openDownload('/api/contracts/export/template'); closeContractBatchActions()">{{ $t("模板") }}</button>
+                    <button class="btn" @click="triggerImport(); closeContractBatchActions()">{{ $t("导入") }}</button>
+                    <button v-if="canExport" class="btn" @click="exportExcel(); closeContractBatchActions()">{{ $t("导出") }}</button>
                   </div>
                 </section>
                 <section v-if="canExport" class="contract-batch-section">
-                  <span>押金</span>
+                  <span>{{ $t("押金") }}</span>
                   <div class="contract-batch-buttons">
-                    <button class="btn" @click="exportDeposits(); closeContractBatchActions()">导出押金</button>
+                    <button class="btn" @click="exportDeposits(); closeContractBatchActions()">{{ $t("导出押金") }}</button>
                   </div>
                 </section>
                 <section v-if="canEdit" class="contract-batch-section">
-                  <span>选中项</span>
+                  <span>{{ $t("选中项") }}</span>
                   <div class="contract-batch-buttons">
                     <button
                       class="btn btn-danger"
                       data-testid="contract-batch-delete-action"
                       :disabled="!state.selected.length"
                       @click="batchDelete(); closeContractBatchActions()"
-                    >
-                      删除选中 {{ state.selected.length }} 条
-                    </button>
+                    >{{ $t(" 删除选中 ") }}{{ $t(state.selected.length) }}{{ $t(" 条 ") }}</button>
                   </div>
                 </section>
               </div>
@@ -1378,13 +1371,13 @@ onMounted(async () => {
 
       <div v-if="importResult" class="page-block import-result-panel" :class="importResult.type">
         <div class="import-result-header">
-          <strong>{{ importResult.title }}</strong>
-          <button class="icon-btn" title="关闭导入结果" @click="importResult = null">×</button>
+          <strong>{{ $t(importResult.title) }}</strong>
+          <button class="icon-btn" :title="$t(&quot;关闭导入结果&quot;)" @click="importResult = null">×</button>
         </div>
         <ul v-if="importResult.issues.length" class="import-result-list">
-          <li v-for="issue in importResult.issues" :key="issue">{{ issue }}</li>
+          <li v-for="issue in importResult.issues" :key="issue">{{ $t(issue) }}</li>
         </ul>
-        <div v-if="importResult.extraCount" class="helper-text">另有 {{ importResult.extraCount }} 条未显示</div>
+        <div v-if="importResult.extraCount" class="helper-text">{{ $t("另有 ") }}{{ $t(importResult.extraCount) }}{{ $t(" 条未显示") }}</div>
       </div>
 
       <TableSkeleton
@@ -1406,31 +1399,26 @@ onMounted(async () => {
                 />
               </th>
               <th>
-                <button class="table-sort-btn" data-testid="contracts-sort-contract-no" :class="{ active: contractSort.key === 'contract_no' }" @click="toggleContractSort('contract_no')">
-                  合同 / 客户 {{ contractSortIndicator('contract_no') }}
+                <button class="table-sort-btn" data-testid="contracts-sort-contract-no" :class="{ active: contractSort.key === 'contract_no' }" @click="toggleContractSort('contract_no')">{{ $t(" 合同 / 客户 ") }}{{ $t(contractSortIndicator('contract_no')) }}
                 </button>
               </th>
               <th>
-                <button class="table-sort-btn" :class="{ active: contractSort.key === 'room_no' || contractSort.key === 'area' }" @click="toggleContractSort('room_no')">
-                  房源 / 面积 {{ contractSortIndicator('room_no') }}
+                <button class="table-sort-btn" :class="{ active: contractSort.key === 'room_no' || contractSort.key === 'area' }" @click="toggleContractSort('room_no')">{{ $t(" 房源 / 面积 ") }}{{ $t(contractSortIndicator('room_no')) }}
                 </button>
               </th>
               <th>
-                <button class="table-sort-btn" data-testid="contracts-sort-end-date" :class="{ active: contractSort.key === 'end_date' }" @click="toggleContractSort('end_date')">
-                  周期 / 到期 {{ contractSortIndicator('end_date') }}
+                <button class="table-sort-btn" data-testid="contracts-sort-end-date" :class="{ active: contractSort.key === 'end_date' }" @click="toggleContractSort('end_date')">{{ $t(" 周期 / 到期 ") }}{{ $t(contractSortIndicator('end_date')) }}
                 </button>
               </th>
               <th class="right">
-                <button class="table-sort-btn right" data-testid="contracts-sort-monthly-rent" :class="{ active: contractSort.key === 'monthly_rent' }" @click="toggleContractSort('monthly_rent')">
-                  租金 / 押金 {{ contractSortIndicator('monthly_rent') }}
+                <button class="table-sort-btn right" data-testid="contracts-sort-monthly-rent" :class="{ active: contractSort.key === 'monthly_rent' }" @click="toggleContractSort('monthly_rent')">{{ $t(" 租金 / 押金 ") }}{{ $t(contractSortIndicator('monthly_rent')) }}
                 </button>
               </th>
               <th>
-                <button class="table-sort-btn" :class="{ active: contractSort.key === 'status' }" @click="toggleContractSort('status')">
-                  状态 / 关注 {{ contractSortIndicator('status') }}
+                <button class="table-sort-btn" :class="{ active: contractSort.key === 'status' }" @click="toggleContractSort('status')">{{ $t(" 状态 / 关注 ") }}{{ $t(contractSortIndicator('status')) }}
                 </button>
               </th>
-              <th class="actions-cell">操作</th>
+              <th class="actions-cell">{{ $t("操作") }}</th>
             </tr>
           </thead>
           <tbody>
@@ -1441,70 +1429,68 @@ onMounted(async () => {
               <td class="contract-identity-cell">
                 <button type="button" class="contract-detail-link" @click.stop="openDetail(row)">{{ row.contract_no }}</button>
                 <div>{{ row.tenant_name || '--' }}</div>
-                <div v-if="row.prev_contract_no" class="table-cell-subtext">承接：{{ row.prev_contract_no }}</div>
-                <div v-if="row.internal_contact_person" class="table-cell-subtext">我方：{{ row.internal_contact_person }}</div>
+                <div v-if="row.prev_contract_no" class="table-cell-subtext">{{ $t("承接：") }}{{ $t(row.prev_contract_no) }}</div>
+                <div v-if="row.internal_contact_person" class="table-cell-subtext">{{ $t("我方：") }}{{ $t(row.internal_contact_person) }}</div>
               </td>
               <td>
-                <div>{{ roomSummary(row) }}</div>
-                <div class="table-cell-subtext">{{ row.tower || '--' }} · {{ formatArea(row.area) }}㎡</div>
+                <div>{{ $t(roomSummary(row)) }}</div>
+                <div class="table-cell-subtext">{{ $t(row.tower || '--') }} · {{ $t(formatArea(row.area)) }}㎡</div>
               </td>
               <td>
-                <div>{{ formatDate(row.start_date) }} - {{ formatDate(row.end_date) }}</div>
-                <span class="badge compact" :class="expiryTone(row)">{{ expiryLabel(row) }}</span>
+                <div>{{ $t(formatDate(row.start_date)) }} - {{ $t(formatDate(row.end_date)) }}</div>
+                <span class="badge compact" :class="expiryTone(row)">{{ $t(expiryLabel(row)) }}</span>
               </td>
               <td class="right contract-money-cell">
-                <strong>{{ formatCurrencyFixed(row.monthly_rent) }}</strong>
-                <div class="table-cell-subtext">物业 {{ formatCurrencyFixed(row.monthly_property_fee || 0) }}</div>
-                <div v-if="depositAttentionTag(row)" class="table-cell-subtext warning-text">{{ depositAttentionTag(row) }}</div>
+                <strong>{{ $t(formatCurrencyFixed(row.monthly_rent)) }}</strong>
+                <div class="table-cell-subtext">{{ $t("物业 ") }}{{ $t(formatCurrencyFixed(row.monthly_property_fee || 0)) }}</div>
+                <div v-if="depositAttentionTag(row)" class="table-cell-subtext warning-text">{{ $t(depositAttentionTag(row)) }}</div>
               </td>
               <td>
                 <StatusBadge :status="row.status" />
-                <div v-if="row.disposal" class="table-cell-subtext">处置：{{ row.disposal }}</div>
+                <div v-if="row.disposal" class="table-cell-subtext">{{ $t("处置：") }}{{ $t(row.disposal) }}</div>
                 <div v-if="contractAttentionTags(row).length" class="contract-risk-tags">
-                  <span v-for="tag in contractAttentionTags(row)" :key="tag" class="badge compact warning">{{ tag }}</span>
+                  <span v-for="tag in contractAttentionTags(row)" :key="tag" class="badge compact warning">{{ $t(tag) }}</span>
                 </div>
                 <div class="contract-row-next-action" :class="contractNextAction(row).tone">
-                  <span>{{ contractNextAction(row).label }}</span>
-                  <small>{{ contractNextAction(row).detail }}</small>
+                  <span>{{ $t(contractNextAction(row).label) }}</span>
+                  <small>{{ $t(contractNextAction(row).detail) }}</small>
                 </div>
               </td>
               <td class="actions-cell">
-                <button class="icon-btn table-action-button" title="查看详情" aria-label="查看合同详情" @click="openDetail(row)">详情</button>
-                <button v-if="row.customer_id" class="icon-btn table-action-button" title="查看客户" aria-label="查看客户" @click="emit('open-customer', row.customer_id)">客户</button>
-                <button v-if="props.user?.role !== 'viewer'" class="icon-btn table-action-button" title="查看应收" aria-label="查看应收" @click="openReceivablesDetail(row)">应收</button>
+                <button class="icon-btn table-action-button" :title="$t(&quot;查看详情&quot;)" :aria-label="$t(&quot;查看合同详情&quot;)" @click="openDetail(row)">{{ $t("详情") }}</button>
+                <button v-if="row.customer_id" class="icon-btn table-action-button" :title="$t(&quot;查看客户&quot;)" :aria-label="$t(&quot;查看客户&quot;)" @click="emit('open-customer', row.customer_id)">{{ $t("客户") }}</button>
+                <button v-if="props.user?.role !== 'viewer'" class="icon-btn table-action-button" :title="$t(&quot;查看应收&quot;)" :aria-label="$t(&quot;查看应收&quot;)" @click="openReceivablesDetail(row)">{{ $t("应收") }}</button>
                 <div v-if="canEdit" class="contract-row-more-actions" data-testid="contract-row-more-actions" @keydown.esc.stop.prevent="closeContractRowMore">
                   <button
                     type="button"
                     class="icon-btn table-action-button"
-                    title="更多"
-                    aria-label="更多合同操作"
+                    :title="$t(&quot;更多&quot;)"
+                    :aria-label="$t(&quot;更多合同操作&quot;)"
                     :aria-expanded="String(contractRowMoreOpenId === row.id)"
                     @click="toggleContractRowMore(row)"
-                  >
-                    更多
-                  </button>
+                  >{{ $t(" 更多 ") }}</button>
                   <div v-if="contractRowMoreOpenId === row.id" class="contract-row-more-popover" data-testid="contract-row-more-menu">
                     <section class="contract-row-more-section">
-                      <span>合同流转</span>
-                      <button type="button" @click="openSuccessorDraft(row, '续签'); closeContractRowMore()">生成续签</button>
-                      <button type="button" @click="openSuccessorDraft(row, '变更签'); closeContractRowMore()">生成变更签</button>
-                      <button type="button" data-testid="contract-terminate-action" @click="terminateContract(row); closeContractRowMore()">标记退租</button>
+                      <span>{{ $t("合同流转") }}</span>
+                      <button type="button" @click="openSuccessorDraft(row, '续签'); closeContractRowMore()">{{ $t("生成续签") }}</button>
+                      <button type="button" @click="openSuccessorDraft(row, '变更签'); closeContractRowMore()">{{ $t("生成变更签") }}</button>
+                      <button type="button" data-testid="contract-terminate-action" @click="terminateContract(row); closeContractRowMore()">{{ $t("标记退租") }}</button>
                     </section>
                     <section class="contract-row-more-section">
-                      <span>资料维护</span>
-                      <button type="button" @click="editing = row; formOpen = true; closeContractRowMore()">编辑合同</button>
-                      <button type="button" @click="pdfContract = row; pdfOpen = true; closeContractRowMore()">合同 PDF</button>
+                      <span>{{ $t("资料维护") }}</span>
+                      <button type="button" @click="editing = row; formOpen = true; closeContractRowMore()">{{ $t("编辑合同") }}</button>
+                      <button type="button" @click="pdfContract = row; pdfOpen = true; closeContractRowMore()">{{ $t("合同 PDF") }}</button>
                     </section>
                     <section class="contract-row-more-section danger">
-                      <span>危险操作</span>
-                      <button type="button" data-testid="contract-delete-action" @click="removeContract(row); closeContractRowMore()">删除合同</button>
+                      <span>{{ $t("危险操作") }}</span>
+                      <button type="button" data-testid="contract-delete-action" @click="removeContract(row); closeContractRowMore()">{{ $t("删除合同") }}</button>
                     </section>
                   </div>
                 </div>
               </td>
             </tr>
             <tr v-if="!state.list.length && !state.loading">
-              <td :colspan="canEdit ? 7 : 6" class="list-empty">暂无合同数据</td>
+              <td :colspan="canEdit ? 7 : 6" class="list-empty">{{ $t("暂无合同数据") }}</td>
             </tr>
           </tbody>
         </table>
@@ -1512,7 +1498,7 @@ onMounted(async () => {
 
       <div class="page-block table-footer">
         <div class="page-size-control">
-          <span class="helper-text">每页显示</span>
+          <span class="helper-text">{{ $t("每页显示") }}</span>
           <div class="page-size-switch" data-testid="contracts-page-size">
             <button
               v-for="option in pageSizeOptions"
@@ -1521,22 +1507,20 @@ onMounted(async () => {
               :class="{ active: state.pageSize === option.value }"
               @click="changeContractPageSize(option.value)"
             >
-              {{ option.label }}
+              {{ $t(option.label) }}
             </button>
           </div>
         </div>
-        <span class="helper-text">共 {{ state.total }} 条 · {{ contractsShowingText }}</span>
+        <span class="helper-text">{{ $t("共 ") }}{{ $t(state.total) }}{{ $t(" 条 · ") }}{{ $t(contractsShowingText) }}</span>
         <div class="spacer" />
-        <button v-if="hasContractPagination" class="btn" :disabled="state.page <= 1" @click="state.page -= 1; fetchContracts()">上一页</button>
-        <span v-if="hasContractPagination">{{ contractsPageLabel }}</span>
+        <button v-if="hasContractPagination" class="btn" :disabled="state.page <= 1" @click="state.page -= 1; fetchContracts()">{{ $t("上一页") }}</button>
+        <span v-if="hasContractPagination">{{ $t(contractsPageLabel) }}</span>
         <button
           v-if="hasContractPagination"
           class="btn"
           :disabled="state.page >= contractTotalPages"
           @click="state.page += 1; fetchContracts()"
-        >
-          下一页
-        </button>
+        >{{ $t(" 下一页 ") }}</button>
       </div>
     </article>
 
@@ -1583,16 +1567,16 @@ onMounted(async () => {
       @deposit-action="openDepositAction"
       @generate-document="openContractDocument"
     />
-    <BaseModal :open="Boolean(rentTermDeleteConfirm.term)" title="删除租金条款" size="small" @close="closeRentTermDeleteConfirm">
+    <BaseModal :open="Boolean(rentTermDeleteConfirm.term)" :title="$t(&quot;删除租金条款&quot;)" size="small" @close="closeRentTermDeleteConfirm">
       <div data-testid="rent-term-delete-confirm-modal" class="detail-list">
-        <p>确定删除该租金条款吗？</p>
-        <p v-if="rentTermDeleteDateText" class="helper-text">周期：{{ rentTermDeleteDateText }}</p>
-        <p v-if="rentTermDeleteRentText" class="helper-text">租金：{{ rentTermDeleteRentText }}</p>
+        <p>{{ $t("确定删除该租金条款吗？") }}</p>
+        <p v-if="rentTermDeleteDateText" class="helper-text">{{ $t("周期：") }}{{ $t(rentTermDeleteDateText) }}</p>
+        <p v-if="rentTermDeleteRentText" class="helper-text">{{ $t("租金：") }}{{ $t(rentTermDeleteRentText) }}</p>
       </div>
       <template #footer>
-        <button class="btn" data-testid="rent-term-delete-cancel" :disabled="rentTermDeleteConfirm.deleting" @click="closeRentTermDeleteConfirm">取消</button>
+        <button class="btn" data-testid="rent-term-delete-cancel" :disabled="rentTermDeleteConfirm.deleting" @click="closeRentTermDeleteConfirm">{{ $t("取消") }}</button>
         <button class="btn btn-danger" data-testid="rent-term-delete-confirm" :disabled="rentTermDeleteConfirm.deleting" @click="confirmDeleteRentTerm">
-          {{ rentTermDeleteConfirm.deleting ? '删除中' : '确认删除' }}
+          {{ $t(rentTermDeleteConfirm.deleting ? '删除中' : '确认删除') }}
         </button>
       </template>
     </BaseModal>
@@ -1627,28 +1611,28 @@ onMounted(async () => {
       @close="closeTerminateContract"
       @confirm="confirmTerminateContract"
     />
-    <BaseModal :open="Boolean(deleteContractTarget)" title="删除合同" size="small" @close="closeDeleteContractConfirm">
+    <BaseModal :open="Boolean(deleteContractTarget)" :title="$t(&quot;删除合同&quot;)" size="small" @close="closeDeleteContractConfirm">
       <div data-testid="contract-delete-confirm-modal" class="detail-list">
-        <p>确定删除合同 {{ deleteContractTarget?.contract_no || '--' }} 吗？</p>
-        <p class="helper-text">客户：{{ deleteContractCustomerLabel }}</p>
-        <p class="helper-text">删除后无法恢复。</p>
+        <p>{{ $t("确定删除合同 ") }}{{ deleteContractTarget?.contract_no || '--' }}{{ $t(" 吗？") }}</p>
+        <p class="helper-text">{{ $t("客户：") }}{{ $t(deleteContractCustomerLabel) }}</p>
+        <p class="helper-text">{{ $t("删除后无法恢复。") }}</p>
       </div>
       <template #footer>
-        <button class="btn" data-testid="contract-delete-cancel" :disabled="deleteContractSubmitting" @click="closeDeleteContractConfirm">取消</button>
+        <button class="btn" data-testid="contract-delete-cancel" :disabled="deleteContractSubmitting" @click="closeDeleteContractConfirm">{{ $t("取消") }}</button>
         <button class="btn btn-danger" data-testid="contract-delete-confirm" :disabled="deleteContractSubmitting" @click="confirmRemoveContract">
-          {{ deleteContractSubmitting ? '删除中' : '确认删除' }}
+          {{ $t(deleteContractSubmitting ? '删除中' : '确认删除') }}
         </button>
       </template>
     </BaseModal>
-    <BaseModal :open="pendingBatchDeleteCount > 0" title="批量删除合同" size="small" @close="closeBatchDeleteConfirm">
+    <BaseModal :open="pendingBatchDeleteCount > 0" :title="$t(&quot;批量删除合同&quot;)" size="small" @close="closeBatchDeleteConfirm">
       <div data-testid="contract-batch-delete-confirm-modal" class="detail-list">
-        <p>确定删除选中的 {{ pendingBatchDeleteCount }} 条合同吗？</p>
-        <p class="helper-text">删除后无法恢复。</p>
+        <p>{{ $t("确定删除选中的 ") }}{{ $t(pendingBatchDeleteCount) }}{{ $t(" 条合同吗？") }}</p>
+        <p class="helper-text">{{ $t("删除后无法恢复。") }}</p>
       </div>
       <template #footer>
-        <button class="btn" data-testid="contract-batch-delete-cancel" :disabled="batchDeleteSubmitting" @click="closeBatchDeleteConfirm">取消</button>
+        <button class="btn" data-testid="contract-batch-delete-cancel" :disabled="batchDeleteSubmitting" @click="closeBatchDeleteConfirm">{{ $t("取消") }}</button>
         <button class="btn btn-danger" data-testid="contract-batch-delete-confirm" :disabled="batchDeleteSubmitting" @click="confirmBatchDelete">
-          {{ batchDeleteSubmitting ? '删除中' : '确认删除' }}
+          {{ $t(batchDeleteSubmitting ? '删除中' : '确认删除') }}
         </button>
       </template>
     </BaseModal>

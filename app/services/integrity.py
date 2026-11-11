@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.time import today_in_timezone
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.models import Contract, OperationLog, Room, User
 from app.services.common import contract_room_items
 
@@ -142,6 +143,8 @@ def export_integrity_report(db: Session) -> StreamingResponse:
     for sheet in (issues_sheet, stats_sheet):
         for column, width in enumerate([18, 12, 20, 80], 1):
             sheet.column_dimensions[openpyxl.utils.get_column_letter(column)].width = width
+
+    localize_workbook(workbook)
 
     sanitize_workbook(workbook)
     buffer = io.BytesIO()

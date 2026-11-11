@@ -15,7 +15,9 @@ from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 
 from app.core.time import now_in_timezone, today_in_timezone
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.core.money import round_money
+from app.core.localization import bilingual_aliases, import_value, import_demo_tower
 from app.database import SessionLocal
 from app.models import Attachment, Building, Contract, ContractRoom, CustomerFollowUp, ReceivablePayment, ReceivableRecord, Room
 from app.services.common import contract_room_items, contract_room_summary, contract_tower_value, customer_display_name, periods_overlap
@@ -46,6 +48,9 @@ ROOM_IMPORT_HEADERS = {
     "备注": "notes",
     "说明": "notes",
 }
+
+
+ROOM_IMPORT_HEADERS = bilingual_aliases(ROOM_IMPORT_HEADERS)
 
 
 def _resolve_occupancy_window(start_date: date | None = None, end_date: date | None = None) -> tuple[date | None, date | None]:
@@ -990,6 +995,7 @@ def update_room(
 
 def import_rooms_excel(content: bytes, db: Session, *, building_id: int | None = None) -> dict:
     selected_building_id = _resolve_room_write_building_id(db, building_id)
+    selected_building = db.get(Building, selected_building_id)
     wb = openpyxl.load_workbook(io.BytesIO(content))
     ws = wb.active
 
@@ -999,7 +1005,7 @@ def import_rooms_excel(content: bytes, db: Session, *, building_id: int | None =
         matched = 0
         candidate = {}
         for cell in row:
-            raw = str(cell.value).strip().replace(" ", "") if cell.value else ""
+            raw = str(cell.value).strip().replace(" ", "").casefold() if cell.value else ""
             if raw in ROOM_IMPORT_HEADERS:
                 matched += 1
                 candidate[cell.column] = ROOM_IMPORT_HEADERS[raw]
@@ -1018,7 +1024,7 @@ def import_rooms_excel(content: bytes, db: Session, *, building_id: int | None =
         payload = {}
         for cell in row:
             if cell.column in headers:
-                payload[headers[cell.column]] = cell.value
+                payload[headers[cell.column]] = import_value(headers[cell.column], cell.value)
 
         room_no = str(payload.get("room_no") or "").strip()
         if not room_no:
@@ -1040,7 +1046,7 @@ def import_rooms_excel(content: bytes, db: Session, *, building_id: int | None =
             room_data = _prepare_selected_room_write(
                 db,
                 {
-                    "tower": str(payload.get("tower") or "").strip(),
+                    "tower": str(import_demo_tower(payload.get("tower"), selected_building.code) or "").strip(),
                     "floor": str(payload.get("floor") or ""),
                     "room_no": room_no,
                     "room_type": str(payload.get("room_type") or "办公"),
@@ -1112,6 +1118,8 @@ def export_rooms_excel(
 
     for idx, width in enumerate([8, 6, 10, 8, 10, 10, 16, 16, 14, 20], 1):
         ws.column_dimensions[chr(64 + idx)].width = width
+
+    localize_workbook(wb)
 
     sanitize_workbook(wb)
     buffer = io.BytesIO()
@@ -1278,6 +1286,7 @@ def room_template(
         workbook = openpyxl.Workbook()
         worksheet = workbook.active
         worksheet.title = "房间导入模板"
+        workbook._demo_tower_values = detail_scope.building_code.casefold() == "demo_a"
         headers = ["楼塔", "楼层", "室号", "类型", "面积(㎡)", "备注"]
         worksheet.append(headers)
         for index, header in enumerate(headers, 1):
@@ -1292,6 +1301,8 @@ def room_template(
                 cell.font = Font(bold=True)
             for zone in zones:
                 zones_worksheet.append([zone.code, zone.name, zone.kind])
+
+        localize_workbook(workbook)
 
         sanitize_workbook(workbook)
         buffer = io.BytesIO()

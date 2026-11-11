@@ -343,14 +343,14 @@ onMounted(async () => {
     <article v-if="showAudit" class="card tool-report-card" data-testid="audit-page">
       <div class="card-header compact">
         <div>
-            <h3 class="card-title">操作日志</h3>
+            <h3 class="card-title">{{ $t("操作日志") }}</h3>
         </div>
         <div class="audit-header-actions">
           <span data-testid="audit-help-trigger">
-            <InfoHint text="查看合同、客户、收款等关键记录。" />
+            <InfoHint :text="$t(&quot;查看合同、客户、收款等关键记录。&quot;)" />
           </span>
-          <span v-if="auditRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
-          <button class="btn" data-testid="audit-export-button" @click="openDownload('/api/audit/export')">导出日志</button>
+          <span v-if="auditRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
+          <button class="btn" data-testid="audit-export-button" @click="openDownload('/api/audit/export')">{{ $t("导出日志") }}</button>
         </div>
       </div>
 
@@ -364,32 +364,32 @@ onMounted(async () => {
         <TableSkeleton :rows="8" :columns="7" />
       </div>
       <template v-else>
-      <div v-if="auditError" class="inline-status-row danger" data-testid="audit-load-error">{{ auditError }}</div>
+      <div v-if="auditError" class="inline-status-row danger" data-testid="audit-load-error">{{ $t(auditError) }}</div>
       <div class="audit-activity-strip" data-testid="audit-activity-strip">
         <div class="audit-activity-item primary" data-testid="audit-result-card">
-          <span>日志总数</span>
-          <strong>{{ audit.total || 0 }}</strong>
-          <small>{{ auditActiveFilterCount ? `已启用 ${auditActiveFilterCount} 个筛选` : '全部日志' }}</small>
+          <span>{{ $t("日志总数") }}</span>
+          <strong>{{ $t(audit.total || 0) }}</strong>
+          <small>{{ $t(auditActiveFilterCount ? `已启用 ${auditActiveFilterCount} 个筛选` : '全部日志') }}</small>
         </div>
         <div class="audit-activity-item" data-testid="audit-latest-action-card">
-          <span>最新动作</span>
-          <strong>{{ auditLatestItem ? businessAuditActionLabel(auditLatestItem.action, auditLatestItem.action_label) : '--' }}</strong>
-          <small>{{ auditLatestItem ? formatDateTime(auditLatestItem.timestamp) : '暂无记录' }}</small>
+          <span>{{ $t("最新动作") }}</span>
+          <strong>{{ $t(auditLatestItem ? businessAuditActionLabel(auditLatestItem.action, auditLatestItem.action_label) : '--') }}</strong>
+          <small>{{ $t(auditLatestItem ? formatDateTime(auditLatestItem.timestamp) : '暂无记录') }}</small>
         </div>
         <div class="audit-activity-item" data-testid="audit-latest-operator-card">
-          <span>最新操作人</span>
+          <span>{{ $t("最新操作人") }}</span>
           <strong>{{ auditLatestItem ? (auditLatestItem.operator_label || formatAuditOperator(auditLatestItem.operator)) : '--' }}</strong>
-          <small>{{ auditLatestItem ? formatDateTime(auditLatestItem.timestamp) : '暂无记录' }}</small>
+          <small>{{ $t(auditLatestItem ? formatDateTime(auditLatestItem.timestamp) : '暂无记录') }}</small>
         </div>
         <div class="audit-activity-item" data-testid="audit-latest-target-card">
-          <span>最新对象</span>
-          <strong>{{ auditLatestTargetTitle }}</strong>
-          <small>{{ auditLatestTargetMeta }}</small>
+          <span>{{ $t("最新对象") }}</span>
+          <strong>{{ $t(auditLatestTargetTitle) }}</strong>
+          <small>{{ $t(auditLatestTargetMeta) }}</small>
         </div>
       </div>
 
       <div v-if="auditVisibleQuickActions.length" class="audit-action-strip" data-testid="audit-action-strip">
-        <span class="section-label">快速筛选</span>
+        <span class="section-label">{{ $t("快速筛选") }}</span>
         <button
           v-for="group in auditVisibleQuickActions"
           :key="group.label"
@@ -398,59 +398,59 @@ onMounted(async () => {
           :class="{ active: auditActiveQuickAction === group.label }"
           @click="setAuditQuickAction(group)"
         >
-          {{ group.label }}
+          {{ $t(group.label) }}
         </button>
       </div>
 
       <details class="demo-secondary-details audit-filter-details">
         <summary>
-          <span>筛选工具</span>
-          <strong>按人员 / 动作 / 对象查找</strong>
+          <span>{{ $t("筛选工具") }}</span>
+          <strong>{{ $t("按人员 / 动作 / 对象查找") }}</strong>
         </summary>
       <div class="audit-filter-panel" data-testid="audit-filter-panel">
         <label>
-          <span>操作人</span>
+          <span>{{ $t("操作人") }}</span>
           <select v-model="filters.operator" class="select" data-testid="audit-operator-filter">
-            <option value="">全部操作人</option>
+            <option value="">{{ $t("全部操作人") }}</option>
             <option v-for="operator in audit.operators || []" :key="operator" :value="operator">
-              {{ formatAuditOperator(operator) }}
+              {{ $t(formatAuditOperator(operator)) }}
             </option>
           </select>
         </label>
         <label>
-          <span>事项</span>
+          <span>{{ $t("事项") }}</span>
           <select v-model="filters.action" class="select" data-testid="audit-action-filter">
-            <option value="">全部事项</option>
+            <option value="">{{ $t("全部事项") }}</option>
             <option v-for="action in audit.actions || []" :key="action.value" :value="action.value">
-              {{ auditActionOptionLabel(action) }}
+              {{ $t(auditActionOptionLabel(action)) }}
             </option>
           </select>
         </label>
         <label>
-          <span>对象</span>
+          <span>{{ $t("对象") }}</span>
           <select v-model="filters.target_type" class="select" data-testid="audit-target-filter">
-            <option value="">全部对象</option>
+            <option value="">{{ $t("全部对象") }}</option>
             <option v-for="targetType in audit.target_types || []" :key="targetType" :value="targetType">
-              {{ formatAuditTargetType(targetType) }}
+              {{ $t(formatAuditTargetType(targetType)) }}
             </option>
           </select>
         </label>
         <label>
-          <span>记录编号</span>
-          <input v-model="filters.target_id" class="input" data-testid="audit-target-id-filter" placeholder="编号" @keyup.enter="applyAuditFilters" />
+          <span>{{ $t("记录编号") }}</span>
+          <input v-model="filters.target_id" class="input" data-testid="audit-target-id-filter" :placeholder="$t(&quot;编号&quot;)" @keyup.enter="applyAuditFilters" />
         </label>
         <label>
-          <span>开始</span>
+          <span>{{ $t("开始") }}</span>
           <input v-model="filters.start_date" class="input" type="date" />
         </label>
         <label>
-          <span>结束</span>
+          <span>{{ $t("结束") }}</span>
           <input v-model="filters.end_date" class="input" type="date" />
         </label>
         <div class="audit-filter-actions">
-          <button class="btn btn-primary" data-testid="audit-filter-submit" @click="applyAuditFilters">筛选</button>
-          <button class="btn" data-testid="audit-filter-clear" @click="clearAuditFilters">清空</button>
-          <button class="btn" data-testid="audit-refresh" @click="fetchAudit">刷新</button>
+          <button class="btn btn-primary" data-testid="audit-filter-submit" @click="applyAuditFilters">{{ $t("筛选") }}</button>
+          <button class="btn" data-testid="audit-filter-clear" @click="clearAuditFilters">{{ $t("清空") }}</button>
+          <button class="btn" data-testid="audit-refresh" @click="fetchAudit">{{ $t("刷新") }}</button>
         </div>
       </div>
       </details>
@@ -459,47 +459,45 @@ onMounted(async () => {
         <table class="data-table audit-table" data-testid="audit-log-table">
           <thead>
             <tr>
-              <th>时间</th>
-              <th>操作人</th>
-              <th>事项</th>
-              <th>对象</th>
-              <th>记录</th>
-              <th>合同 / 客户</th>
-              <th>内容</th>
+              <th>{{ $t("时间") }}</th>
+              <th>{{ $t("操作人") }}</th>
+              <th>{{ $t("事项") }}</th>
+              <th>{{ $t("对象") }}</th>
+              <th>{{ $t("记录") }}</th>
+              <th>{{ $t("合同 / 客户") }}</th>
+              <th>{{ $t("内容") }}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in audit.items || []" :key="item.id">
-              <td class="audit-time-cell">{{ formatDateTime(item.timestamp) }}</td>
+              <td class="audit-time-cell">{{ $t(formatDateTime(item.timestamp)) }}</td>
               <td class="audit-operator-cell">{{ item.operator_label || formatAuditOperator(item.operator) }}</td>
               <td>
                 <span class="audit-action-badge" :class="auditActionTone(item.action)">
-                  {{ businessAuditActionLabel(item.action, item.action_label) }}
+                  {{ $t(businessAuditActionLabel(item.action, item.action_label)) }}
                 </span>
               </td>
-              <td>{{ formatAuditTargetType(item.target_type) }}</td>
-              <td>{{ item.target_id || '--' }}</td>
+              <td>{{ $t(formatAuditTargetType(item.target_type)) }}</td>
+              <td>{{ $t(item.target_id || '--') }}</td>
               <td>
                 <div class="audit-business-cell">
                   <strong>{{ item.contract_no || '--' }}</strong>
                   <span>{{ item.tenant_name || '--' }}</span>
                 </div>
               </td>
-              <td class="audit-summary-cell">{{ formatAuditChanges(item.changes, item.action) }}</td>
+              <td class="audit-summary-cell">{{ $t(formatAuditChanges(item.changes, item.action)) }}</td>
             </tr>
             <tr v-if="!(audit.items || []).length">
-              <td colspan="7" class="list-empty">
-                暂无记录
-              </td>
+              <td colspan="7" class="list-empty">{{ $t(" 暂无记录 ") }}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="table-footer">
-        <span class="helper-text">共 {{ audit.total || 0 }} 条 · 第 {{ audit.page || 1 }} / {{ audit.pages || 1 }} 页</span>
+        <span class="helper-text">{{ $t("共 ") }}{{ $t(audit.total || 0) }}{{ $t(" 条 · 第 ") }}{{ $t(audit.page || 1) }} / {{ $t(audit.pages || 1) }}{{ $t(" 页") }}</span>
         <div class="spacer" />
-        <button class="btn" :disabled="(audit.page || 1) <= 1" @click="changeAuditPage(-1)">上一页</button>
-        <button class="btn" :disabled="(audit.page || 1) >= (audit.pages || 1)" @click="changeAuditPage(1)">下一页</button>
+        <button class="btn" :disabled="(audit.page || 1) <= 1" @click="changeAuditPage(-1)">{{ $t("上一页") }}</button>
+        <button class="btn" :disabled="(audit.page || 1) >= (audit.pages || 1)" @click="changeAuditPage(1)">{{ $t("下一页") }}</button>
       </div>
       </template>
     </article>

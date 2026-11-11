@@ -51,59 +51,59 @@ watch(
 </script>
 
 <template>
-  <BaseModal :open="open" :title="room?.id ? '编辑房间' : '新增房间'" size="small" @close="emit('close')">
+  <BaseModal :open="open" :title="$t(room?.id ? '编辑房间' : '新增房间')" size="small" @close="emit('close')">
     <div class="form-grid">
       <label class="form-field">
-        <span class="section-label">空间分区</span>
+        <span class="section-label">{{ $t("空间分区") }}</span>
         <select v-model="form.tower" class="select">
           <option v-for="option in roomSpaceOptions" :key="option.code || option.value" :value="option.value">
-            {{ option.label }}
+            {{ $t(option.label) }}
           </option>
         </select>
       </label>
 
       <label class="form-field">
-        <span class="section-label">楼层</span>
+        <span class="section-label">{{ $t("楼层") }}</span>
         <input v-model="form.floor" class="input" />
       </label>
 
       <label class="form-field">
-        <span class="section-label">室号</span>
+        <span class="section-label">{{ $t("室号") }}</span>
         <input v-model="form.room_no" class="input" />
       </label>
 
       <label class="form-field">
-        <span class="section-label">类型</span>
+        <span class="section-label">{{ $t("类型") }}</span>
         <select v-model="form.room_type" class="select">
-          <option value="办公">办公</option>
-          <option value="商业">商业</option>
-          <option value="餐饮">餐饮</option>
-          <option value="健身">健身</option>
+          <option value="办公">{{ $t("办公") }}</option>
+          <option value="商业">{{ $t("商业") }}</option>
+          <option value="餐饮">{{ $t("餐饮") }}</option>
+          <option value="健身">{{ $t("健身") }}</option>
         </select>
       </label>
 
       <label class="form-field">
-        <span class="section-label">面积</span>
+        <span class="section-label">{{ $t("面积") }}</span>
         <input v-model.number="form.area" type="number" class="input" />
       </label>
 
       <label class="form-field">
-        <span class="section-label">可出租</span>
+        <span class="section-label">{{ $t("可出租") }}</span>
         <label class="checkbox-row">
           <input v-model="form.is_leasable" type="checkbox" />
-          <span>纳入出租统计</span>
+          <span>{{ $t("纳入出租统计") }}</span>
         </label>
       </label>
 
       <label class="form-field full">
-        <span class="section-label">备注</span>
+        <span class="section-label">{{ $t("备注") }}</span>
         <textarea v-model="form.notes" class="textarea" />
       </label>
     </div>
 
     <template #footer>
-      <button class="btn" @click="emit('close')">取消</button>
-      <button class="btn btn-primary" @click="emit('save', { ...form })">保存</button>
+      <button class="btn" @click="emit('close')">{{ $t("取消") }}</button>
+      <button class="btn btn-primary" @click="emit('save', { ...form })">{{ $t("保存") }}</button>
     </template>
   </BaseModal>
 </template>

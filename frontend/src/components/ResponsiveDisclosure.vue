@@ -11,7 +11,7 @@ function toggle(event) { if (compact.value) expanded.value = event.target.open }
 </script>
 <template>
   <details class="responsive-disclosure" :open="!compact || expanded" @toggle="toggle">
-    <summary>{{ title }}</summary>
+    <summary>{{ $t(title) }}</summary>
     <slot />
   </details>
 </template>

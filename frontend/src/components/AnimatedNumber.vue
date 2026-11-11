@@ -75,5 +75,5 @@ watch(() => props.value, (value) => animate(value))
 </script>
 
 <template>
-  <strong class="animated-number">{{ display }}</strong>
+  <strong class="animated-number">{{ $t(display) }}</strong>
 </template>

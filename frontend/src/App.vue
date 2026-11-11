@@ -1,4 +1,5 @@
 <script setup>
+import { t } from './i18n/index.js'
 import { startOperation, trackReadyWork } from './lib/operationTelemetry'
 import UnifiedSearch from './components/UnifiedSearch.vue'
 import { readViewLink, navigationViewQuery } from './lib/savedViews'
@@ -1674,7 +1675,7 @@ async function logout() {
   const parked = planningDrafts.has(planningIdentity(currentUser.value))
   if (presentationMode.value) {
     if (!await requestPresentationLeave('退出登录', { allowSave: false, force: parked })) return
-  } else if (parked && !window.confirm('退出登录会清除本页所有暂存财务草稿。确定放弃草稿并退出吗？')) return
+  } else if (parked && !window.confirm(t('退出登录会清除本页所有暂存财务草稿。确定放弃草稿并退出吗？'))) return
   authBooting.value = true
   authSessionGeneration += 1
   exitPresentation()
@@ -2202,11 +2203,11 @@ onBeforeUnmount(() => {
       @select="selectTab"
       @preload="preloadNavigationData"
     />
-    <button v-if="sidebarOpen" class="sidebar-scrim" aria-label="关闭导航" @click="sidebarOpen = false" />
+    <button v-if="sidebarOpen" class="sidebar-scrim" :aria-label="$t(&quot;关闭导航&quot;)" @click="sidebarOpen = false" />
 
     <main class="main-area">
       <TopBar
-        :title="tabTitle"
+        :title="$t(tabTitle)"
         :show-search="!isLeadershipWorkspace && allowedTabKeys.some(key => ['contracts','customers','rooms'].includes(key))"
         @open-search="unifiedSearchOpen = true"
         :user="currentUser"
@@ -2259,8 +2260,8 @@ onBeforeUnmount(() => {
     
         <div class="toast-stack" aria-live="polite" aria-atomic="false">
       <div v-for="toast in toasts" :key="toast.id" class="toast" :class="{ error: toast.type === 'error' }">
-        <span>{{ toast.text }}</span>
-        <button type="button" class="toast-dismiss" aria-label="关闭提示" @click="toasts = toasts.filter(item => item.id !== toast.id)">×</button>
+        <span>{{ $t(toast.text) }}</span>
+        <button type="button" class="toast-dismiss" :aria-label="$t(&quot;关闭提示&quot;)" @click="toasts = toasts.filter(item => item.id !== toast.id)">×</button>
       </div>
     </div>
 
@@ -2274,7 +2275,7 @@ onBeforeUnmount(() => {
     />
     <ControlHelpPanel
       :open="isHelpOpen"
-      :title="tabTitle"
+      :title="$t(tabTitle)"
       :content="currentControlHelp"
       @close="isHelpOpen = false"
     />

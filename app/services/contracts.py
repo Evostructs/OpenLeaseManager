@@ -34,6 +34,7 @@ from app.core.crypto import (
 from app.core.files import ensure_child_path, ensure_pdf_filename, sanitize_stem
 from app.core.time import now_in_timezone, today_in_timezone
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.core.money import round_money
 from app.services.calculation_context import reuse_read_calculations
 from app.database import SessionLocal
@@ -459,6 +460,7 @@ def _detail_contract_template(profile) -> StreamingResponse:
         cell.font = Font(bold=True)
     for zone in zones:
         zones_worksheet.append([zone.code, zone.name, zone.kind])
+    localize_workbook(workbook)
     sanitize_workbook(workbook)
     buffer = io.BytesIO()
     workbook.save(buffer)

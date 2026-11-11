@@ -1,3 +1,4 @@
+import { t } from '../i18n/index.js'
 import { reactive } from 'vue'
 
 // One pending choice owns the navigation. A second click cannot replace its
@@ -47,6 +48,6 @@ export function createPlanningLeaveGuard({ changed, busy, save, discard }) {
 
 // A parked draft can outlive its editor (overview page, remount or read loss).
 export function confirmPlanningLeaveWithoutEditor(options = {}) {
-  return !(options.force && options.allowSave === false) || window.confirm(
-    '退出登录会清除本页所有暂存财务草稿。确定放弃草稿并退出吗？')
+  return !(options.force && options.allowSave === false) || window.confirm(t(
+    '退出登录会清除本页所有暂存财务草稿。确定放弃草稿并退出吗？'))
 }

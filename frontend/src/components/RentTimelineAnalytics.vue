@@ -1044,9 +1044,9 @@ onBeforeUnmount(() => {
   <article class="card dashboard-card rent-timeline-card" data-testid="analytics-rent-timeline">
     <header class="rent-timeline-header">
       <div>
-        <div class="section-label">租金时间分析</div>
-        <h3 class="card-title">有效平均日租与在租面积</h3>
-        <p>按合同实际有效期、阶梯租金、免租及调整计算；回款与物业费不计入。</p>
+        <div class="section-label">{{ $t("租金时间分析") }}</div>
+        <h3 class="card-title">{{ $t("有效平均日租与在租面积") }}</h3>
+        <p>{{ $t("按合同实际有效期、阶梯租金、免租及调整计算；回款与物业费不计入。") }}</p>
       </div>
       <div class="rent-timeline-export-actions">
         <button
@@ -1056,7 +1056,7 @@ onBeforeUnmount(() => {
           :disabled="loading || !analytics || pngExporting"
           @click="exportPng"
         >
-          {{ pngExporting ? '生成中…' : '导出高清图片' }}
+          {{ $t(pngExporting ? '生成中…' : '导出高清图片') }}
         </button>
         <button
           v-if="canExportExcel"
@@ -1065,33 +1065,29 @@ onBeforeUnmount(() => {
           data-testid="rent-timeline-export-excel"
           :disabled="loading || !analytics"
           @click="exportExcel"
-        >
-          导出Excel明细
-        </button>
+        >{{ $t(" 导出Excel明细 ") }}</button>
         <button
           class="btn btn-compact"
           type="button"
           data-testid="rent-timeline-refresh"
           :disabled="loading"
           @click="loadAnalytics({ preserveRange: true })"
-        >
-          刷新
-        </button>
+        >{{ $t(" 刷新 ") }}</button>
       </div>
     </header>
 
     <ChartSkeleton v-if="loading && !analytics" :height="520" />
 
     <div v-else-if="loadError && !analytics" class="rent-timeline-error" role="alert">
-      <strong>租金时间分析暂时无法加载</strong>
-      <span>{{ loadError }}</span>
-      <button class="btn btn-compact" type="button" @click="loadAnalytics()">重试</button>
+      <strong>{{ $t("租金时间分析暂时无法加载") }}</strong>
+      <span>{{ $t(loadError) }}</span>
+      <button class="btn btn-compact" type="button" @click="loadAnalytics()">{{ $t("重试") }}</button>
     </div>
 
     <template v-else-if="analytics">
       <div class="rent-timeline-controls">
         <fieldset class="rent-segment-picker" data-testid="rent-timeline-segments">
-          <legend>分析范围（可多选）</legend>
+          <legend>{{ $t("分析范围（可多选）") }}</legend>
           <div class="rent-segment-buttons">
             <button
               v-for="segment in segmentOptions"
@@ -1105,13 +1101,13 @@ onBeforeUnmount(() => {
               @click="toggleSegment(segment.key)"
             >
               <span aria-hidden="true"></span>
-              {{ segment.label }}
+              {{ $t(segment.label) }}
             </button>
           </div>
         </fieldset>
 
         <div class="rent-range-workbench">
-          <div class="rent-preset-buttons" aria-label="快捷时间范围">
+          <div class="rent-preset-buttons" :aria-label="$t(&quot;快捷时间范围&quot;)">
             <button
               v-for="preset in presetRanges"
               :key="preset.key"
@@ -1120,19 +1116,17 @@ onBeforeUnmount(() => {
               type="button"
               :disabled="preset.disabled"
               :aria-pressed="activePreset === preset.key"
-              :title="preset.disabledReason || ''"
+              :title="$t(preset.disabledReason || '')"
               :data-testid="`rent-range-${preset.key}`"
               @click="applyPreset(preset)"
             >
-              {{ preset.label }}
+              {{ $t(preset.label) }}
             </button>
-            <small v-if="!futureDataAvailable" class="rent-control-hint">
-              暂无今天之后的已签合同数据，未来12个月不可选。
-            </small>
+            <small v-if="!futureDataAvailable" class="rent-control-hint">{{ $t(" 暂无今天之后的已签合同数据，未来12个月不可选。 ") }}</small>
           </div>
           <div class="rent-date-inputs">
             <label for="rent-range-start">
-              <span>起始日</span>
+              <span>{{ $t("起始日") }}</span>
               <input
                 id="rent-range-start"
                 v-model="draftStartDate"
@@ -1146,7 +1140,7 @@ onBeforeUnmount(() => {
             </label>
             <span class="rent-date-arrow" aria-hidden="true">→</span>
             <label for="rent-range-end">
-              <span>结束日</span>
+              <span>{{ $t("结束日") }}</span>
               <input
                 id="rent-range-end"
                 v-model="draftEndDate"
@@ -1162,40 +1156,34 @@ onBeforeUnmount(() => {
         </div>
 
         <fieldset class="rent-comparison-picker" aria-describedby="rent-comparison-note">
-          <legend>对比曲线（{{ segmentByKey[primarySegmentKey]?.label }}）</legend>
+          <legend>{{ $t("对比曲线（") }}{{ $t(segmentByKey[primarySegmentKey]?.label) }}）</legend>
           <div>
             <button
               type="button"
               :class="{ active: comparisonMode === 'none' }"
               :aria-pressed="comparisonMode === 'none'"
               @click="comparisonMode = 'none'"
-            >
-              关闭
-            </button>
+            >{{ $t(" 关闭 ") }}</button>
             <button
               type="button"
               :disabled="!previousComparisonAvailable"
               :class="{ active: comparisonMode === 'previous' }"
               :aria-pressed="comparisonMode === 'previous'"
               @click="comparisonMode = 'previous'"
-            >
-              前期
-            </button>
+            >{{ $t(" 前期 ") }}</button>
             <button
               type="button"
               :disabled="!yoyComparisonAvailable"
               :class="{ active: comparisonMode === 'yoy' }"
               :aria-pressed="comparisonMode === 'yoy'"
               @click="comparisonMode = 'yoy'"
-            >
-              同比
-            </button>
+            >{{ $t(" 同比 ") }}</button>
           </div>
-          <small id="rent-comparison-note" class="rent-control-hint">{{ comparisonUnavailableNote }}</small>
+          <small id="rent-comparison-note" class="rent-control-hint">{{ $t(comparisonUnavailableNote) }}</small>
         </fieldset>
       </div>
 
-      <p v-if="rangeError" class="rent-range-error" role="alert">{{ rangeError }}</p>
+      <p v-if="rangeError" class="rent-range-error" role="alert">{{ $t(rangeError) }}</p>
 
       <div class="rent-timeline-kpis" data-testid="rent-timeline-kpis">
         <section
@@ -1204,78 +1192,72 @@ onBeforeUnmount(() => {
           class="rent-kpi-card rent-kpi-primary"
           :style="{ '--segment-color': card.color }"
         >
-          <span>{{ card.label }} · {{ metricPhaseLabel(card) }}</span>
+          <span>{{ $t(card.label) }} · {{ $t(metricPhaseLabel(card)) }}</span>
           <template v-if="card.history && card.forecast">
             <div class="rent-kpi-split">
               <div>
-                <small>历史</small>
-                <strong>{{ rateText(card.history.effectiveDailyRent) }}</strong>
+                <small>{{ $t("历史") }}</small>
+                <strong>{{ $t(rateText(card.history.effectiveDailyRent)) }}</strong>
               </div>
               <div>
-                <small>已签预测</small>
-                <strong>{{ rateText(card.forecast.effectiveDailyRent) }}</strong>
+                <small>{{ $t("已签预测") }}</small>
+                <strong>{{ $t(rateText(card.forecast.effectiveDailyRent)) }}</strong>
               </div>
             </div>
-            <em>
-              预测较历史
-              {{ signedPercent(
+            <em>{{ $t(" 预测较历史 ") }}{{ $t(signedPercent(
                 card.history.effectiveDailyRent
                   ? ((card.forecast.effectiveDailyRent - card.history.effectiveDailyRent) / Math.abs(card.history.effectiveDailyRent)) * 100
                   : null
-                ) }}
+                )) }}
             </em>
             <div class="rent-kpi-detail-split">
-              <small>历史：{{ metricRangeDescription(card.history) }}</small>
-              <small>已签预测：{{ metricRangeDescription(card.forecast) }}</small>
+              <small>{{ $t("历史：") }}{{ $t(metricRangeDescription(card.history)) }}</small>
+              <small>{{ $t("已签预测：") }}{{ $t(metricRangeDescription(card.forecast)) }}</small>
             </div>
           </template>
           <template v-else>
-            <strong>{{ rateText(card.total?.effectiveDailyRent) }}</strong>
-            <em>元/㎡/天</em>
-            <small>{{ metricRangeDescription(card.total) }}</small>
+            <strong>{{ $t(rateText(card.total?.effectiveDailyRent)) }}</strong>
+            <em>{{ $t("元/㎡/天") }}</em>
+            <small>{{ $t(metricRangeDescription(card.total)) }}</small>
           </template>
         </section>
 
         <section class="rent-kpi-card">
-          <span>自动对比 · {{ segmentByKey[primarySegmentKey]?.label }}</span>
+          <span>{{ $t("自动对比 · ") }}{{ $t(segmentByKey[primarySegmentKey]?.label) }}</span>
           <div class="rent-comparison-badges">
-            <strong :class="previousComparisonAvailable ? comparisonTone(primaryComparison?.previousChange) : 'muted'">
-              前期 {{ comparisonPercentText(primaryComparison?.previousChange, previousCoverageComplete) }}
+            <strong :class="previousComparisonAvailable ? comparisonTone(primaryComparison?.previousChange) : 'muted'">{{ $t(" 前期 ") }}{{ $t(comparisonPercentText(primaryComparison?.previousChange, previousCoverageComplete)) }}
             </strong>
-            <strong :class="yoyComparisonAvailable ? comparisonTone(primaryComparison?.yoyChange) : 'muted'">
-              同比 {{ comparisonPercentText(primaryComparison?.yoyChange, yoyCoverageComplete) }}
+            <strong :class="yoyComparisonAvailable ? comparisonTone(primaryComparison?.yoyChange) : 'muted'">{{ $t(" 同比 ") }}{{ $t(comparisonPercentText(primaryComparison?.yoyChange, yoyCoverageComplete)) }}
             </strong>
           </div>
-          <small>{{ comparisonUnavailableNote }}</small>
+          <small>{{ $t(comparisonUnavailableNote) }}</small>
         </section>
 
         <section class="rent-kpi-card rent-coverage-card">
-          <span>全量合同数据覆盖率</span>
-          <strong>{{ roundTo(analytics.coverage.coverageRate, 1) }}%</strong>
-          <em>{{ analytics.coverage.includedContracts }}/{{ analytics.coverage.totalContracts }} 份合同</em>
+          <span>{{ $t("全量合同数据覆盖率") }}</span>
+          <strong>{{ $t(roundTo(analytics.coverage.coverageRate, 1)) }}%</strong>
+          <em>{{ $t(analytics.coverage.includedContracts) }}/{{ $t(analytics.coverage.totalContracts) }}{{ $t(" 份合同") }}</em>
           <small v-if="analytics.coverage.excludedContracts">
-            {{ analytics.coverage.excludedContracts }} 份因数据不完整未计入
-          </small>
-          <small v-else>当前合同均具备计算条件</small>
+            {{ $t(analytics.coverage.excludedContracts) }}{{ $t(" 份因数据不完整未计入 ") }}</small>
+          <small v-else>{{ $t("当前合同均具备计算条件") }}</small>
         </section>
       </div>
 
       <div class="rent-chart-toolbar">
-        <div class="rent-chart-legend" aria-label="图表说明">
-          <span><i class="solid"></i>历史</span>
-          <span><i class="dashed"></i>已签合同预测</span>
-          <span><i class="event"></i>关键变化</span>
+        <div class="rent-chart-legend" :aria-label="$t(&quot;图表说明&quot;)">
+          <span><i class="solid"></i>{{ $t("历史") }}</span>
+          <span><i class="dashed"></i>{{ $t("已签合同预测") }}</span>
+          <span><i class="event"></i>{{ $t("关键变化") }}</span>
         </div>
         <label class="rent-event-picker">
-          <span>定位关键变化</span>
+          <span>{{ $t("定位关键变化") }}</span>
           <select :value="selectedWindow?.start || ''" @change="selectEventDate">
-            <option value="">选择日期</option>
+            <option value="">{{ $t("选择日期") }}</option>
             <option v-for="item in eventDateOptions" :key="item.date" :value="item.date">
-              {{ item.date }} · {{ item.count }} 项
-            </option>
+              {{ $t(item.date) }} · {{ $t(item.count) }}{{ $t(" 项 ") }}</option>
           </select>
         </label>
-        <span class="metric-pill info">{{ granularityLabel }}</span>
+        <span class="metric-pill info">{{ $t(granularityLabel) }}</span>
       </div>
 
       <EChartPanel
@@ -1283,9 +1265,9 @@ onBeforeUnmount(() => {
         :option="chartOption"
         :minimum-pixel-ratio="minimumPixelRatio"
         :empty="!analytics.daily.length"
-        empty-text="该范围暂无可计算的租金数据"
+        :empty-text="$t(&quot;该范围暂无可计算的租金数据&quot;)"
         :height="compact ? 380 : 520"
-        :aria-label="`有效平均日租与在租面积，当前范围 ${selectedRangeLabel}`"
+        :aria-label="$t(`有效平均日租与在租面积，当前范围 ${selectedRangeLabel}`)"
         data-testid="rent-timeline-chart"
         @chart-click="handleChartClick"
         @datazoom="handleDataZoom"
@@ -1293,8 +1275,8 @@ onBeforeUnmount(() => {
       />
 
       <div class="rent-timeline-status-row">
-        <span aria-live="polite">{{ selectedRangeLabel }} · {{ rangeStatus || '已按日级数据精确核对' }}</span>
-        <span>拖动下方双手柄可改变时间窗口；按住 Ctrl 滚轮可缩放。</span>
+        <span aria-live="polite">{{ $t(selectedRangeLabel) }} · {{ $t(rangeStatus || '已按日级数据精确核对') }}</span>
+        <span>{{ $t("拖动下方双手柄可改变时间窗口；按住 Ctrl 滚轮可缩放。") }}</span>
       </div>
 
       <aside
@@ -1305,19 +1287,19 @@ onBeforeUnmount(() => {
       >
         <header>
           <div>
-            <span class="section-label">变化驱动</span>
-            <h4>{{ selectedWindowLabel }} · 共 {{ selectedWindowEvents.length }} 项</h4>
+            <span class="section-label">{{ $t("变化驱动") }}</span>
+            <h4>{{ $t(selectedWindowLabel) }}{{ $t(" · 共 ") }}{{ $t(selectedWindowEvents.length) }}{{ $t(" 项") }}</h4>
           </div>
-          <button class="btn btn-compact" type="button" @click="selectedWindow = null">收起</button>
+          <button class="btn btn-compact" type="button" @click="selectedWindow = null">{{ $t("收起") }}</button>
         </header>
         <div v-if="selectedWindowEvents.length" class="rent-driver-list">
           <article v-for="(item, index) in selectedWindowEvents" :key="`${item.date}-${item.contractId}-${index}`">
             <div>
-              <span>{{ eventTypeLabel(item.type) }}</span>
-              <strong>{{ item.label }}</strong>
+              <span>{{ $t(eventTypeLabel(item.type)) }}</span>
+              <strong>{{ $t(item.label) }}</strong>
               <small>
-                {{ item.contractNo || '未标注合同' }}
-                <template v-if="item.tenantName"> · {{ item.tenantName }}</template>
+                {{ $t(item.contractNo || '未标注合同') }}
+                <template v-if="item.tenantName"> · {{ $t(item.tenantName) }}</template>
               </small>
             </div>
             <div class="rent-driver-impact">
@@ -1327,39 +1309,30 @@ onBeforeUnmount(() => {
                   :key="impact.segmentKey"
                   class="rent-driver-impact-group"
                 >
-                  <strong>{{ impact.label }}</strong>
-                  <span v-if="impact.rateImpact">
-                    日租影响 {{ impact.rateImpact > 0 ? '+' : '' }}{{ rateText(impact.rateImpact) }}
+                  <strong>{{ $t(impact.label) }}</strong>
+                  <span v-if="impact.rateImpact">{{ $t(" 日租影响 ") }}{{ $t(impact.rateImpact > 0 ? '+' : '') }}{{ $t(rateText(impact.rateImpact)) }}
                   </span>
-                  <span v-if="impact.rentDelta">
-                    租金变化 {{ impact.rentDelta > 0 ? '+' : '' }}{{ formatCurrency(impact.rentDelta) }}
+                  <span v-if="impact.rentDelta">{{ $t(" 租金变化 ") }}{{ $t(impact.rentDelta > 0 ? '+' : '') }}{{ $t(formatCurrency(impact.rentDelta)) }}
                   </span>
-                  <span v-if="impact.areaDelta">
-                    面积变化 {{ impact.areaDelta > 0 ? '+' : '' }}{{ formatArea(impact.areaDelta) }} ㎡
+                  <span v-if="impact.areaDelta">{{ $t(" 面积变化 ") }}{{ $t(impact.areaDelta > 0 ? '+' : '') }}{{ $t(formatArea(impact.areaDelta)) }} ㎡
                   </span>
                 </section>
               </div>
-              <small v-else>所选分区净影响为 0</small>
+              <small v-else>{{ $t("所选分区净影响为 0") }}</small>
               <button
                 v-if="item.contractId"
                 class="btn btn-compact"
                 type="button"
                 @click="openDriverContract(item)"
-              >
-                打开合同
-              </button>
+              >{{ $t(" 打开合同 ") }}</button>
             </div>
           </article>
         </div>
-        <p v-else class="rent-driver-empty">
-          该窗口没有单一合同事件。轻微波动可能来自月租按当月自然日摊分，或多个合同组合变化，并不等于发生调租。
-        </p>
+        <p v-else class="rent-driver-empty">{{ $t(" 该窗口没有单一合同事件。轻微波动可能来自月租按当月自然日摊分，或多个合同组合变化，并不等于发生调租。 ") }}</p>
       </aside>
 
       <details v-if="analytics.coverage.excludedContracts" class="rent-exclusion-details">
-        <summary>
-          数据覆盖说明
-          <strong>{{ analytics.coverage.excludedContracts }} 份合同未计入</strong>
+        <summary>{{ $t(" 数据覆盖说明 ") }}<strong>{{ $t(analytics.coverage.excludedContracts) }}{{ $t(" 份合同未计入") }}</strong>
         </summary>
         <div class="rent-exclusion-list">
           <article v-for="(item, index) in analytics.coverage.excluded" :key="item.contract_id || item.contract_no || index">
@@ -1375,9 +1348,9 @@ onBeforeUnmount(() => {
       </details>
 
       <footer class="rent-method-note">
-        <strong>口径说明</strong>
-        <span>区间应计有效租金 ÷ 在租面积天数；空置面积不进入分母，免租但仍占用的面积正常进入分母。</span>
-        <span>未来仅展示现有已签合同，到期后自然退出；不假设续租、重新出租或市场租金。</span>
+        <strong>{{ $t("口径说明") }}</strong>
+        <span>{{ $t("区间应计有效租金 ÷ 在租面积天数；空置面积不进入分母，免租但仍占用的面积正常进入分母。") }}</span>
+        <span>{{ $t("未来仅展示现有已签合同，到期后自然退出；不假设续租、重新出租或市场租金。") }}</span>
       </footer>
     </template>
   </article>

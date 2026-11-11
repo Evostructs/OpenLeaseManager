@@ -40,7 +40,7 @@ def test_customer_dashboard_copy_is_business_facing_and_count_matches_preview() 
     template = source.split("<template>", maxsplit=1)[1]
 
     assert "历史逾期客户" in template
-    assert "{{ overdueCustomerRows.length }} 个客户" in template
+    assert '{{ $t(overdueCustomerRows.length) }}{{ $t(" 个客户") }}' in template
     assert "overdueCustomerRows.slice(0, 4)" in template
     assert "客户待办分布" in template
     assert "租金贡献 × 待办类型" in template
@@ -157,7 +157,7 @@ def test_customer_detail_operator_panel_keeps_required_selectors() -> None:
     assert "emit('open-contract', { id: contractId, initialSection: 'receivables' })" in source
     assert "@click=\"emit('open-contract', contract.id)\"" in source
     assert "经营摘要" in source
-    assert 'InfoHint text="生成后可复制或带入跟进。"' in source
+    assert 'InfoHint :text="$t(&quot;生成后可复制或带入跟进。&quot;)"' in source
     assert "辅助分析" not in source
 
 

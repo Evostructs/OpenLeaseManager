@@ -155,7 +155,7 @@ onBeforeUnmount(removeGlobalListeners)
       ref="buttonRef"
       type="button"
       class="info-hint-button"
-      :aria-label="label"
+      :aria-label="$t(label)"
       :aria-describedby="tooltipId"
       :aria-expanded="isOpen ? 'true' : 'false'"
       @focus="openTooltip"
@@ -175,7 +175,7 @@ onBeforeUnmount(removeGlobalListeners)
         role="tooltip"
         :style="popoverStyle"
       >
-        {{ text }}
+        {{ $t(text) }}
       </span>
     </Teleport>
   </span>

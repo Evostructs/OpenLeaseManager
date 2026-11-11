@@ -43,41 +43,39 @@ function confirm() {
 </script>
 
 <template>
-  <BaseModal :open="open" title="确认合同变更" size="small" @close="close">
+  <BaseModal :open="open" :title="$t(&quot;确认合同变更&quot;)" size="small" @close="close">
     <div data-testid="contract-change-preview-modal" class="detail-list">
       <div class="form-field">
-        <span class="section-label">新合同</span>
-        <div>{{ newContractNo }}</div>
+        <span class="section-label">{{ $t("新合同") }}</span>
+        <div>{{ $t(newContractNo) }}</div>
         <p class="helper-text">
-          {{ newCustomerName }} · {{ newRoomNo }} · {{ formatDate(effectiveDate) }} 生效
-        </p>
+          {{ $t(newCustomerName) }} · {{ $t(newRoomNo) }} · {{ $t(formatDate(effectiveDate)) }}{{ $t(" 生效 ") }}</p>
       </div>
 
       <div class="form-field">
-        <span class="section-label">上一份合同</span>
-        <div>{{ previousContractNo }}</div>
-        <p class="helper-text">
-          终止日 {{ formatDate(previousEndBefore) }} -> {{ formatDate(previousEndAfter) }}
+        <span class="section-label">{{ $t("上一份合同") }}</span>
+        <div>{{ $t(previousContractNo) }}</div>
+        <p class="helper-text">{{ $t(" 终止日 ") }}{{ $t(formatDate(previousEndBefore)) }} -> {{ $t(formatDate(previousEndAfter)) }}
         </p>
       </div>
 
       <div v-if="receivableImpacts.length" class="form-field">
-        <span class="section-label">应收影响</span>
+        <span class="section-label">{{ $t("应收影响") }}</span>
         <ul class="detail-list">
           <li v-for="item in receivableImpacts" :key="item.month || item.period_month">
-            {{ item.month || item.period_month || '--' }}：收款/核销 {{ item.payment_count || 0 }} 笔，已结算 {{ formatCurrencyFixed(item.settlement_amount || 0) }}
+            {{ $t(item.month || item.period_month || '--') }}{{ $t("：收款/核销 ") }}{{ $t(item.payment_count || 0) }}{{ $t(" 笔，已结算 ") }}{{ $t(formatCurrencyFixed(item.settlement_amount || 0)) }}
           </li>
         </ul>
       </div>
-      <p v-else class="helper-text">无已登记的后续应收或收款/核销记录</p>
+      <p v-else class="helper-text">{{ $t("无已登记的后续应收或收款/核销记录") }}</p>
 
-      <p v-if="preview?.receivable_policy" class="helper-text warning">{{ preview.receivable_policy }}</p>
+      <p v-if="preview?.receivable_policy" class="helper-text warning">{{ $t(preview.receivable_policy) }}</p>
     </div>
 
     <template #footer>
-      <button class="btn" data-testid="contract-change-preview-cancel" :disabled="submitting" @click="close">取消</button>
+      <button class="btn" data-testid="contract-change-preview-cancel" :disabled="submitting" @click="close">{{ $t("取消") }}</button>
       <button class="btn btn-primary" data-testid="contract-change-preview-confirm" :disabled="submitting" @click="confirm">
-        {{ submitting ? '提交中' : '确认生效' }}
+        {{ $t(submitting ? '提交中' : '确认生效') }}
       </button>
     </template>
   </BaseModal>

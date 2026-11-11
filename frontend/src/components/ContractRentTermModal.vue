@@ -161,86 +161,85 @@ watch(
 </script>
 
 <template>
-  <BaseModal :open="open" :title="title" size="small" @close="emit('close')">
+  <BaseModal :open="open" :title="$t(title)" size="small" @close="emit('close')">
     <div class="form-grid single">
       <label class="form-field">
-        <span class="section-label">条款类型</span>
+        <span class="section-label">{{ $t("条款类型") }}</span>
         <select v-model="form.rule_type" class="select" @change="applyRuleTypeDefaults">
-          <option v-for="item in ruleTypes" :key="item.value" :value="item.value">{{ item.label }}</option>
+          <option v-for="item in ruleTypes" :key="item.value" :value="item.value">{{ $t(item.label) }}</option>
         </select>
       </label>
       <label class="form-field">
-        <span class="section-label">作用范围</span>
+        <span class="section-label">{{ $t("作用范围") }}</span>
         <select v-model="form.room_scope" class="select" @change="applyRoomDefaults">
-          <option value="">合同整体（合同级）</option>
-          <option v-for="room in roomOptions" :key="room.id" :value="String(room.id)">
-            房源级 {{ room.room_no }} · {{ room.start_date || contract?.start_date || '--' }} - {{ room.end_date || contract?.end_date || '--' }}
+          <option value="">{{ $t("合同整体（合同级）") }}</option>
+          <option v-for="room in roomOptions" :key="room.id" :value="String(room.id)">{{ $t(" 房源级 ") }}{{ room.room_no }} · {{ $t(room.start_date || contract?.start_date || '--') }} - {{ $t(room.end_date || contract?.end_date || '--') }}
           </option>
         </select>
       </label>
       <label v-if="form.rule_type === 'stepped_rent'" class="form-field">
-        <span class="section-label">分段金额方式</span>
+        <span class="section-label">{{ $t("分段金额方式") }}</span>
         <select v-model="form.amount_mode" class="select" @change="applyRoomDefaults">
-          <option value="area_unit_price">面积单价</option>
-          <option value="fixed_monthly">固定月租</option>
+          <option value="area_unit_price">{{ $t("面积单价") }}</option>
+          <option value="fixed_monthly">{{ $t("固定月租") }}</option>
         </select>
       </label>
       <div class="form-field">
-        <span class="section-label">起始日</span>
+        <span class="section-label">{{ $t("起始日") }}</span>
         <DatePickerInput v-model="form.start_date" />
       </div>
       <div class="form-field">
-        <span class="section-label">终止日</span>
+        <span class="section-label">{{ $t("终止日") }}</span>
         <DatePickerInput v-model="form.end_date" />
       </div>
       <label v-if="usesAreaPrice" class="form-field">
-        <span class="section-label">面积</span>
+        <span class="section-label">{{ $t("面积") }}</span>
         <input v-model.number="form.area" type="number" class="input" />
       </label>
       <label v-if="usesAreaPrice" class="form-field">
-        <span class="section-label">日租单价</span>
+        <span class="section-label">{{ $t("日租单价") }}</span>
         <input v-model.number="form.unit_price" type="number" class="input" />
       </label>
       <label v-if="usesMonthlyAmount" class="form-field">
-        <span class="section-label">固定月租金</span>
+        <span class="section-label">{{ $t("固定月租金") }}</span>
         <input v-model.number="form.monthly_amount" type="number" class="input" />
       </label>
       <label v-if="form.rule_type === 'escalation'" class="form-field">
-        <span class="section-label">递增方式</span>
+        <span class="section-label">{{ $t("递增方式") }}</span>
         <select v-model="form.adjustment_type" class="select">
-          <option value="percent">百分比</option>
-          <option value="fixed_amount">固定金额</option>
+          <option value="percent">{{ $t("百分比") }}</option>
+          <option value="fixed_amount">{{ $t("固定金额") }}</option>
         </select>
       </label>
       <label v-if="form.rule_type === 'temporary_adjustment'" class="form-field">
-        <span class="section-label">抵减方式</span>
+        <span class="section-label">{{ $t("抵减方式") }}</span>
         <select v-model="form.adjustment_type" class="select">
-          <option value="fixed_amount">固定金额</option>
-          <option value="percent">百分比</option>
+          <option value="fixed_amount">{{ $t("固定金额") }}</option>
+          <option value="percent">{{ $t("百分比") }}</option>
         </select>
       </label>
       <label v-if="form.rule_type === 'escalation'" class="form-field">
-        <span class="section-label">递增频率</span>
+        <span class="section-label">{{ $t("递增频率") }}</span>
         <select v-model="form.frequency" class="select">
-          <option value="once">指定日期生效</option>
-          <option value="annual">年度递增</option>
+          <option value="once">{{ $t("指定日期生效") }}</option>
+          <option value="annual">{{ $t("年度递增") }}</option>
         </select>
       </label>
       <label v-if="usesAdjustmentValue" class="form-field">
-        <span class="section-label">{{ adjustmentValueLabel }}</span>
+        <span class="section-label">{{ $t(adjustmentValueLabel) }}</span>
         <input v-model.number="form.adjustment_value" type="number" class="input" />
       </label>
-      <div v-if="adjustmentNeedsAttention" class="helper-text warning">抵减幅度较大，请核对金额。</div>
+      <div v-if="adjustmentNeedsAttention" class="helper-text warning">{{ $t("抵减幅度较大，请核对金额。") }}</div>
       <label class="form-field">
-        <span class="section-label">备注</span>
+        <span class="section-label">{{ $t("备注") }}</span>
         <textarea v-model="form.notes" class="textarea" rows="3" />
       </label>
-      <div v-if="formError" class="helper-text danger">{{ formError }}</div>
+      <div v-if="formError" class="helper-text danger">{{ $t(formError) }}</div>
     </div>
 
     <template #footer>
-      <button class="btn" @click="emit('close')">取消</button>
-      <button class="btn btn-primary" :disabled="!canSubmit" @click="submit">保存</button>
+      <button class="btn" @click="emit('close')">{{ $t("取消") }}</button>
+      <button class="btn btn-primary" :disabled="!canSubmit" @click="submit">{{ $t("保存") }}</button>
     </template>
   </BaseModal>
 </template>

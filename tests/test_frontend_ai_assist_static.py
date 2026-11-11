@@ -96,8 +96,8 @@ def test_ai_assist_uses_business_facing_structure_and_language() -> None:
 def test_ai_assist_moves_safety_copy_into_nearby_hints() -> None:
     template = _template_source()
 
-    assert 'text="选定客户后，可生成经营摘要或跟进建议。"' in template
-    assert 'text="选择风险后生成原因、影响和处理方向。"' in template
+    assert ':text="$t(&quot;选定客户后，可生成经营摘要或跟进建议。&quot;)"' in template
+    assert ':text="$t(&quot;选择风险后生成原因、影响和处理方向。&quot;)"' in template
     assert "ai-workbench-command" in template
     assert "ai-dual-workbench-grid" in template
     assert "ai-unified-flow" in template

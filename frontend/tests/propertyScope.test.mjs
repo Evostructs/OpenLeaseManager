@@ -69,17 +69,17 @@ try {
   )
   assert.equal(
     buildScopedDownloadUrl('/api/contracts/export/excel?keyword=%E4%B8%8A%E6%B5%B7'),
-    '/api/contracts/export/excel?keyword=%E4%B8%8A%E6%B5%B7&building=DEMO_A'
+    '/api/contracts/export/excel?keyword=%E4%B8%8A%E6%B5%B7&building=DEMO_A&lang=en'
   )
   openDownload('/api/rent-analytics/export?start_date=2026-01-01&building=OTHER')
   assert.deepEqual(downloadWindows.at(-1), [
-    '/api/rent-analytics/export?start_date=2026-01-01&building=DEMO_A',
+    '/api/rent-analytics/export?start_date=2026-01-01&building=DEMO_A&lang=en',
     '_blank',
     'noopener,noreferrer'
   ])
   openDownload('/api/rent-analytics/export?start_date=2026-01-01&building=OTHER', { includeScope: false })
   assert.deepEqual(downloadWindows.at(-1), [
-    '/api/rent-analytics/export?start_date=2026-01-01&building=OTHER',
+    '/api/rent-analytics/export?start_date=2026-01-01&building=OTHER&lang=en',
     '_blank',
     'noopener,noreferrer'
   ])

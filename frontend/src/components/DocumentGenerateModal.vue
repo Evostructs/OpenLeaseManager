@@ -160,69 +160,65 @@ async function generate() {
 </script>
 
 <template>
-  <BaseModal :open="open" :title="title" size="small" @close="closeModal">
+  <BaseModal :open="open" :title="$t(title)" size="small" @close="closeModal">
     <div class="document-form" data-testid="document-generate-modal" :aria-busy="generating">
       <div class="document-summary">
         <div>
-          <span class="section-label">合同</span>
+          <span class="section-label">{{ $t("合同") }}</span>
           <strong>{{ form.contract_no || '--' }}</strong>
         </div>
         <div>
-          <span class="section-label">客户</span>
+          <span class="section-label">{{ $t("客户") }}</span>
           <strong>{{ form.tenant_name || '--' }}</strong>
         </div>
         <div v-if="form.payment_summary">
-          <span class="section-label">收款</span>
+          <span class="section-label">{{ $t("收款") }}</span>
           <strong>{{ form.payment_summary }}</strong>
         </div>
       </div>
 
       <div class="form-grid">
         <label v-if="!isReceipt" class="form-field">
-          <span class="section-label">账期</span>
+          <span class="section-label">{{ $t("账期") }}</span>
           <input v-model="form.month" class="input" type="month" />
         </label>
         <div class="form-field">
-          <span class="section-label">通知日期</span>
+          <span class="section-label">{{ $t("通知日期") }}</span>
           <DatePickerInput v-model="form.notice_date" />
         </div>
         <label v-if="!isReceipt" class="form-field full">
-          <span class="section-label">付款说明</span>
+          <span class="section-label">{{ $t("付款说明") }}</span>
           <textarea v-model="form.payment_instruction" class="textarea compact-textarea" />
         </label>
         <label class="form-field full">
-          <span class="section-label">备注</span>
+          <span class="section-label">{{ $t("备注") }}</span>
           <textarea v-model="form.notes" class="textarea compact-textarea" />
         </label>
       </div>
 
       <p v-if="generateError" class="document-generate-error" data-testid="document-generate-error" role="alert">
-        {{ generateError }}
+        {{ $t(generateError) }}
       </p>
 
       <section v-if="generatedDocument" class="document-result-panel" data-testid="document-result-panel" aria-live="polite">
         <div class="document-result-meta">
           <div>
-            <span class="section-label">文档类型</span>
-            <strong>{{ resultDocumentLabel }}</strong>
+            <span class="section-label">{{ $t("文档类型") }}</span>
+            <strong>{{ $t(resultDocumentLabel) }}</strong>
           </div>
           <div>
-            <span class="section-label">文件名</span>
-            <strong>{{ resultFilename }}</strong>
+            <span class="section-label">{{ $t("文件名") }}</span>
+            <strong>{{ $t(resultFilename) }}</strong>
           </div>
         </div>
         <div class="document-result-actions">
-          <button class="btn" data-testid="document-result-preview" type="button" @click="previewGeneratedDocument">
-            预览
-          </button>
-          <button class="btn" data-testid="document-result-download" type="button" @click="downloadGeneratedDocument">
-            下载
-          </button>
+          <button class="btn" data-testid="document-result-preview" type="button" @click="previewGeneratedDocument">{{ $t(" 预览 ") }}</button>
+          <button class="btn" data-testid="document-result-download" type="button" @click="downloadGeneratedDocument">{{ $t(" 下载 ") }}</button>
         </div>
       </section>
     </div>
     <template #footer>
-      <button class="btn" type="button" @click="closeModal">关闭</button>
+      <button class="btn" type="button" @click="closeModal">{{ $t("关闭") }}</button>
       <button
         class="btn btn-primary document-generate-submit"
         data-testid="document-generate-submit"
@@ -230,7 +226,7 @@ async function generate() {
         :disabled="generating"
         @click="generate"
       >
-        {{ generating ? '正在生成...' : generatedDocument ? '重新生成' : '生成文档' }}
+        {{ $t(generating ? '正在生成...' : generatedDocument ? '重新生成' : '生成文档') }}
       </button>
     </template>
   </BaseModal>

@@ -1,16 +1,17 @@
+import { locale } from '../i18n/index.js'
 export function formatNumber(value) {
   if (value == null || Number.isNaN(Number(value))) return '0'
-  return Number(value).toLocaleString('zh-CN')
+  return Number(value).toLocaleString(locale.value === 'en' ? 'en-GB' : 'zh-CN')
 }
 
 export function formatArea(value) {
   if (value == null || Number.isNaN(Number(value))) return '0.00'
-  return Number(value).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return Number(value).toLocaleString(locale.value === 'en' ? 'en-GB' : 'zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export function formatCurrency(value) {
   if (value == null || Number.isNaN(Number(value))) return '0.00'
-  return Number(value).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return Number(value).toLocaleString(locale.value === 'en' ? 'en-GB' : 'zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export function formatCurrencyFixed(value) {
@@ -28,7 +29,7 @@ export function formatDateTime(value) {
   if (Number.isNaN(date.getTime())) {
     return String(value).replace('T', ' ').slice(0, 19)
   }
-  return date.toLocaleString('zh-CN', {
+  return date.toLocaleString(locale.value === 'en' ? 'en-GB' : 'zh-CN', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',

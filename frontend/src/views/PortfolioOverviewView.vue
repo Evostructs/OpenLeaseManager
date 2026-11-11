@@ -41,8 +41,8 @@ const presentationState = computed(() => buildLeadershipPresentationState(displa
       class="leadership-overview-state"
       data-testid="leadership-overview-loading"
     >
-      <strong>正在读取板块概况</strong>
-      <span>正在加载经营概况…</span>
+      <strong>{{ $t("正在读取板块概况") }}</strong>
+      <span>{{ $t("正在加载经营概况…") }}</span>
     </div>
 
     <div
@@ -50,9 +50,9 @@ const presentationState = computed(() => buildLeadershipPresentationState(displa
       class="leadership-overview-state is-error"
       data-testid="leadership-overview-error"
     >
-      <strong>板块概况暂不可用</strong>
-      <span>{{ error }}</span>
-      <button type="button" class="btn" @click="emit('refresh')">重新读取</button>
+      <strong>{{ $t("板块概况暂不可用") }}</strong>
+      <span>{{ $t(error) }}</span>
+      <button type="button" class="btn" @click="emit('refresh')">{{ $t("重新读取") }}</button>
     </div>
 
     <PresentationView
@@ -67,8 +67,8 @@ const presentationState = computed(() => buildLeadershipPresentationState(displa
     />
 
     <div v-else class="leadership-overview-state" data-testid="leadership-overview-empty">
-      <strong>当前没有可展示的板块概况</strong>
-      <span>请联系平台管理员核对概况授权。</span>
+      <strong>{{ $t("当前没有可展示的板块概况") }}</strong>
+      <span>{{ $t("请联系平台管理员核对概况授权。") }}</span>
     </div>
   </section>
 </template>

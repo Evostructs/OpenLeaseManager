@@ -1,4 +1,5 @@
 <script setup>
+import LanguageSwitch from '../components/LanguageSwitch.vue'
 import { reactive, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -37,48 +38,49 @@ function submitAuth() {
     <section class="login-entry" data-testid="login-entry">
       <aside class="login-brand-panel" data-testid="login-brand-panel">
         <div class="login-hero">
-          <img src="/lease-manager-mark.svg" alt="OpenLeaseOps 租赁管理系统" />
+          <img src="/lease-manager-mark.svg" :alt="$t(&quot;OpenLeaseOps 租赁管理系统&quot;)" />
           <div>
-            <p class="login-eyebrow">多楼宇租赁运营平台</p>
-            <h1 class="login-brand-title">租赁管理系统</h1>
+            <p class="login-eyebrow">{{ $t("多楼宇租赁运营平台") }}</p>
+            <h1 class="login-brand-title">{{ $t("租赁管理系统") }}</h1>
           </div>
         </div>
 
         <div class="login-signal-band" data-testid="login-signal-band">
           <div class="login-signal" data-testid="login-signal-contracts">
-            <span>合同台账</span>
-            <strong>租期与面积</strong>
+            <span>{{ $t("合同台账") }}</span>
+            <strong>{{ $t("租期与面积") }}</strong>
           </div>
           <div class="login-signal success" data-testid="login-signal-receivables">
-            <span>月度应收</span>
-            <strong>回款与逾期</strong>
+            <span>{{ $t("月度应收") }}</span>
+            <strong>{{ $t("回款与逾期") }}</strong>
           </div>
           <div class="login-signal warning" data-testid="login-signal-risk">
-            <span>风险中心</span>
-            <strong>到期与资料</strong>
+            <span>{{ $t("风险中心") }}</span>
+            <strong>{{ $t("到期与资料") }}</strong>
           </div>
         </div>
       </aside>
 
       <section class="card login-card" :class="{ 'is-init': props.needInit }" data-testid="login-card">
+        <div class="login-language"><LanguageSwitch /></div>
         <div class="login-panel-head">
           <div>
-            <p class="login-panel-kicker">{{ props.needInit ? '首次启用' : '欢迎使用' }}</p>
-            <h2 class="card-title login-panel-title">{{ props.needInit ? '创建管理员' : '账号登录' }}</h2>
+            <p class="login-panel-kicker">{{ $t(props.needInit ? '首次启用' : '欢迎使用') }}</p>
+            <h2 class="card-title login-panel-title">{{ $t(props.needInit ? '创建管理员' : '账号登录') }}</h2>
           </div>
           <span class="login-mode-badge" :class="{ init: props.needInit }" data-testid="login-mode">
-            {{ props.needInit ? '初始化' : '登录' }}
+            {{ $t(props.needInit ? '初始化' : '登录') }}
           </span>
         </div>
 
         <form class="login-form" data-testid="login-form" @submit.prevent="submitAuth">
           <div class="form-grid">
             <label v-if="props.needInit" class="form-field full">
-              <span class="section-label">显示名称</span>
+              <span class="section-label">{{ $t("显示名称") }}</span>
               <input v-model="form.display_name" class="input" autocomplete="name" maxlength="50" data-testid="login-display-name" />
             </label>
             <label class="form-field full">
-              <span class="section-label">用户名</span>
+              <span class="section-label">{{ $t("用户名") }}</span>
               <input
                 v-model="form.username"
                 class="input"
@@ -89,10 +91,10 @@ function submitAuth() {
                 :pattern="props.needInit ? '[a-z0-9][a-z0-9._-]{1,30}[a-z0-9]' : undefined"
                 data-testid="login-username"
               />
-              <span v-if="props.needInit" class="form-field-hint">3—32 位小写字母、数字、点、下划线或短横线，首尾使用字母或数字</span>
+              <span v-if="props.needInit" class="form-field-hint">{{ $t("3—32 位小写字母、数字、点、下划线或短横线，首尾使用字母或数字") }}</span>
             </label>
             <label class="form-field full">
-              <span class="section-label">密码</span>
+              <span class="section-label">{{ $t("密码") }}</span>
               <span class="password-field">
                 <input
                   v-model="form.password"
@@ -105,23 +107,23 @@ function submitAuth() {
                 <button
                   type="button"
                   class="password-toggle"
-                  :aria-label="showPassword ? '隐藏密码' : '显示密码'"
+                  :aria-label="$t(showPassword ? '隐藏密码' : '显示密码')"
                   @click="showPassword = !showPassword"
                 >
-                  {{ showPassword ? '隐藏' : '显示' }}
+                  {{ $t(showPassword ? '隐藏' : '显示') }}
                 </button>
               </span>
             </label>
             <label v-if="props.needInit" class="form-field full">
-              <span class="section-label">确认密码</span>
+              <span class="section-label">{{ $t("确认密码") }}</span>
               <input ref="confirmationInput" v-model="confirmPassword" type="password" class="input"
                 autocomplete="new-password" required data-testid="login-confirm-password"
                 :aria-invalid="!!confirmationError" :aria-describedby="confirmationError ? 'password-confirmation-error' : undefined" />
-              <span v-if="confirmationError" id="password-confirmation-error" class="form-error" role="alert">{{ confirmationError }}</span>
+              <span v-if="confirmationError" id="password-confirmation-error" class="form-error" role="alert">{{ $t(confirmationError) }}</span>
             </label>
           </div>
 
-          <p v-if="props.error" class="login-error" data-testid="login-error">{{ props.error }}</p>
+          <p v-if="props.error" class="login-error" data-testid="login-error">{{ $t(props.error) }}</p>
 
           <div class="login-actions">
             <button
@@ -130,33 +132,29 @@ function submitAuth() {
               class="btn btn-primary"
               data-testid="register-submit"
               :disabled="props.busy"
-            >
-              创建管理员
-            </button>
+            >{{ $t(" 创建管理员 ") }}</button>
             <button
               v-else
               type="submit"
               class="btn btn-primary"
               data-testid="login-submit"
               :disabled="props.busy"
-            >
-              进入系统
-            </button>
+            >{{ $t(" 进入系统 ") }}</button>
             <button
               v-if="!props.needInit"
               type="button"
               class="forgot-password-link"
               @click="showForgotPassword = !showForgotPassword"
-            >
-              忘记密码？
-            </button>
+            >{{ $t(" 忘记密码？ ") }}</button>
           </div>
         </form>
 
-        <p v-if="showForgotPassword && !props.needInit" class="forgot-password-note">
-          联系管理员重置密码。
-        </p>
+        <p v-if="showForgotPassword && !props.needInit" class="forgot-password-note">{{ $t(" 联系管理员重置密码。 ") }}</p>
       </section>
     </section>
   </main>
 </template>
+
+<style scoped>
+.login-language { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+</style>

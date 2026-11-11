@@ -4,6 +4,7 @@ WORKDIR /frontend
 COPY frontend/package*.json ./
 RUN npm ci --no-audit --no-fund
 COPY frontend/ ./
+COPY app/i18n/ /app/i18n/
 RUN npm test && npm run build
 
 FROM python:3.12-slim AS base
@@ -24,7 +25,7 @@ COPY --from=frontend-builder /app/frontend_dist ./app/frontend_dist
 RUN python -m pytest -q
 
 FROM base AS runtime
-ARG APP_VERSION=2.0.0
+ARG APP_VERSION=2.1.0
 RUN groupadd --gid 1000 app && useradd --uid 1000 --gid 1000 --no-create-home --shell /usr/sbin/nologin app \
     && mkdir -p /data && chown 1000:1000 /data
 COPY --chown=1000:1000 alembic.ini ./

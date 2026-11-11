@@ -213,19 +213,19 @@ function handleRowSelect(risk) {
       >
         <span class="risk-flag-rail" :class="severityClass(risk.severity)" aria-hidden="true"></span>
         <div class="risk-flag-priority">
-          <span class="badge compact" :class="severityClass(risk.severity)">{{ severityLabel(risk.severity) }}</span>
-          <small>{{ impactLabel(risk.risk_type) }}</small>
+          <span class="badge compact" :class="severityClass(risk.severity)">{{ $t(severityLabel(risk.severity)) }}</span>
+          <small>{{ $t(impactLabel(risk.risk_type)) }}</small>
         </div>
         <div class="risk-flag-main">
           <div class="risk-flag-title">
-            <strong>{{ risk.title }}</strong>
-            <span class="badge compact muted">{{ typeLabel(risk.risk_type) }}</span>
-            <span class="badge compact" :class="statusClass(risk.status)">{{ statusLabel(risk.status) }}</span>
+            <strong>{{ $t(risk.title) }}</strong>
+            <span class="badge compact muted">{{ $t(typeLabel(risk.risk_type)) }}</span>
+            <span class="badge compact" :class="statusClass(risk.status)">{{ $t(statusLabel(risk.status)) }}</span>
           </div>
           <div class="risk-flag-signals">
             <span class="risk-flag-signal entity">
-              <small>对象</small>
-              <b>{{ entityLabel(risk) }}</b>
+              <small>{{ $t("对象") }}</small>
+              <b>{{ $t(entityLabel(risk)) }}</b>
             </span>
             <span
               v-for="signal in riskSignals(risk)"
@@ -233,11 +233,11 @@ function handleRowSelect(risk) {
               class="risk-flag-signal"
               :class="signalTone(signal)"
             >
-              <small>{{ signal.label }}</small>
-              <b>{{ signal.value }}</b>
+              <small>{{ $t(signal.label) }}</small>
+              <b>{{ $t(signal.value) }}</b>
             </span>
           </div>
-          <p v-if="!compact">{{ risk.description }}</p>
+          <p v-if="!compact">{{ $t(risk.description) }}</p>
         </div>
         <div class="risk-flag-timeline">
           <span
@@ -246,16 +246,16 @@ function handleRowSelect(risk) {
             class="risk-flag-time"
             :class="item.tone"
           >
-            <small>{{ item.label }}</small>
-            <b>{{ item.value }}</b>
+            <small>{{ $t(item.label) }}</small>
+            <b>{{ $t(item.value) }}</b>
           </span>
           <span v-if="!riskTimeline(risk).length && riskMeta(risk)" class="risk-flag-time info">
-            <small>关联</small>
-            <b>{{ riskMeta(risk) }}</b>
+            <small>{{ $t("关联") }}</small>
+            <b>{{ $t(riskMeta(risk)) }}</b>
           </span>
         </div>
         <div class="risk-flag-actions">
-          <span v-if="riskMetric(risk)" class="risk-flag-metric">{{ riskMetric(risk) }}</span>
+          <span v-if="riskMetric(risk)" class="risk-flag-metric">{{ $t(riskMetric(risk)) }}</span>
           <button
             v-if="explainable"
             type="button"
@@ -263,9 +263,7 @@ function handleRowSelect(risk) {
             data-testid="risk-ai-explain-button"
             :disabled="actionsDisabled"
             @click.stop="emit('explain-risk', risk)"
-          >
-            解释风险
-          </button>
+          >{{ $t(" 解释风险 ") }}</button>
           <button
             type="button"
             class="risk-flag-action"
@@ -273,11 +271,11 @@ function handleRowSelect(risk) {
             :disabled="actionsDisabled"
             @click.stop="emit('open-risk', risk)"
           >
-            {{ risk.action_label || '查看' }}
+            {{ $t(risk.action_label || '查看') }}
           </button>
         </div>
       </div>
     </template>
-    <div v-if="!loading && !risks.length" class="risk-flag-empty">{{ emptyText }}</div>
+    <div v-if="!loading && !risks.length" class="risk-flag-empty">{{ $t(emptyText) }}</div>
   </div>
 </template>

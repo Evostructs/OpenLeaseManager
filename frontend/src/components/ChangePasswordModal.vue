@@ -45,28 +45,28 @@ function submit() {
 </script>
 
 <template>
-  <BaseModal :open="open" title="修改密码" size="small" @close="$emit('close')">
+  <BaseModal :open="open" :title="$t(&quot;修改密码&quot;)" size="small" @close="$emit('close')">
     <div class="detail-list">
       <label class="form-field">
-        <span class="section-label">原密码</span>
+        <span class="section-label">{{ $t("原密码") }}</span>
         <input v-model="form.old_password" type="password" class="input" autocomplete="current-password" />
       </label>
       <label class="form-field">
-        <span class="section-label">新密码</span>
+        <span class="section-label">{{ $t("新密码") }}</span>
         <input v-model="form.new_password" type="password" class="input" autocomplete="new-password" />
-        <small class="helper-text">至少 6 位，且需同时包含字母和数字。</small>
+        <small class="helper-text">{{ $t("至少 6 位，且需同时包含字母和数字。") }}</small>
       </label>
       <label class="form-field">
-        <span class="section-label">确认新密码</span>
+        <span class="section-label">{{ $t("确认新密码") }}</span>
         <input v-model="form.confirm_password" type="password" class="input" autocomplete="new-password" />
       </label>
-      <p v-if="error" class="form-error">{{ error }}</p>
+      <p v-if="error" class="form-error">{{ $t(error) }}</p>
     </div>
 
     <template #footer>
-      <button class="btn" :disabled="busy" @click="$emit('close')">取消</button>
+      <button class="btn" :disabled="busy" @click="$emit('close')">{{ $t("取消") }}</button>
       <button class="btn btn-primary" :disabled="busy" @click="submit">
-        {{ busy ? '提交中' : '确认修改' }}
+        {{ $t(busy ? '提交中' : '确认修改') }}
       </button>
     </template>
   </BaseModal>

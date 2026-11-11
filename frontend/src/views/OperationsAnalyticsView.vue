@@ -1,4 +1,5 @@
 <script setup>
+import { t } from '../i18n/index.js'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import ChartCard from '../components/ChartCard.vue'
 import EChartPanel from '../components/EChartPanel.vue'
@@ -292,7 +293,7 @@ const towerHighlights = computed(() => {
 
 const towerMixInsight = computed(() => {
   const focus = towerHighlights.value.vacancyFocus
-  return focus ? `${focus.tower} 当前待租 ${formatArea(focus.vacantArea)} ㎡，出租率 ${focus.occupancyRate}%。` : '暂无集中空置。'
+  return focus ? `${t(focus.tower)} 当前待租 ${formatArea(focus.vacantArea)} ㎡，出租率 ${focus.occupancyRate}%。` : '暂无集中空置。'
 })
 
 const stackedBarEndRadius = [0, 8, 8, 0]
@@ -547,7 +548,7 @@ const portfolioTrendSummary = computed(() => {
     rentMom,
     areaMom,
     occupancyMom,
-    detail: `租金 ${formatSignedPercent(rentMom)} · 出租率 ${formatSignedPoints(occupancyMom)}`
+    detail: `租金 ${t(formatSignedPercent(rentMom))} · 出租率 ${t(formatSignedPoints(occupancyMom))}`
   }
 })
 
@@ -578,7 +579,7 @@ const vacancyDecision = computed(() => {
     key: 'vacancy',
     label: '招商状态',
     tone,
-    title: focus ? `${focus.tower} 待租 ${formatArea(vacancyArea)} ㎡` : `空置 ${formatArea(vacancyArea)} ㎡`,
+    title: focus ? `${t(focus.tower)} 待租 ${formatArea(vacancyArea)} ㎡` : `空置 ${formatArea(vacancyArea)} ㎡`,
     detail: `出租率 ${roundTo(occupancyRate, 1)}%`
   }
 })
@@ -716,7 +717,7 @@ const analyticsActions = computed(() => [
     tone: vacancyDecision.value.tone,
     title: '进入房源',
     detail: vacancyFocusTower.value
-      ? `${vacancyFocusTower.value.tower} 待租 ${formatArea(vacancyFocusTower.value.vacantArea)} ㎡`
+      ? `${t(vacancyFocusTower.value.tower)} 待租 ${formatArea(vacancyFocusTower.value.vacantArea)} ㎡`
       : '空置与出租',
     intent: roomDrilldownIntent(vacancyFocusTower.value?.tower || '', {
       occupancy: vacancyFocusTower.value?.vacantArea > 0 ? '空置' : ''
@@ -875,19 +876,19 @@ onBeforeUnmount(() => { ++loadSequence })
 <template>
   <section class="content dashboard-page operations-analytics-page" data-testid="analytics-page">
     <div v-if="analyticsLoadError" class="analytics-load-error" role="alert" data-testid="analytics-load-error">
-      {{ analyticsLoadError }}
+      {{ $t(analyticsLoadError) }}
     </div>
     <div class="analytics-layout">
       <article class="card dashboard-card analytics-diagnostic-card" data-testid="analytics-insights">
         <div class="card-header compact">
           <div>
-            <div class="section-label">经营分析</div>
-            <h3 class="card-title">经营驾驶舱</h3>
+            <div class="section-label">{{ $t("经营分析") }}</div>
+            <h3 class="card-title">{{ $t("经营驾驶舱") }}</h3>
           </div>
           <div class="pill-group">
-            <span class="metric-pill" :class="primaryDecision.tone">重点 {{ primaryDecision.label }}</span>
-            <span class="metric-pill info">在租 {{ formatNumber(portfolioSummary.activeContracts) }} 份</span>
-            <span class="metric-pill success">月租 {{ formatCurrency(portfolioSummary.totalRent) }}</span>
+            <span class="metric-pill" :class="primaryDecision.tone">{{ $t("重点 ") }}{{ $t(primaryDecision.label) }}</span>
+            <span class="metric-pill info">{{ $t("在租 ") }}{{ $t(formatNumber(portfolioSummary.activeContracts)) }}{{ $t(" 份") }}</span>
+            <span class="metric-pill success">{{ $t("月租 ") }}{{ $t(formatCurrency(portfolioSummary.totalRent)) }}</span>
           </div>
         </div>
 
@@ -896,15 +897,15 @@ onBeforeUnmount(() => { ++loadSequence })
             <div class="analytics-command-board" data-testid="analytics-command-board">
               <section class="analytics-lead-panel" :class="primaryDecision.tone">
                 <div class="analytics-lead-copy">
-                  <span>经营状态 · {{ primaryDecision.label }}</span>
-                  <strong>{{ primaryDecision.title }}</strong>
-                  <small>{{ primaryDecision.detail }}</small>
+                  <span>{{ $t("经营状态 · ") }}{{ $t(primaryDecision.label) }}</span>
+                  <strong>{{ $t(primaryDecision.title) }}</strong>
+                  <small>{{ $t(primaryDecision.detail) }}</small>
                 </div>
-                <div class="analytics-lead-facts" aria-label="经营关键事实">
+                <div class="analytics-lead-facts" :aria-label="$t(&quot;经营关键事实&quot;)">
                   <span v-for="fact in analyticsLeadFacts" :key="fact.key" :class="fact.tone">
-                    <small>{{ fact.label }}</small>
-                    <strong :title="fact.fullValue || fact.value">{{ fact.value }}</strong>
-                    <em :title="fact.helper">{{ fact.helper }}</em>
+                    <small>{{ $t(fact.label) }}</small>
+                    <strong :title="$t(fact.fullValue || fact.value)">{{ $t(fact.value) }}</strong>
+                    <em :title="$t(fact.helper)">{{ $t(fact.helper) }}</em>
                   </span>
                 </div>
               </section>
@@ -919,11 +920,11 @@ onBeforeUnmount(() => { ++loadSequence })
                 :data-testid="item.testId"
               >
                 <div class="analytics-insight-head">
-                  <span>{{ item.label }}</span>
-                  <em>{{ item.metricLabel }}</em>
+                  <span>{{ $t(item.label) }}</span>
+                  <em>{{ $t(item.metricLabel) }}</em>
                 </div>
-                <strong>{{ item.title }}</strong>
-                <small>{{ item.detail }}</small>
+                <strong>{{ $t(item.title) }}</strong>
+                <small>{{ $t(item.detail) }}</small>
                 <div class="analytics-signal-bar" aria-hidden="true">
                   <span :style="{ width: `${item.barValue}%` }" />
                 </div>
@@ -931,8 +932,8 @@ onBeforeUnmount(() => { ++loadSequence })
             </div>
           </div>
 
-          <div class="analytics-action-strip" aria-label="工作区入口">
-            <span class="analytics-action-title">工作区入口</span>
+          <div class="analytics-action-strip" :aria-label="$t(&quot;工作区入口&quot;)">
+            <span class="analytics-action-title">{{ $t("工作区入口") }}</span>
             <button
               v-for="item in analyticsActions"
               :key="item.key"
@@ -942,8 +943,8 @@ onBeforeUnmount(() => { ++loadSequence })
               :data-testid="`analytics-action-${item.key}`"
               @click="handleAnalyticsAction(item)"
             >
-              <span>{{ item.title }}</span>
-              <strong>{{ item.detail }}</strong>
+              <span>{{ $t(item.title) }}</span>
+              <strong>{{ $t(item.detail) }}</strong>
             </button>
           </div>
         </div>
@@ -961,35 +962,33 @@ onBeforeUnmount(() => { ++loadSequence })
         <article class="card dashboard-card analytics-status-card">
         <div class="card-header compact">
           <div>
-            <div class="section-label">合同状态</div>
-            <h3 class="card-title">合同状态概览</h3>
+            <div class="section-label">{{ $t("合同状态") }}</div>
+            <h3 class="card-title">{{ $t("合同状态概览") }}</h3>
           </div>
           <div class="pill-group">
-            <span class="metric-pill info">合同 {{ formatNumber(statusTotal) }}</span>
+            <span class="metric-pill info">{{ $t("合同 ") }}{{ $t(formatNumber(statusTotal)) }}</span>
           </div>
         </div>
 
         <div class="chart-layout status-chart-layout" data-testid="analytics-status-chart">
-          <EChartPanel :option="statusOption" :empty="!statusRows.length" empty-text="暂无状态" :height="180" />
+          <EChartPanel :option="statusOption" :empty="!statusRows.length" :empty-text="$t(&quot;暂无状态&quot;)" :height="180" />
           <div class="legend-list status-legend-list">
             <div v-for="item in statusRows" :key="item.label" class="legend-row analytics-legend-row">
               <div class="legend-meta">
                 <div class="legend-title">
                   <span class="status-swatch" :style="{ background: item.color }" />
-                  <span>{{ item.label }}</span>
+                  <span>{{ $t(item.label) }}</span>
                 </div>
-                <small>{{ item.percent }}%</small>
+                <small>{{ $t(item.percent) }}%</small>
               </div>
               <div class="analytics-row-action">
-                <strong>{{ item.count }}</strong>
+                <strong>{{ $t(item.count) }}</strong>
                 <button
                   class="btn btn-compact"
                   type="button"
                   :data-testid="`analytics-status-drilldown-${item.label}`"
                   @click="emitDrilldown(statusDrilldownIntent(item.label))"
-                >
-                  进入合同
-                </button>
+                >{{ $t(" 进入合同 ") }}</button>
               </div>
             </div>
           </div>
@@ -999,49 +998,49 @@ onBeforeUnmount(() => { ++loadSequence })
         <article class="card dashboard-card analytics-customer-card">
         <div class="card-header compact">
           <div>
-            <div class="section-label">客户概览</div>
-            <h3 class="card-title">客户概览 / 客户排行</h3>
+            <div class="section-label">{{ $t("客户概览") }}</div>
+            <h3 class="card-title">{{ $t("客户概览 / 客户排行") }}</h3>
           </div>
           <div class="pill-group">
-            <span class="metric-pill info">客户数 {{ customerOverview.count }}</span>
-            <span class="metric-pill success">最大面积占比 {{ customerOverview.topAreaShare }}%</span>
+            <span class="metric-pill info">{{ $t("客户数 ") }}{{ $t(customerOverview.count) }}</span>
+            <span class="metric-pill success">{{ $t("最大面积占比 ") }}{{ $t(customerOverview.topAreaShare) }}%</span>
           </div>
         </div>
 
         <div class="customer-overview-grid" data-testid="analytics-customer-rank">
           <div class="customer-overview-metrics">
             <div class="mini-stat">
-              <span>最大承租客户</span>
-              <strong class="customer-name-ellipsis" :title="customerOverview.topAreaName">{{ customerOverview.topAreaName }}</strong>
+              <span>{{ $t("最大承租客户") }}</span>
+              <strong class="customer-name-ellipsis" :title="$t(customerOverview.topAreaName)">{{ $t(customerOverview.topAreaName) }}</strong>
             </div>
             <div class="mini-stat">
-              <span>最高月租客户</span>
-              <strong class="customer-name-ellipsis" :title="customerOverview.topRentName">{{ customerOverview.topRentName }}</strong>
-              <small>{{ formatCurrency(customerOverview.topRent) }}</small>
+              <span>{{ $t("最高月租客户") }}</span>
+              <strong class="customer-name-ellipsis" :title="$t(customerOverview.topRentName)">{{ $t(customerOverview.topRentName) }}</strong>
+              <small>{{ $t(formatCurrency(customerOverview.topRent)) }}</small>
             </div>
           </div>
 
           <div class="customer-rank-list">
             <article v-for="(item, index) in topCustomerRows" :key="item.tenant_name" class="customer-rank-row">
               <div class="customer-rank-main">
-                <span class="customer-rank-index">{{ index + 1 }}</span>
+                <span class="customer-rank-index">{{ $t(index + 1) }}</span>
                 <div class="customer-rank-copy">
                   <strong class="customer-name-ellipsis" :title="item.tenant_name">{{ item.tenant_name }}</strong>
-                  <p class="analytics-line-ellipsis" :title="`${item.groupsText} · ${item.room_count} 个房源 · ${item.roomsText}${item.hasMoreRooms ? ' 等' : ''}`">{{ item.groupsText }} · {{ item.room_count }} 个房源 · {{ item.roomsText }}<template v-if="item.hasMoreRooms"> 等</template></p>
+                  <p class="analytics-line-ellipsis" :title="$t(`${item.groupsText} · ${item.room_count} 个房源 · ${item.roomsText}${item.hasMoreRooms ? ' 等' : ''}`)">{{ $t(item.groupsText) }} · {{ $t(item.room_count) }}{{ $t(" 个房源 · ") }}{{ $t(item.roomsText) }}<template v-if="item.hasMoreRooms">{{ $t(" 等") }}</template></p>
                 </div>
               </div>
               <div class="customer-rank-values">
                 <div>
-                  <span>合并面积</span>
-                  <strong>{{ formatArea(item.area) }} ㎡</strong>
+                  <span>{{ $t("合并面积") }}</span>
+                  <strong>{{ $t(formatArea(item.area)) }} ㎡</strong>
                 </div>
                 <div>
-                  <span>月租金</span>
-                  <strong>{{ formatCurrency(item.rent) }}</strong>
+                  <span>{{ $t("月租金") }}</span>
+                  <strong>{{ $t(formatCurrency(item.rent)) }}</strong>
                 </div>
                 <div>
-                  <span>最近到期</span>
-                  <strong>{{ item.nearest_end_date || '--' }}</strong>
+                  <span>{{ $t("最近到期") }}</span>
+                  <strong>{{ $t(item.nearest_end_date || '--') }}</strong>
                 </div>
               </div>
               <div class="customer-rank-actions">
@@ -1050,15 +1049,13 @@ onBeforeUnmount(() => { ++loadSequence })
                   type="button"
                   :data-testid="`analytics-customer-drilldown-${index}`"
                   @click="emitDrilldown(customerDrilldownIntent(item))"
-                >
-                  进入客户
-                </button>
+                >{{ $t(" 进入客户 ") }}</button>
               </div>
               <div class="customer-area-track">
                 <span :style="{ width: `${Math.min(item.areaShare, 100)}%` }" />
               </div>
             </article>
-            <div v-if="!topCustomerRows.length" class="compact-empty">暂无客户排行</div>
+            <div v-if="!topCustomerRows.length" class="compact-empty">{{ $t("暂无客户排行") }}</div>
           </div>
         </div>
       </article>
@@ -1066,63 +1063,63 @@ onBeforeUnmount(() => { ++loadSequence })
 
       <details class="demo-secondary-details analytics-secondary-details">
         <summary>
-          <span>分区结构</span>
-          <strong>{{ analysisBreakdownTitle }}</strong>
+          <span>{{ $t("分区结构") }}</span>
+          <strong>{{ $t(analysisBreakdownTitle) }}</strong>
         </summary>
         <div class="analytics-secondary-stack">
       <article class="card dashboard-card analytics-tower-card">
         <div class="card-header compact">
           <div>
-            <div class="section-label">分区表现</div>
-            <h3 class="card-title">分区表现</h3>
+            <div class="section-label">{{ $t("分区表现") }}</div>
+            <h3 class="card-title">{{ $t("分区表现") }}</h3>
           </div>
         </div>
 
         <div class="tower-focus-strip">
           <div>
-            <span>收入主力</span>
-            <strong>{{ towerHighlights.rentLeader?.tower || '--' }}</strong>
-            <small>{{ formatCurrency(towerHighlights.rentLeader?.rent || 0) }} / 月</small>
+            <span>{{ $t("收入主力") }}</span>
+            <strong>{{ $t(towerHighlights.rentLeader?.tower || '--') }}</strong>
+            <small>{{ $t(formatCurrency(towerHighlights.rentLeader?.rent || 0)) }}{{ $t(" / 月") }}</small>
           </div>
           <div>
-            <span>出租领先</span>
-            <strong>{{ towerHighlights.occupancyLeader?.tower || '--' }}</strong>
-            <small>出租率 {{ towerHighlights.occupancyLeader?.occupancyRate || 0 }}%</small>
+            <span>{{ $t("出租领先") }}</span>
+            <strong>{{ $t(towerHighlights.occupancyLeader?.tower || '--') }}</strong>
+            <small>{{ $t("出租率 ") }}{{ $t(towerHighlights.occupancyLeader?.occupancyRate || 0) }}%</small>
           </div>
           <div>
-            <span>关注去化</span>
-            <strong>{{ towerHighlights.vacancyFocus?.tower || '--' }}</strong>
-            <small>待租 {{ formatArea(towerHighlights.vacancyFocus?.vacantArea || 0) }} ㎡</small>
+            <span>{{ $t("关注去化") }}</span>
+            <strong>{{ $t(towerHighlights.vacancyFocus?.tower || '--') }}</strong>
+            <small>{{ $t("待租 ") }}{{ $t(formatArea(towerHighlights.vacancyFocus?.vacantArea || 0)) }} ㎡</small>
           </div>
         </div>
 
         <div class="tower-summary-grid" data-testid="analytics-tower-summary">
           <article v-for="item in towerRows" :key="item.tower" class="tower-summary-card">
             <div class="tower-summary-head">
-              <strong>{{ item.tower }}</strong>
-              <span>{{ item.count }} 份在租合同</span>
+              <strong>{{ $t(item.tower) }}</strong>
+              <span>{{ $t(item.count) }}{{ $t(" 份在租合同") }}</span>
             </div>
             <div class="tower-summary-metrics">
               <div>
-                <span>在租面积</span>
-                <strong>{{ formatArea(item.area) }} ㎡</strong>
+                <span>{{ $t("在租面积") }}</span>
+                <strong>{{ $t(formatArea(item.area)) }} ㎡</strong>
               </div>
               <div>
-                <span>出租率</span>
-                <strong>{{ item.occupancyRate }}%</strong>
+                <span>{{ $t("出租率") }}</span>
+                <strong>{{ $t(item.occupancyRate) }}%</strong>
               </div>
               <div>
-                <span>待租面积</span>
-                <strong>{{ formatArea(item.vacantArea) }} ㎡</strong>
+                <span>{{ $t("待租面积") }}</span>
+                <strong>{{ $t(formatArea(item.vacantArea)) }} ㎡</strong>
               </div>
               <div>
-                <span>月租金</span>
-                <strong>{{ formatCurrency(item.rent) }}</strong>
+                <span>{{ $t("月租金") }}</span>
+                <strong>{{ $t(formatCurrency(item.rent)) }}</strong>
               </div>
             </div>
             <div class="tower-summary-foot">
-              <span>收入占比 {{ item.revenueShare }}%</span>
-              <span>单份合同平均面积 {{ formatArea(item.avgContractArea) }} ㎡</span>
+              <span>{{ $t("收入占比 ") }}{{ $t(item.revenueShare) }}%</span>
+              <span>{{ $t("单份合同平均面积 ") }}{{ $t(formatArea(item.avgContractArea)) }} ㎡</span>
             </div>
             <div class="tower-summary-actions">
               <button
@@ -1130,29 +1127,25 @@ onBeforeUnmount(() => { ++loadSequence })
                 type="button"
                 :data-testid="`analytics-tower-rooms-${item.tower}`"
                 @click="emitDrilldown(roomDrilldownIntent(item.tower))"
-              >
-                进入房源
-              </button>
+              >{{ $t(" 进入房源 ") }}</button>
               <button
                 class="btn btn-compact"
                 type="button"
                 :disabled="item.vacantArea <= 0"
                 :data-testid="`analytics-tower-vacancy-${item.tower}`"
                 @click="emitDrilldown(roomDrilldownIntent(item.tower, { occupancy: '空置' }))"
-              >
-                进入空置
-              </button>
+              >{{ $t(" 进入空置 ") }}</button>
             </div>
           </article>
         </div>
 
         <div class="tower-chart-grid">
           <ChartCard
-            title="面积去化"
-            subtitle="在租 / 空置"
+            :title="$t(&quot;面积去化&quot;)"
+            :subtitle="$t(&quot;在租 / 空置&quot;)"
             :option="towerMixOption"
             :empty="!towerRows.length"
-            empty-text="暂无面积"
+            :empty-text="$t(&quot;暂无面积&quot;)"
             :height="260"
             :insight="towerMixInsight"
             tone="success"

@@ -25,22 +25,22 @@ function submit() {
 </script>
 
 <template>
-  <BaseModal :open="open" title="合同 PDF" size="small" @close="emit('close')">
+  <BaseModal :open="open" :title="$t(&quot;合同 PDF&quot;)" size="small" @close="emit('close')">
     <div class="detail-list">
       <div>
-        <div class="section-label">当前合同</div>
+        <div class="section-label">{{ $t("当前合同") }}</div>
         <h3 class="card-title" style="margin-top:6px">{{ contract?.contract_no }}</h3>
         <p class="helper-text">{{ contract?.tenant_name }}</p>
       </div>
       <div class="form-field">
-        <span class="section-label">上传文件</span>
+        <span class="section-label">{{ $t("上传文件") }}</span>
         <input type="file" accept=".pdf" class="input" @change="onChange" />
       </div>
     </div>
     <template #footer>
-      <button class="btn" @click="emit('view')">查看已有 PDF</button>
-      <button class="btn" @click="emit('close')">关闭</button>
-      <button class="btn btn-primary" @click="submit">上传</button>
+      <button class="btn" @click="emit('view')">{{ $t("查看已有 PDF") }}</button>
+      <button class="btn" @click="emit('close')">{{ $t("关闭") }}</button>
+      <button class="btn btn-primary" @click="submit">{{ $t("上传") }}</button>
     </template>
   </BaseModal>
 </template>

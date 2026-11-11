@@ -391,52 +391,52 @@ function openRiskTarget(risk) {
     <article class="card ai-assist-card ai-workbench-shell">
       <div class="card-header compact ai-workbench-command">
         <div>
-          <div class="section-label">经营研判台</div>
-          <h3 class="card-title">经营研判流程</h3>
+          <div class="section-label">{{ $t("经营研判台") }}</div>
+          <h3 class="card-title">{{ $t("经营研判流程") }}</h3>
         </div>
         <div class="ai-command-actions">
-          <InfoHint text="选定对象后生成结论、依据和下一步。" />
-          <button class="btn btn-compact" @click="emit('select-tab', 'operations')">待办队列</button>
-          <button class="btn btn-compact" @click="emit('select-tab', 'risks')">风险中心</button>
+          <InfoHint :text="$t(&quot;选定对象后生成结论、依据和下一步。&quot;)" />
+          <button class="btn btn-compact" @click="emit('select-tab', 'operations')">{{ $t("待办队列") }}</button>
+          <button class="btn btn-compact" @click="emit('select-tab', 'risks')">{{ $t("风险中心") }}</button>
         </div>
       </div>
 
-      <div class="ai-flow-strip" data-testid="ai-unified-flow" aria-label="研判流程">
-        <span>选对象</span>
-        <span>生成结论</span>
-        <span>看依据</span>
-        <span>定下一步</span>
+      <div class="ai-flow-strip" data-testid="ai-unified-flow" :aria-label="$t(&quot;研判流程&quot;)">
+        <span>{{ $t("选对象") }}</span>
+        <span>{{ $t("生成结论") }}</span>
+        <span>{{ $t("看依据") }}</span>
+        <span>{{ $t("定下一步") }}</span>
       </div>
 
       <div class="ai-dual-workbench-grid">
       <section class="ai-workbench-pane ai-customer-workbench" data-testid="ai-mode-customer">
         <div class="ai-pane-head">
           <div>
-            <div class="section-label">客户对象</div>
-            <strong>客户经营摘要</strong>
+            <div class="section-label">{{ $t("客户对象") }}</div>
+            <strong>{{ $t("客户经营摘要") }}</strong>
           </div>
-          <InfoHint text="选定客户后，可生成经营摘要或跟进建议。" />
+          <InfoHint :text="$t(&quot;选定客户后，可生成经营摘要或跟进建议。&quot;)" />
         </div>
       <div class="ai-workbench-grid">
         <div class="ai-control-column">
           <div class="ai-picker-panel">
             <div class="ai-panel-heading">
-              <strong>对象选择</strong>
-              <span class="badge compact info">客户</span>
+              <strong>{{ $t("对象选择") }}</strong>
+              <span class="badge compact info">{{ $t("客户") }}</span>
             </div>
             <div class="filter-cluster ai-search-controls">
               <input
                 v-model="customerState.keyword"
                 class="input"
                 data-testid="ai-customer-search-input"
-                placeholder="客户名称 / 简称 / 信用代码"
+                :placeholder="$t(&quot;客户名称 / 简称 / 信用代码&quot;)"
                 @keyup.enter="searchCustomers"
               />
               <button class="btn" data-testid="ai-customer-search-button" :disabled="customerState.loading" @click="searchCustomers">
-                {{ customerState.loading ? '搜索中...' : '搜索客户' }}
+                {{ $t(customerState.loading ? '搜索中...' : '搜索客户') }}
               </button>
             </div>
-            <p v-if="customerState.error" class="form-error">{{ customerState.error }}</p>
+            <p v-if="customerState.error" class="form-error">{{ $t(customerState.error) }}</p>
             <div class="ai-search-list" data-testid="ai-customer-search-list">
               <div v-if="customerState.loading && !customerState.list.length" class="ai-list-skeleton" data-testid="ai-customer-search-skeleton" aria-hidden="true">
                 <div v-for="row in 3" :key="`customer-search-skeleton-${row}`" class="ai-list-skeleton-row">
@@ -455,23 +455,21 @@ function openRiskTarget(risk) {
               >
                 <strong>{{ customer.name }}</strong>
                 <span>{{ customer.short_name || customer.contact_name || '--' }}</span>
-                <small>{{ customer.contract_count || 0 }} 个合同</small>
+                <small>{{ $t(customer.contract_count || 0) }}{{ $t(" 个合同") }}</small>
               </button>
               <div v-if="!customerState.searched && !customerState.loading" class="ai-ready-state ai-search-ready">
-                <span class="ai-ready-kicker">客户</span>
-                <strong>选择客户</strong>
-                <small>输入名称或信用代码</small>
+                <span class="ai-ready-kicker">{{ $t("客户") }}</span>
+                <strong>{{ $t("选择客户") }}</strong>
+                <small>{{ $t("输入名称或信用代码") }}</small>
               </div>
-              <div v-else-if="customerState.searched && !customerState.list.length && !customerState.loading" class="compact-empty compact-empty-tight">
-                未找到匹配客户
-              </div>
+              <div v-else-if="customerState.searched && !customerState.list.length && !customerState.loading" class="compact-empty compact-empty-tight">{{ $t(" 未找到匹配客户 ") }}</div>
             </div>
           </div>
 
           <div class="ai-context-panel">
             <div class="ai-panel-heading">
-              <strong>经营信号</strong>
-              <span>合同 / 应收 / 押金 / 跟进</span>
+              <strong>{{ $t("经营信号") }}</strong>
+              <span>{{ $t("合同 / 应收 / 押金 / 跟进") }}</span>
             </div>
             <div v-if="customerState.detailLoading" class="ai-panel-skeleton ai-context-loading" data-testid="ai-customer-detail-skeleton" aria-hidden="true">
               <span class="skeleton-line skeleton-line-title"></span>
@@ -484,10 +482,10 @@ function openRiskTarget(risk) {
             <template v-else-if="customerState.selected">
               <div class="section-title-row">
                 <div>
-                  <div class="section-label">当前客户</div>
+                  <div class="section-label">{{ $t("当前客户") }}</div>
                   <h4>{{ customerState.selected.name }}</h4>
                 </div>
-                <button class="btn btn-compact" @click="emit('open-customer', customerState.selected.id)">查看客户详情</button>
+                <button class="btn btn-compact" @click="emit('open-customer', customerState.selected.id)">{{ $t("查看客户详情") }}</button>
               </div>
               <div class="ai-context-signal-band" data-testid="ai-context-signal-band">
                 <div
@@ -496,9 +494,9 @@ function openRiskTarget(risk) {
                   class="ai-signal-card"
                   :class="`tone-${signal.tone}`"
                 >
-                  <span>{{ signal.label }}</span>
-                  <strong>{{ signal.value }}</strong>
-                  <small>{{ signal.helper }}</small>
+                  <span>{{ $t(signal.label) }}</span>
+                  <strong>{{ $t(signal.value) }}</strong>
+                  <small>{{ $t(signal.helper) }}</small>
                 </div>
               </div>
               <div class="ai-action-grid">
@@ -508,7 +506,7 @@ function openRiskTarget(risk) {
                   :disabled="customerState.summaryLoading"
                   @click="runCustomerAi('summary')"
                 >
-                  {{ customerState.summaryLoading ? '生成中...' : '生成经营摘要' }}
+                  {{ $t(customerState.summaryLoading ? '生成中...' : '生成经营摘要') }}
                 </button>
                 <button
                   class="btn"
@@ -516,36 +514,36 @@ function openRiskTarget(risk) {
                   :disabled="customerState.suggestionLoading"
                   @click="runCustomerAi('suggestion')"
                 >
-                  {{ customerState.suggestionLoading ? '生成中...' : '生成跟进建议' }}
+                  {{ $t(customerState.suggestionLoading ? '生成中...' : '生成跟进建议') }}
                 </button>
               </div>
             </template>
             <div v-else class="ai-ready-state ai-context-ready">
-              <span class="ai-ready-kicker">经营信号</span>
-              <strong>选择客户</strong>
-              <small>合同、应收、押金、风险、跟进</small>
+              <span class="ai-ready-kicker">{{ $t("经营信号") }}</span>
+              <strong>{{ $t("选择客户") }}</strong>
+              <small>{{ $t("合同、应收、押金、风险、跟进") }}</small>
             </div>
           </div>
         </div>
 
         <div class="ai-result-panel ai-output-stack" data-testid="ai-customer-result-panel">
           <div class="ai-panel-heading">
-            <strong>结果</strong>
+            <strong>{{ $t("结果") }}</strong>
           </div>
 
           <div v-if="!hasCustomerOutputState" class="ai-ready-panel ai-result-ready">
-            <span class="ai-ready-kicker">下一步</span>
-            <strong>选择客户</strong>
+            <span class="ai-ready-kicker">{{ $t("下一步") }}</span>
+            <strong>{{ $t("选择客户") }}</strong>
             <div class="ai-ready-steps">
-              <span>搜客户</span>
-              <span>看信号</span>
-              <span>整理摘要</span>
+              <span>{{ $t("搜客户") }}</span>
+              <span>{{ $t("看信号") }}</span>
+              <span>{{ $t("整理摘要") }}</span>
             </div>
           </div>
 
           <template v-else>
-            <p v-if="customerState.summaryError" class="form-error" data-testid="ai-workbench-error">{{ customerState.summaryError }}</p>
-            <p v-if="customerState.suggestionError" class="form-error" data-testid="ai-workbench-suggestion-error">{{ customerState.suggestionError }}</p>
+            <p v-if="customerState.summaryError" class="form-error" data-testid="ai-workbench-error">{{ $t(customerState.summaryError) }}</p>
+            <p v-if="customerState.suggestionError" class="form-error" data-testid="ai-workbench-suggestion-error">{{ $t(customerState.suggestionError) }}</p>
             <div
               v-if="customerState.summaryLoading"
               class="ai-panel-skeleton ai-result-loading-skeleton"
@@ -570,17 +568,17 @@ function openRiskTarget(risk) {
             </div>
             <div v-else class="ai-result-block ai-review-card ai-output-decision-card" data-testid="ai-output-decision-card">
               <section class="ai-review-section" data-testid="ai-result-summary">
-                <strong>结论</strong>
+                <strong>{{ $t("结论") }}</strong>
                 <div v-if="customerSummaryText || customerSuggestionText" class="ai-result-lines">
-                  <p v-if="customerSummaryText" data-testid="ai-customer-summary-result">{{ customerSummaryText }}</p>
-                  <p v-if="customerSuggestionText" data-testid="ai-customer-suggestion-result">{{ customerSuggestionText }}</p>
+                  <p v-if="customerSummaryText" data-testid="ai-customer-summary-result">{{ $t(customerSummaryText) }}</p>
+                  <p v-if="customerSuggestionText" data-testid="ai-customer-suggestion-result">{{ $t(customerSuggestionText) }}</p>
                 </div>
-                <p v-else class="helper-text">选择客户后整理摘要或跟进建议。</p>
+                <p v-else class="helper-text">{{ $t("选择客户后整理摘要或跟进建议。") }}</p>
               </section>
               <section v-if="customerEvidenceItems.length" class="ai-review-section" data-testid="ai-result-evidence">
-                <strong>依据</strong>
+                <strong>{{ $t("依据") }}</strong>
                 <div class="ai-chip-row">
-                  <span v-for="item in customerEvidenceItems" :key="item" class="badge info">{{ item }}</span>
+                  <span v-for="item in customerEvidenceItems" :key="item" class="badge info">{{ $t(item) }}</span>
                 </div>
               </section>
               <section
@@ -588,9 +586,9 @@ function openRiskTarget(risk) {
                 class="ai-review-section"
                 data-testid="ai-result-next-actions"
               >
-                <strong>下一步</strong>
+                <strong>{{ $t("下一步") }}</strong>
                 <ul v-if="customerNextActionItems.length" class="ai-action-list">
-                  <li v-for="item in customerNextActionItems" :key="item">{{ item }}</li>
+                  <li v-for="item in customerNextActionItems" :key="item">{{ $t(item) }}</li>
                 </ul>
                 <div
                   v-if="hasAiResultText(customerState.summary, 'summary') || hasAiResultText(customerState.suggestion, 'suggestion')"
@@ -602,25 +600,19 @@ function openRiskTarget(risk) {
                     class="btn btn-compact"
                     data-testid="ai-workbench-summary-copy"
                     @click="copyAiResult(customerState.summary, 'summary', '客户经营摘要')"
-                  >
-                    复制摘要
-                  </button>
+                  >{{ $t(" 复制摘要 ") }}</button>
                   <button
                     v-if="hasAiResultText(customerState.suggestion, 'suggestion')"
                     class="btn btn-compact"
                     data-testid="ai-workbench-suggestion-copy"
                     @click="copyAiResult(customerState.suggestion, 'suggestion', '跟进建议')"
-                  >
-                    复制建议
-                  </button>
+                  >{{ $t(" 复制建议 ") }}</button>
                   <button
                     v-if="canEdit && hasAiResultText(customerState.suggestion, 'suggestion')"
                     class="btn btn-compact"
                     data-testid="ai-workbench-suggestion-to-follow-up"
                     @click="bringSuggestionToFollowUp"
-                  >
-                    带入跟进
-                  </button>
+                  >{{ $t(" 带入跟进 ") }}</button>
                 </div>
               </section>
             </div>
@@ -632,33 +624,33 @@ function openRiskTarget(risk) {
       <section class="ai-workbench-pane ai-risk-workbench" data-testid="ai-mode-risk">
         <div class="ai-pane-head">
           <div>
-            <div class="section-label">风险对象</div>
-            <strong>风险处理方向</strong>
+            <div class="section-label">{{ $t("风险对象") }}</div>
+            <strong>{{ $t("风险处理方向") }}</strong>
           </div>
           <div class="module-header-actions">
-            <InfoHint text="选择风险后生成原因、影响和处理方向。" />
+            <InfoHint :text="$t(&quot;选择风险后生成原因、影响和处理方向。&quot;)" />
             <button class="btn btn-compact" data-testid="ai-risk-load-button" :disabled="riskState.loading" @click="fetchRisks">
-              {{ riskState.loading ? '读取中...' : '读取风险' }}
+              {{ $t(riskState.loading ? '读取中...' : '读取风险') }}
             </button>
           </div>
         </div>
       <div class="ai-risk-workspace-grid">
         <div class="ai-picker-panel">
           <div class="ai-panel-heading">
-            <strong>对象选择</strong>
-            <span class="badge compact warning">风险项</span>
+            <strong>{{ $t("对象选择") }}</strong>
+            <span class="badge compact warning">{{ $t("风险项") }}</span>
           </div>
           <div class="ai-risk-toolbar">
             <input
               v-model="riskState.keyword"
               class="input"
-              placeholder="筛选风险标题 / 客户 / 合同 / 房间"
+              :placeholder="$t(&quot;筛选风险标题 / 客户 / 合同 / 房间&quot;)"
             />
             <select v-model="riskState.severity" class="select">
-              <option value="all">全部等级</option>
-              <option value="high">高风险</option>
-              <option value="medium">中风险</option>
-              <option value="low">低风险</option>
+              <option value="all">{{ $t("全部等级") }}</option>
+              <option value="high">{{ $t("高风险") }}</option>
+              <option value="medium">{{ $t("中风险") }}</option>
+              <option value="low">{{ $t("低风险") }}</option>
             </select>
           </div>
           <RiskFlagList
@@ -669,23 +661,23 @@ function openRiskTarget(risk) {
             selectable
             :selected-key="selectedRiskKey"
             :actions-disabled="riskState.explanationLoading"
-            :empty-text="riskState.items.length ? '当前筛选没有匹配风险' : '当前没有可解释风险'"
+            :empty-text="$t(riskState.items.length ? '当前筛选没有匹配风险' : '当前没有可解释风险')"
             explainable
             @open-risk="openRiskTarget"
             @select-risk="selectRisk"
             @explain-risk="explainRisk"
           />
           <div v-else class="ai-ready-panel ai-risk-list-ready">
-            <span class="ai-ready-kicker">下一步</span>
-            <strong>读取风险</strong>
+            <span class="ai-ready-kicker">{{ $t("下一步") }}</span>
+            <strong>{{ $t("读取风险") }}</strong>
           </div>
         </div>
 
         <div class="ai-result-panel" data-testid="ai-risk-result-panel">
           <div v-if="riskState.selected" class="risk-ai-target">
             <div class="ai-panel-heading">
-              <strong>经营信号</strong>
-              <span>等级 / 对象 / 金额 / 状态</span>
+              <strong>{{ $t("经营信号") }}</strong>
+              <span>{{ $t("等级 / 对象 / 金额 / 状态") }}</span>
             </div>
             <div class="ai-context-signal-band ai-risk-signal-band">
               <div
@@ -694,24 +686,24 @@ function openRiskTarget(risk) {
                 class="ai-signal-card"
                 :class="`tone-${signal.tone}`"
               >
-                <span>{{ signal.label }}</span>
-                <strong>{{ signal.value }}</strong>
-                <small>{{ signal.helper }}</small>
+                <span>{{ $t(signal.label) }}</span>
+                <strong>{{ $t(signal.value) }}</strong>
+                <small>{{ $t(signal.helper) }}</small>
               </div>
             </div>
             <div class="risk-ai-target-head">
-              <span class="badge" :class="riskState.selected.severity === 'high' ? 'error' : 'warning'">{{ riskSeverityLabel(riskState.selected.severity) }}</span>
-              <strong>{{ riskState.selected.title || riskState.selected.risk_type }}</strong>
+              <span class="badge" :class="riskState.selected.severity === 'high' ? 'error' : 'warning'">{{ $t(riskSeverityLabel(riskState.selected.severity)) }}</span>
+              <strong>{{ $t(riskState.selected.title || riskState.selected.risk_type) }}</strong>
             </div>
-            <p>{{ riskState.selected.description || '' }}</p>
+            <p>{{ $t(riskState.selected.description || '') }}</p>
             <div class="ai-action-grid">
               <button class="btn btn-primary" :disabled="riskState.explanationLoading" @click="explainRisk(riskState.selected)">
-                {{ riskState.explanationLoading ? '生成中...' : '生成风险分析' }}
+                {{ $t(riskState.explanationLoading ? '生成中...' : '生成风险分析') }}
               </button>
-              <button class="btn" :disabled="riskState.explanationLoading" @click="openRiskTarget(riskState.selected)">查看目标</button>
+              <button class="btn" :disabled="riskState.explanationLoading" @click="openRiskTarget(riskState.selected)">{{ $t("查看目标") }}</button>
             </div>
           </div>
-          <p v-if="riskState.error" class="form-error" data-testid="ai-risk-workbench-error">{{ riskState.error }}</p>
+          <p v-if="riskState.error" class="form-error" data-testid="ai-risk-workbench-error">{{ $t(riskState.error) }}</p>
           <div v-if="riskState.explanationLoading" class="ai-panel-skeleton ai-result-loading-skeleton" data-testid="ai-risk-explanation-skeleton" aria-hidden="true">
             <span class="skeleton-line skeleton-line-title"></span>
             <span class="skeleton-line skeleton-line-md"></span>
@@ -720,13 +712,13 @@ function openRiskTarget(risk) {
           </div>
           <div v-else-if="riskState.explanation" class="ai-result-block ai-review-card" data-testid="ai-risk-workbench-result">
             <section class="ai-review-section" data-testid="ai-result-summary">
-              <strong>结论</strong>
-              <p>{{ riskExplanationText || '暂未形成有效解释，请稍后重试。' }}</p>
+              <strong>{{ $t("结论") }}</strong>
+              <p>{{ $t(riskExplanationText || '暂未形成有效解释，请稍后重试。') }}</p>
             </section>
             <section v-if="riskEvidenceItems.length" class="ai-review-section" data-testid="ai-result-evidence">
-              <strong>依据</strong>
+              <strong>{{ $t("依据") }}</strong>
               <div class="ai-chip-row">
-                <span v-for="item in riskEvidenceItems" :key="item" class="badge info">{{ item }}</span>
+                <span v-for="item in riskEvidenceItems" :key="item" class="badge info">{{ $t(item) }}</span>
               </div>
             </section>
             <section
@@ -734,28 +726,26 @@ function openRiskTarget(risk) {
               class="ai-review-section"
               data-testid="ai-result-next-actions"
             >
-              <strong>下一步</strong>
+              <strong>{{ $t("下一步") }}</strong>
               <ul v-if="riskNextActionItems.length" class="ai-action-list">
-                <li v-for="item in riskNextActionItems" :key="item">{{ item }}</li>
+                <li v-for="item in riskNextActionItems" :key="item">{{ $t(item) }}</li>
               </ul>
               <div v-if="hasAiResultText(riskState.explanation, 'explanation')" class="ai-result-actions ai-next-action-strip">
                 <button
                   class="btn btn-compact"
                   data-testid="ai-workbench-risk-copy"
                   @click="copyAiResult(riskState.explanation, 'explanation', '风险原因、影响和处理方向')"
-                >
-                  复制解释
-                </button>
+                >{{ $t(" 复制解释 ") }}</button>
               </div>
             </section>
           </div>
           <div v-else class="ai-ready-panel ai-result-ready">
-            <span class="ai-ready-kicker">下一步</span>
-            <strong>{{ riskState.loaded ? '选择风险' : '读取风险' }}</strong>
+            <span class="ai-ready-kicker">{{ $t("下一步") }}</span>
+            <strong>{{ $t(riskState.loaded ? '选择风险' : '读取风险') }}</strong>
             <div class="ai-ready-steps">
-              <span>读风险</span>
-              <span>选对象</span>
-              <span>看处理</span>
+              <span>{{ $t("读风险") }}</span>
+              <span>{{ $t("选对象") }}</span>
+              <span>{{ $t("看处理") }}</span>
             </div>
           </div>
         </div>

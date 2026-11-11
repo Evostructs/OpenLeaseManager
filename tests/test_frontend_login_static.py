@@ -58,9 +58,9 @@ def test_login_page_has_commercial_entry_structure() -> None:
 def test_global_branding_is_multibuilding_neutral() -> None:
     index = INDEX.read_text(encoding="utf-8")
 
-    assert "<title>OpenLeaseOps 租赁管理系统</title>" in index
+    assert '<title>OpenLeaseOps · Lease Management</title>' in index
     assert 'href="/lease-manager-mark.svg"' in index
-    assert "资产组合概况" in index
+    assert "portfolio analytics" in index
     assert "<title>DEMO_A " not in index
     assert "\u9886\u5bfc" not in index
 

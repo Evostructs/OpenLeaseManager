@@ -13,5 +13,5 @@ const tone = computed(() => statusTone(props.status))
 </script>
 
 <template>
-  <span class="badge" :class="tone">{{ status || '未标注' }}</span>
+  <span class="badge" :class="tone">{{ $t(status || '未标注') }}</span>
 </template>

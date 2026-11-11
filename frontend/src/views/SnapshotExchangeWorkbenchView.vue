@@ -219,54 +219,52 @@ onMounted(loadWorkbench)
   <section class="content exchange-page" data-testid="snapshot-exchange-workbench">
     <article v-if="!canUseWorkbench" class="card exchange-denied">
       <span>ACCESS CLOSED</span>
-      <h2>当前账号没有标准文件提交权限</h2>
-      <p>请联系管理员开通快照提交权限。</p>
+      <h2>{{ $t("当前账号没有标准文件提交权限") }}</h2>
+      <p>{{ $t("请联系管理员开通快照提交权限。") }}</p>
     </article>
 
     <template v-else>
       <header class="exchange-masthead">
         <div>
           <span class="exchange-kicker">OPS EXCHANGE · INTAKE DESK / V1</span>
-          <h2>标准文件接收工作台</h2>
-          <p>上传 JSON 或 Excel 文件，检查通过后提交复核。</p>
+          <h2>{{ $t("标准文件接收工作台") }}</h2>
+          <p>{{ $t("上传 JSON 或 Excel 文件，检查通过后提交复核。") }}</p>
         </div>
         <aside>
           <span>DATA CLASS</span>
           <strong>SIMULATED</strong>
-          <small>当前全部为模拟数据</small>
+          <small>{{ $t("当前全部为模拟数据") }}</small>
         </aside>
       </header>
 
-      <div class="exchange-route" aria-label="文件处理流程">
-        <div class="active"><i>01</i><span>选择标准包</span><small>JSON / XLSX</small></div>
-        <div :class="{ active: preflightCurrent }"><i>02</i><span>文件检查</span><small>检查文件内容</small></div>
-        <div :class="{ active: submittedReceipt }"><i>03</i><span>正式接收</span><small>生成稳定回执</small></div>
-        <div><i>04</i><span>中心复核</span><small>通过后发布</small></div>
+      <div class="exchange-route" :aria-label="$t(&quot;文件处理流程&quot;)">
+        <div class="active"><i>01</i><span>{{ $t("选择标准包") }}</span><small>JSON / XLSX</small></div>
+        <div :class="{ active: preflightCurrent }"><i>02</i><span>{{ $t("文件检查") }}</span><small>{{ $t("检查文件内容") }}</small></div>
+        <div :class="{ active: submittedReceipt }"><i>03</i><span>{{ $t("正式接收") }}</span><small>{{ $t("生成稳定回执") }}</small></div>
+        <div><i>04</i><span>{{ $t("中心复核") }}</span><small>{{ $t("通过后发布") }}</small></div>
       </div>
 
       <article v-if="pageError" class="card exchange-page-error">
-        <div><strong>工作台暂不可用</strong><span>{{ pageError }}</span></div>
-        <button class="btn" type="button" @click="loadWorkbench">重试</button>
+        <div><strong>{{ $t("工作台暂不可用") }}</strong><span>{{ $t(pageError) }}</span></div>
+        <button class="btn" type="button" @click="loadWorkbench">{{ $t("重试") }}</button>
       </article>
 
       <div class="exchange-grid">
         <article class="card exchange-intake">
           <div class="exchange-section-heading">
-            <div><span>INTAKE / 01</span><h3>文件与登记来源</h3></div>
-            <button class="btn btn-compact" type="button" :disabled="!selectedSourceCode" data-testid="exchange-template-download" @click="downloadTemplate">
-              下载 Excel 模板
-            </button>
+            <div><span>INTAKE / 01</span><h3>{{ $t("文件与登记来源") }}</h3></div>
+            <button class="btn btn-compact" type="button" :disabled="!selectedSourceCode" data-testid="exchange-template-download" @click="downloadTemplate">{{ $t(" 下载 Excel 模板 ") }}</button>
           </div>
 
           <label class="exchange-source-field">
-            <span>登记来源</span>
+            <span>{{ $t("登记来源") }}</span>
             <select v-model="selectedSourceCode" class="select" :disabled="loading || !sources.length" data-testid="exchange-source-select">
-              <option v-if="!sources.length" value="">暂无获授权来源</option>
+              <option v-if="!sources.length" value="">{{ $t("暂无获授权来源") }}</option>
               <option v-for="source in sources" :key="source.source_system_code" :value="source.source_system_code">
-                {{ sourceLabel(source) }}
+                {{ $t(sourceLabel(source)) }}
               </option>
             </select>
-            <small>只显示当前账号可编辑楼宇的公开来源代码，不使用内部编号。</small>
+            <small>{{ $t("只显示当前账号可编辑楼宇的公开来源代码，不使用内部编号。") }}</small>
           </label>
 
           <div
@@ -289,59 +287,57 @@ onMounted(loadWorkbench)
               accept=".json,.xlsx,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               @change="onFileChange"
             />
-            <b>{{ selectedFile ? 'FILE LOCKED' : 'DROP STANDARD PACKAGE' }}</b>
+            <b>{{ $t(selectedFile ? 'FILE LOCKED' : 'DROP STANDARD PACKAGE') }}</b>
             <strong>{{ selectedFile?.name || '将 JSON / Excel 拖到这里，或点击选择' }}</strong>
-            <small v-if="selectedFile">{{ formatBytes(selectedFile.size) }} · 已选择</small>
-            <small v-else>支持 JSON、Excel（.xlsx）</small>
+            <small v-if="selectedFile">{{ $t(formatBytes(selectedFile.size)) }}{{ $t(" · 已选择") }}</small>
+            <small v-else>{{ $t("支持 JSON、Excel（.xlsx）") }}</small>
           </div>
 
           <div class="exchange-actions">
             <button class="btn" type="button" :disabled="!selectedFile || preflightBusy || submitBusy" data-testid="exchange-preflight" @click="runPreflight">
-              {{ preflightBusy ? '文件检查中…' : '运行预检' }}
+              {{ $t(preflightBusy ? '文件检查中…' : '运行预检') }}
             </button>
             <button class="btn btn-primary" type="button" :disabled="!formalSubmitEnabled" data-testid="exchange-submit" @click="submitFile">
-              {{ submitBusy ? '正式提交中…' : '提交复核' }}
+              {{ $t(submitBusy ? '正式提交中…' : '提交复核') }}
             </button>
           </div>
-          <p class="exchange-retry-note">
-            提交中断时，使用原文件和原投递号重试。
-          </p>
+          <p class="exchange-retry-note">{{ $t(" 提交中断时，使用原文件和原投递号重试。 ") }}</p>
         </article>
 
         <article class="card exchange-inspection">
           <div class="exchange-section-heading">
-            <div><span>INSPECTION / 02</span><h3>预检与提交结果</h3></div>
+            <div><span>INSPECTION / 02</span><h3>{{ $t("预检与提交结果") }}</h3></div>
             <span v-if="activeResult?.would_status || activeResult?.status" class="exchange-status" :class="statusTone(activeResult.status || activeResult.would_status)">
-              {{ activeResult.status ? receiptStatusLabel(activeResult.status) : preflightStatusLabel(activeResult.would_status) }}
+              {{ $t(activeResult.status ? receiptStatusLabel(activeResult.status) : preflightStatusLabel(activeResult.would_status)) }}
             </span>
           </div>
 
           <div v-if="!activeResult && !uploadErrors.length" class="exchange-empty-result">
             <i>NO RESULT</i>
-            <strong>尚未运行预检</strong>
-            <span>选择文件后点击“运行预检”。</span>
+            <strong>{{ $t("尚未运行预检") }}</strong>
+            <span>{{ $t("选择文件后点击“运行预检”。") }}</span>
           </div>
 
           <div v-else data-testid="exchange-result">
             <dl class="exchange-result-grid">
-              <div><dt>文件格式</dt><dd>{{ activeResult.file_format?.toUpperCase() || '--' }}</dd></div>
-              <div><dt>投递号</dt><dd :title="activeResult.delivery_id">{{ compactExchangeRef(activeResult.delivery_id, 16, 8) }}</dd></div>
-              <div><dt>来源</dt><dd>{{ activeResult.source_system_code || '--' }}</dd></div>
-              <div><dt>楼宇</dt><dd>{{ activeResult.building_code || '--' }}</dd></div>
-              <div class="digest"><dt>中心摘要</dt><dd :title="activeResult.server_content_digest">{{ compactExchangeRef(activeResult.server_content_digest, 12, 10) }}</dd></div>
-              <div><dt>公开回执</dt><dd :title="activeResult.receipt_no">{{ compactExchangeRef(activeResult.receipt_no, 12, 8) }}</dd></div>
+              <div><dt>{{ $t("文件格式") }}</dt><dd>{{ $t(activeResult.file_format?.toUpperCase() || '--') }}</dd></div>
+              <div><dt>{{ $t("投递号") }}</dt><dd :title="$t(activeResult.delivery_id)">{{ $t(compactExchangeRef(activeResult.delivery_id, 16, 8)) }}</dd></div>
+              <div><dt>{{ $t("来源") }}</dt><dd>{{ $t(activeResult.source_system_code || '--') }}</dd></div>
+              <div><dt>{{ $t("楼宇") }}</dt><dd>{{ $t(activeResult.building_code || '--') }}</dd></div>
+              <div class="digest"><dt>{{ $t("中心摘要") }}</dt><dd :title="$t(activeResult.server_content_digest)">{{ $t(compactExchangeRef(activeResult.server_content_digest, 12, 10)) }}</dd></div>
+              <div><dt>{{ $t("公开回执") }}</dt><dd :title="$t(activeResult.receipt_no)">{{ $t(compactExchangeRef(activeResult.receipt_no, 12, 8)) }}</dd></div>
             </dl>
 
             <div v-if="submittedReceipt" class="exchange-guidance" :class="statusTone(submittedReceipt.status)" data-testid="exchange-submitted-guidance">
-              <strong>{{ receiptStatusLabel(submittedReceipt.status) }}</strong>
-              <span>{{ receiptGuidance(submittedReceipt) }}</span>
+              <strong>{{ $t(receiptStatusLabel(submittedReceipt.status)) }}</strong>
+              <span>{{ $t(receiptGuidance(submittedReceipt)) }}</span>
             </div>
 
             <ol v-if="uploadErrors.length" class="exchange-errors">
               <li v-for="(issue, index) in uploadErrors" :key="`${issue.code}-${issue.field}-${issue.row}-${index}`">
-                <code>{{ issue.code }}</code>
-                <strong>{{ issue.message }}</strong>
-                <small v-if="issue.field || issue.row">{{ issue.field || '文件' }}{{ issue.row ? ` · 第 ${issue.row} 行` : '' }}</small>
+                <code>{{ $t(issue.code) }}</code>
+                <strong>{{ $t(issue.message) }}</strong>
+                <small v-if="issue.field || issue.row">{{ $t(issue.field || '文件') }}{{ $t(issue.row ? ` · 第 ${issue.row} 行` : '') }}</small>
               </li>
             </ol>
           </div>
@@ -352,40 +348,40 @@ onMounted(loadWorkbench)
         <div class="exchange-section-heading ledger-heading">
           <div>
             <span>RECEIPT LEDGER / 03</span>
-            <h3>我的上传回执</h3>
-            <p>查看我的提交记录。</p>
+            <h3>{{ $t("我的上传回执") }}</h3>
+            <p>{{ $t("查看我的提交记录。") }}</p>
           </div>
           <div class="ledger-actions">
-            <b>{{ receiptTotal }}</b>
-            <button class="btn btn-compact" type="button" :disabled="loading" @click="loadReceipts({ announce: true })">刷新</button>
+            <b>{{ $t(receiptTotal) }}</b>
+            <button class="btn btn-compact" type="button" :disabled="loading" @click="loadReceipts({ announce: true })">{{ $t("刷新") }}</button>
           </div>
         </div>
 
-        <div v-if="loading && !receipts.length" class="exchange-ledger-empty">正在读取回执账本…</div>
-        <div v-else-if="!receipts.length" class="exchange-ledger-empty">暂无提交记录。</div>
+        <div v-if="loading && !receipts.length" class="exchange-ledger-empty">{{ $t("正在读取回执账本…") }}</div>
+        <div v-else-if="!receipts.length" class="exchange-ledger-empty">{{ $t("暂无提交记录。") }}</div>
         <div v-else class="exchange-table-wrap" data-testid="exchange-receipt-ledger">
           <table class="exchange-table">
-            <thead><tr><th>状态</th><th>投递 / 回执</th><th>来源 / 楼宇</th><th>中心摘要</th><th>首次接收</th><th></th></tr></thead>
+            <thead><tr><th>{{ $t("状态") }}</th><th>{{ $t("投递 / 回执") }}</th><th>{{ $t("来源 / 楼宇") }}</th><th>{{ $t("中心摘要") }}</th><th>{{ $t("首次接收") }}</th><th></th></tr></thead>
             <tbody v-for="receipt in receipts" :key="receipt.receipt_no">
               <tr>
-                <td data-label="状态"><span class="exchange-status" :class="statusTone(receipt.status)">{{ receiptStatusLabel(receipt.status) }}</span></td>
-                <td data-label="投递 / 回执"><strong>{{ compactExchangeRef(receipt.delivery_id, 18, 7) }}</strong><small>{{ compactExchangeRef(receipt.receipt_no, 12, 7) }}</small></td>
-                <td data-label="来源 / 楼宇"><strong>{{ receipt.source_system_code }}</strong><small>{{ receipt.building_code }}</small></td>
-                <td data-label="中心摘要"><code :title="receipt.server_content_digest">{{ compactExchangeRef(receipt.server_content_digest, 10, 8) }}</code></td>
-                <td data-label="首次接收"><span>{{ formatExchangeTime(receipt.first_received_at) }}</span><small>{{ receipt.center_status === 'pending_review' ? '待中心复核' : '未形成候选' }}</small></td>
-                <td data-label="操作"><button class="btn btn-compact" type="button" @click="toggleReceipt(receipt.receipt_no)">{{ expandedReceiptNo === receipt.receipt_no ? '收起' : '详情' }}</button></td>
+                <td data-label="状态"><span class="exchange-status" :class="statusTone(receipt.status)">{{ $t(receiptStatusLabel(receipt.status)) }}</span></td>
+                <td data-label="投递 / 回执"><strong>{{ $t(compactExchangeRef(receipt.delivery_id, 18, 7)) }}</strong><small>{{ $t(compactExchangeRef(receipt.receipt_no, 12, 7)) }}</small></td>
+                <td data-label="来源 / 楼宇"><strong>{{ $t(receipt.source_system_code) }}</strong><small>{{ $t(receipt.building_code) }}</small></td>
+                <td data-label="中心摘要"><code :title="$t(receipt.server_content_digest)">{{ $t(compactExchangeRef(receipt.server_content_digest, 10, 8)) }}</code></td>
+                <td data-label="首次接收"><span>{{ $t(formatExchangeTime(receipt.first_received_at)) }}</span><small>{{ $t(receipt.center_status === 'pending_review' ? '待中心复核' : '未形成候选') }}</small></td>
+                <td data-label="操作"><button class="btn btn-compact" type="button" @click="toggleReceipt(receipt.receipt_no)">{{ $t(expandedReceiptNo === receipt.receipt_no ? '收起' : '详情') }}</button></td>
               </tr>
               <tr v-if="expandedReceiptNo === receipt.receipt_no" class="exchange-detail-row">
                 <td colspan="6">
                   <div class="exchange-receipt-detail">
-                    <div><span>来源发布修订</span><strong>{{ receipt.source_publication_revision }}</strong></div>
-                    <div><span>原回执</span><strong>{{ receipt.original_receipt_no || '--' }}</strong></div>
-                    <div><span>更正引用</span><strong>{{ receipt.correction_of_receipt_no || '--' }}</strong></div>
-                    <div><span>中心候选</span><strong>{{ receipt.candidate_batch_ref || '--' }}</strong></div>
-                    <p>{{ receiptGuidance(receipt) }}</p>
+                    <div><span>{{ $t("来源发布修订") }}</span><strong>{{ $t(receipt.source_publication_revision) }}</strong></div>
+                    <div><span>{{ $t("原回执") }}</span><strong>{{ $t(receipt.original_receipt_no || '--') }}</strong></div>
+                    <div><span>{{ $t("更正引用") }}</span><strong>{{ $t(receipt.correction_of_receipt_no || '--') }}</strong></div>
+                    <div><span>{{ $t("中心候选") }}</span><strong>{{ $t(receipt.candidate_batch_ref || '--') }}</strong></div>
+                    <p>{{ $t(receiptGuidance(receipt)) }}</p>
                     <ol v-if="receipt.errors?.length" class="exchange-errors compact">
                       <li v-for="(issue, index) in receipt.errors" :key="`${receipt.receipt_no}-${index}`">
-                        <code>{{ issue.code }}</code><strong>{{ issue.message }}</strong><small>{{ issue.field || '文件' }}{{ issue.row ? ` · 第 ${issue.row} 行` : '' }}</small>
+                        <code>{{ $t(issue.code) }}</code><strong>{{ $t(issue.message) }}</strong><small>{{ $t(issue.field || '文件') }}{{ $t(issue.row ? ` · 第 ${issue.row} 行` : '') }}</small>
                       </li>
                     </ol>
                   </div>

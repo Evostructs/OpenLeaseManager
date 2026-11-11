@@ -19,6 +19,7 @@ from openpyxl.utils import get_column_letter
 from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.core.money import round_money
 from app.services.calculation_context import reuse_read_calculations
 from app.core.time import today_in_timezone
@@ -1372,6 +1373,7 @@ def export_rent_analytics_excel(analytics: dict, segments: list[str]) -> Streami
         method_sheet.append([key, value])
 
     _style_workbook(workbook)
+    localize_workbook(workbook)
     sanitize_workbook(workbook)
     buffer = io.BytesIO()
     workbook.save(buffer)

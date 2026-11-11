@@ -161,7 +161,7 @@ def test_operations_workbench_shows_clickable_today_action_queue() -> None:
     assert strip is not None
     body = strip.group("body")
     assert 'data-testid="today-action-queue"' in body
-    assert 'aria-label="今日紧急队列"' in body
+    assert ':aria-label="$t(&quot;今日紧急队列&quot;)"' in body
     assert 'v-for="(entry, index) in operationTodayActionQueue"' in body
     assert '@click="openOperationItem(entry.item)"' in body
     assert '@click="openOperationAction(entry.item)"' in body

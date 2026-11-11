@@ -23,9 +23,9 @@ defineProps({
 
 <template>
   <div class="metric-tile" :class="tone">
-    <span>{{ label }}</span>
+    <span>{{ $t(label) }}</span>
     <AnimatedNumber :value="value" />
-    <small v-if="helper">{{ helper }}</small>
+    <small v-if="helper">{{ $t(helper) }}</small>
     <slot></slot>
   </div>
 </template>

@@ -1138,25 +1138,25 @@ onMounted(async () => {
       <article class="card rooms-command-card" data-testid="rooms-workspace-summary">
         <div class="rooms-command-head">
           <div>
-            <div class="section-label">房源经营</div>
-            <h3 class="card-title">房态总图</h3>
-            <p>{{ availabilityRangeLabel }} · {{ stats?.total_rooms || 0 }} 间 · {{ formatArea(totalArea) }}㎡</p>
+            <div class="section-label">{{ $t("房源经营") }}</div>
+            <h3 class="card-title">{{ $t("房态总图") }}</h3>
+            <p>{{ $t(availabilityRangeLabel) }} · {{ $t(stats?.total_rooms || 0) }}{{ $t(" 间 · ") }}{{ $t(formatArea(totalArea)) }}㎡</p>
           </div>
           <div class="rooms-command-actions">
-            <button class="btn btn-compact" @click="setOccupancyFilter('空置')">看空置</button>
-            <button class="btn btn-compact" @click="setOccupancyFilter('即将到期')">看即将到期</button>
-            <button class="btn btn-compact" @click="setOccupancyFilter('历史逾期')">看历史逾期</button>
+            <button class="btn btn-compact" @click="setOccupancyFilter('空置')">{{ $t("看空置") }}</button>
+            <button class="btn btn-compact" @click="setOccupancyFilter('即将到期')">{{ $t("看即将到期") }}</button>
+            <button class="btn btn-compact" @click="setOccupancyFilter('历史逾期')">{{ $t("看历史逾期") }}</button>
           </div>
         </div>
 
         <div class="room-status-overview" data-testid="room-status-overview">
           <div class="room-status-hero">
-            <span>出租率</span>
-            <strong>{{ occupancyRate }}%</strong>
-            <small>空置 {{ formatArea(stats?.vacancy_area || 0) }}㎡ · {{ stats?.vacancy_rooms || 0 }} 间</small>
+            <span>{{ $t("出租率") }}</span>
+            <strong>{{ $t(occupancyRate) }}%</strong>
+            <small>{{ $t("空置 ") }}{{ $t(formatArea(stats?.vacancy_area || 0)) }}㎡ · {{ $t(stats?.vacancy_rooms || 0) }}{{ $t(" 间") }}</small>
           </div>
           <div class="room-status-map" data-testid="rooms-status-strip">
-            <div class="room-status-stack" aria-label="房态构成">
+            <div class="room-status-stack" :aria-label="$t(&quot;房态构成&quot;)">
               <button
                 v-for="item in occupancyStatusStrip"
                 :key="item.key"
@@ -1167,8 +1167,8 @@ onMounted(async () => {
                 :data-testid="`room-status-segment-${item.key}`"
                 @click="setOccupancyFilter(item.filter)"
               >
-                <span>{{ item.label }}</span>
-                <strong>{{ item.count }}</strong>
+                <span>{{ $t(item.label) }}</span>
+                <strong>{{ $t(item.count) }}</strong>
               </button>
             </div>
             <div class="room-status-legend">
@@ -1180,9 +1180,9 @@ onMounted(async () => {
                 :class="[item.tone, { active: filters.occupancy === item.filter }]"
                 @click="setOccupancyFilter(item.filter)"
               >
-                <span>{{ item.label }}</span>
-                <strong>{{ item.count }} 间</strong>
-                <small>{{ item.share }}%</small>
+                <span>{{ $t(item.label) }}</span>
+                <strong>{{ $t(item.count) }}{{ $t(" 间") }}</strong>
+                <small>{{ $t(item.share) }}%</small>
               </button>
             </div>
           </div>
@@ -1198,30 +1198,30 @@ onMounted(async () => {
             @click="setTowerFilter(segment.filterValue)"
           >
             <div class="room-segment-top">
-              <span>{{ segment.label }}</span>
-              <strong>{{ segment.occupancyRate }}%</strong>
+              <span>{{ $t(segment.label) }}</span>
+              <strong>{{ $t(segment.occupancyRate) }}%</strong>
             </div>
             <div class="room-segment-stack" :class="segmentTone(segment)" aria-hidden="true">
               <i class="occupied" :style="{ width: `${Math.min(Math.max(segment.occupancyRate, 0), 100)}%` }"></i>
               <i class="vacant" :style="{ width: `${Math.min(Math.max(segment.vacancyRate, 0), 100)}%` }"></i>
             </div>
             <div class="room-segment-values">
-              <span>租 {{ formatArea(segment.occupiedArea) }}㎡</span>
-              <span>空 {{ formatArea(segment.vacantArea) }}㎡</span>
-              <span>空 {{ segment.vacant }} 间</span>
+              <span>{{ $t("租 ") }}{{ $t(formatArea(segment.occupiedArea)) }}㎡</span>
+              <span>{{ $t("空 ") }}{{ $t(formatArea(segment.vacantArea)) }}㎡</span>
+              <span>{{ $t("空 ") }}{{ $t(segment.vacant) }}{{ $t(" 间") }}</span>
             </div>
             <div class="room-segment-pressure-bar" data-testid="rooms-segment-pressure-bar">
-              <span>到期 {{ segment.expiring }}</span>
-              <span>收款 {{ segment.overdue }}</span>
-              <span>缺资料 {{ segment.missing }}</span>
+              <span>{{ $t("到期 ") }}{{ $t(segment.expiring) }}</span>
+              <span>{{ $t("收款 ") }}{{ $t(segment.overdue) }}</span>
+              <span>{{ $t("缺资料 ") }}{{ $t(segment.missing) }}</span>
             </div>
           </button>
         </div>
 
         <div v-if="showLegacyFloorWorkspace" class="rooms-vacancy-pressure" data-testid="room-vacancy-top3">
           <div class="room-priority-title">
-            <strong>空置集中 Top 3</strong>
-            <span>点击后查看对应空置台账</span>
+            <strong>{{ $t("空置集中 Top 3") }}</strong>
+            <span>{{ $t("点击后查看对应空置台账") }}</span>
           </div>
           <div v-if="vacancyPressureRows.length" class="rooms-vacancy-pressure-list">
             <button
@@ -1232,30 +1232,30 @@ onMounted(async () => {
               data-testid="rooms-vacancy-pressure-row"
               @click="applyVacancyPressureRow(row)"
             >
-              <span class="rooms-vacancy-rank">{{ row.segment }}</span>
-              <strong>{{ formatArea(row.vacantArea) }}㎡</strong>
-              <span>{{ zoneLabel(row.zone) }} · {{ row.floorHint }}</span>
-              <small>{{ row.vacantCount }} 间空置 · 空置率 {{ row.vacancyRate }}% · 待办 {{ row.priorityCount }} 间</small>
+              <span class="rooms-vacancy-rank">{{ $t(row.segment) }}</span>
+              <strong>{{ $t(formatArea(row.vacantArea)) }}㎡</strong>
+              <span>{{ $t(zoneLabel(row.zone)) }} · {{ $t(row.floorHint) }}</span>
+              <small>{{ $t(row.vacantCount) }}{{ $t(" 间空置 · 空置率 ") }}{{ $t(row.vacancyRate) }}{{ $t("% · 待办 ") }}{{ $t(row.priorityCount) }}{{ $t(" 间") }}</small>
             </button>
           </div>
-          <div v-else class="room-action-empty">暂无空置面积较集中的分区</div>
+          <div v-else class="room-action-empty">{{ $t("暂无空置面积较集中的分区") }}</div>
         </div>
       </article>
 
       <article v-if="showLegacyFloorWorkspace" class="card room-dynamic-panel rooms-heatmap-panel" data-testid="rooms-heatmap">
         <div class="card-header compact">
           <div>
-            <div class="section-label">空间总览</div>
-            <h3 class="card-title">楼层房态图</h3>
+            <div class="section-label">{{ $t("空间总览") }}</div>
+            <h3 class="card-title">{{ $t("楼层房态图") }}</h3>
           </div>
           <div class="legend-inline">
-            <span v-if="roomsRefreshing" class="legend-chip info refreshing-indicator">同步中</span>
-            <span class="legend-chip info">{{ availabilityRangeLabel }}</span>
-            <span class="legend-chip success">租 在租</span>
-            <span class="legend-chip warning">到 90 天到期</span>
-            <span class="legend-chip error">逾 历史逾期</span>
-            <span class="legend-chip warning">缺 资料缺失</span>
-            <span class="legend-chip info">空 空置</span>
+            <span v-if="roomsRefreshing" class="legend-chip info refreshing-indicator">{{ $t("同步中") }}</span>
+            <span class="legend-chip info">{{ $t(availabilityRangeLabel) }}</span>
+            <span class="legend-chip success">{{ $t("租 在租") }}</span>
+            <span class="legend-chip warning">{{ $t("到 90 天到期") }}</span>
+            <span class="legend-chip error">{{ $t("逾 历史逾期") }}</span>
+            <span class="legend-chip warning">{{ $t("缺 资料缺失") }}</span>
+            <span class="legend-chip info">{{ $t("空 空置") }}</span>
           </div>
         </div>
 
@@ -1270,20 +1270,20 @@ onMounted(async () => {
             :aria-pressed="String(item.active)"
             @click="setOccupancyFilter(item.filter)"
           >
-            <span>{{ item.label }}</span>
-            <strong>{{ item.count }} 间</strong>
-            <small>{{ formatArea(item.area) }}㎡</small>
+            <span>{{ $t(item.label) }}</span>
+            <strong>{{ $t(item.count) }}{{ $t(" 间") }}</strong>
+            <small>{{ $t(formatArea(item.area)) }}㎡</small>
           </button>
         </div>
 
         <div class="room-floor-map" data-testid="room-floor-map">
           <TableSkeleton v-if="roomsInitialLoading" class="room-heatmap-skeleton" :rows="5" :columns="4" />
-          <div v-else-if="!sortedRooms.length" class="compact-empty">当前筛选条件下没有房间</div>
+          <div v-else-if="!sortedRooms.length" class="compact-empty">{{ $t("当前筛选条件下没有房间") }}</div>
           <div v-else class="room-heatmap-grid" data-testid="rooms-heatmap-grid">
             <section v-for="towerGroup in groupedHeatmap" :key="towerGroup.tower" class="tower-card">
               <div class="tower-card-header">
-                <strong>{{ towerGroup.title }}</strong>
-                <span>{{ towerGroup.count }} 间</span>
+                <strong>{{ $t(towerGroup.title) }}</strong>
+                <span>{{ $t(towerGroup.count) }}{{ $t(" 间") }}</span>
               </div>
               <div class="heatmap-board">
                 <div
@@ -1293,8 +1293,8 @@ onMounted(async () => {
                   :class="{ empty: floor.planned && !floor.items.length }"
                 >
                   <strong>
-                    <span>{{ floor.floor }}F</span>
-                    <small>{{ heatmapFloorSummary(floor) }}</small>
+                    <span>{{ $t(floor.floor) }}F</span>
+                    <small>{{ $t(heatmapFloorSummary(floor)) }}</small>
                   </strong>
                   <div class="heatmap-rooms">
                     <button
@@ -1305,13 +1305,13 @@ onMounted(async () => {
                       :class="[room.tone, { active: selectedRoomId === room.id }]"
                       :data-testid="roomHeatmapTestId(room)"
                       :aria-pressed="selectedRoomId === room.id"
-                      :title="roomTooltip(room)"
+                      :title="$t(roomTooltip(room))"
                       @click="openRoomContracts(room)"
                     >
                       <span>{{ room.room_no }}</span>
-                      <small>{{ roomMapMeta(room) }}</small>
+                      <small>{{ $t(roomMapMeta(room)) }}</small>
                       <em class="heatmap-room-badges">
-                        <i v-for="badge in roomSignalBadges(room)" :key="badge.key" :class="badge.tone">{{ badge.label }}</i>
+                        <i v-for="badge in roomSignalBadges(room)" :key="badge.key" :class="badge.tone">{{ $t(badge.label) }}</i>
                       </em>
                     </button>
                   </div>
@@ -1325,22 +1325,20 @@ onMounted(async () => {
 
     <details v-if="showLegacyFloorWorkspace" class="card demo-secondary-details room-priority-details" data-testid="rooms-priority-list">
       <summary>
-        <span>更多房源动作</span>
-        <strong>{{ priorityRoomTotal ? `${priorityRoomTotal} 间房源待办` : '暂无房源待办' }}</strong>
+        <span>{{ $t("更多房源动作") }}</span>
+        <strong>{{ $t(priorityRoomTotal ? `${priorityRoomTotal} 间房源待办` : '暂无房源待办') }}</strong>
       </summary>
       <div class="room-action-lanes">
         <section v-for="lane in priorityLanes" :key="lane.key" class="room-action-lane">
           <header>
-            <span>{{ lane.label }}</span>
-            <strong>{{ lane.count }}</strong>
+            <span>{{ $t(lane.label) }}</span>
+            <strong>{{ $t(lane.count) }}</strong>
             <button
               v-if="lane.count"
               type="button"
               class="room-lane-view-all"
               @click="setTowerFilter(lane.filterValue)"
-            >
-              查看全部
-            </button>
+            >{{ $t(" 查看全部 ") }}</button>
           </header>
           <div v-if="lane.rooms.length" class="room-action-list">
             <article
@@ -1357,16 +1355,16 @@ onMounted(async () => {
             >
               <div class="room-priority-main room-action-main">
                 <strong>{{ room.room_no }}</strong>
-                <span>{{ formatArea(room.area) }}㎡ · {{ room.contract?.tenant_name || '空置' }}</span>
+                <span>{{ $t(formatArea(room.area)) }}㎡ · {{ room.contract?.tenant_name || '空置' }}</span>
               </div>
               <div class="room-action-meta">
-                <span class="badge compact" :class="getRoomStatusTone(getRoomStatus(room))">{{ getRoomStatus(room) }}</span>
-                <span class="room-priority-reason">{{ roomActionReason(room) }}</span>
+                <span class="badge compact" :class="getRoomStatusTone(getRoomStatus(room))">{{ $t(getRoomStatus(room)) }}</span>
+                <span class="room-priority-reason">{{ $t(roomActionReason(room)) }}</span>
               </div>
               <div class="room-priority-actions room-action-buttons">
-                <button class="btn btn-compact" @click.stop="openRoomContracts(room)">详情</button>
-                <button class="btn btn-compact" :disabled="!room.contract?.contract_id" @click.stop="openRoomContract(room)">合同</button>
-                <button class="btn btn-compact" :disabled="!room.contract?.customer_id" @click.stop="openRoomCustomer(room)">客户</button>
+                <button class="btn btn-compact" @click.stop="openRoomContracts(room)">{{ $t("详情") }}</button>
+                <button class="btn btn-compact" :disabled="!room.contract?.contract_id" @click.stop="openRoomContract(room)">{{ $t("合同") }}</button>
+                <button class="btn btn-compact" :disabled="!room.contract?.customer_id" @click.stop="openRoomCustomer(room)">{{ $t("客户") }}</button>
               </div>
             </article>
             <button
@@ -1376,26 +1374,26 @@ onMounted(async () => {
               :data-testid="`room-priority-lane-toggle-${lane.key}`"
               @click="togglePriorityLane(lane.key)"
             >
-              {{ lane.expanded ? '收起' : `展开更多 ${lane.hiddenCount} 间` }}
+              {{ $t(lane.expanded ? '收起' : `展开更多 ${lane.hiddenCount} 间`) }}
             </button>
           </div>
-          <div v-else class="room-action-empty">暂无</div>
+          <div v-else class="room-action-empty">{{ $t("暂无") }}</div>
         </section>
       </div>
     </details>
 
     <details :open="!showLegacyFloorWorkspace" class="demo-secondary-details room-ledger-details" data-testid="rooms-ledger-details">
       <summary>
-        <span>房间台账</span>
-        <strong>{{ sortedRooms.length }} 间 / 筛选、批量和维护</strong>
+        <span>{{ $t("房间台账") }}</span>
+        <strong>{{ $t(sortedRooms.length) }}{{ $t(" 间 / 筛选、批量和维护") }}</strong>
       </summary>
     <article class="card table-card contracts-shell">
       <div class="card-header page-block">
         <div>
-          <div class="section-label">房间台账</div>
-          <h3 class="card-title">房间台账</h3>
+          <div class="section-label">{{ $t("房间台账") }}</div>
+          <h3 class="card-title">{{ $t("房间台账") }}</h3>
         </div>
-        <span v-if="roomsRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
+        <span v-if="roomsRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
       </div>
 
       <div class="page-block contract-toolbar-shell room-toolbar-shell">
@@ -1404,49 +1402,49 @@ onMounted(async () => {
             v-model.trim="filters.keyword"
             class="input"
             data-testid="rooms-search-input"
-            placeholder="搜索房号、客户、合同"
+            :placeholder="$t(&quot;搜索房号、客户、合同&quot;)"
             :disabled="roomsLoading"
             @input="preserveViewportAfterFilterChange"
           />
           <select v-model="filters.occupancy" class="select" data-testid="rooms-occupancy-filter" :disabled="roomsLoading" @change="preserveViewportAfterFilterChange">
-            <option value="">全部状态</option>
-            <option value="空置">空置</option>
-            <option v-if="availabilityRangeActive" value="已占用">已占用</option>
-            <option value="在租">在租</option>
-            <option value="即将到期">即将到期</option>
-            <option value="历史逾期">历史逾期</option>
-            <option value="资料缺失">资料缺失</option>
-            <option value="待生效">待生效</option>
-            <option value="逾期占用">逾期占用</option>
-            <option value="已出租">已出租</option>
+            <option value="">{{ $t("全部状态") }}</option>
+            <option value="空置">{{ $t("空置") }}</option>
+            <option v-if="availabilityRangeActive" value="已占用">{{ $t("已占用") }}</option>
+            <option value="在租">{{ $t("在租") }}</option>
+            <option value="即将到期">{{ $t("即将到期") }}</option>
+            <option value="历史逾期">{{ $t("历史逾期") }}</option>
+            <option value="资料缺失">{{ $t("资料缺失") }}</option>
+            <option value="待生效">{{ $t("待生效") }}</option>
+            <option value="逾期占用">{{ $t("逾期占用") }}</option>
+            <option value="已出租">{{ $t("已出租") }}</option>
           </select>
           <select v-model="filters.tower" class="select" data-testid="rooms-tower-filter" :disabled="roomsLoading" @change="preserveViewportAfterFilterChange">
-            <option value="">全部分区</option>
-            <option v-for="option in towerOptions" :key="option.code" :value="option.value">{{ option.label }}</option>
+            <option value="">{{ $t("全部分区") }}</option>
+            <option v-for="option in towerOptions" :key="option.code" :value="option.value">{{ $t(option.label) }}</option>
           </select>
           <select v-model="filters.use" class="select" data-testid="rooms-use-filter" :disabled="roomsLoading" @change="onUseCategoryChange">
-            <option value="">全部用途</option>
-            <option value="office">办公</option>
-            <option value="retail">商业配套</option>
+            <option value="">{{ $t("全部用途") }}</option>
+            <option value="office">{{ $t("办公") }}</option>
+            <option value="retail">{{ $t("商业配套") }}</option>
           </select>
           <select v-if="filters.use === 'retail'" v-model="filters.subtype" class="select" data-testid="rooms-subtype-filter" :disabled="roomsLoading" @change="preserveViewportAfterFilterChange">
-            <option value="">全部业态</option>
-            <option v-for="subtype in subtypeOptions" :key="subtype" :value="subtype">{{ subtypeLabel(subtype) }}</option>
+            <option value="">{{ $t("全部业态") }}</option>
+            <option v-for="subtype in subtypeOptions" :key="subtype" :value="subtype">{{ $t(subtypeLabel(subtype)) }}</option>
           </select>
           <select v-if="showLegacyFloorWorkspace" v-model="filters.zone" class="select" data-testid="rooms-zone-filter" :disabled="roomsLoading" @change="preserveViewportAfterFilterChange">
-            <option value="">全部区间</option>
-            <option v-for="zone in zoneOptions" :key="zone" :value="zone">{{ zoneLabel(zone) }}</option>
+            <option value="">{{ $t("全部区间") }}</option>
+            <option v-for="zone in zoneOptions" :key="zone" :value="zone">{{ $t(zoneLabel(zone)) }}</option>
           </select>
           <div class="room-availability-range">
-            <DatePickerInput v-model="availabilityRange.start_date" placeholder="查询起始日" />
-            <DatePickerInput v-model="availabilityRange.end_date" placeholder="查询终止日" />
-            <button class="btn btn-primary btn-compact" :disabled="roomsLoading" @click="applyAvailabilityRange">查房态</button>
-            <button class="btn btn-compact" :disabled="roomsLoading || !availabilityRangeActive" @click="clearAvailabilityRange">当前</button>
+            <DatePickerInput v-model="availabilityRange.start_date" :placeholder="$t(&quot;查询起始日&quot;)" />
+            <DatePickerInput v-model="availabilityRange.end_date" :placeholder="$t(&quot;查询终止日&quot;)" />
+            <button class="btn btn-primary btn-compact" :disabled="roomsLoading" @click="applyAvailabilityRange">{{ $t("查房态") }}</button>
+            <button class="btn btn-compact" :disabled="roomsLoading || !availabilityRangeActive" @click="clearAvailabilityRange">{{ $t("当前") }}</button>
           </div>
         </div>
 
         <div class="action-cluster room-action-cluster">
-          <button v-if="canEdit" class="btn btn-primary" @click="editingRoom = null; roomFormOpen = true">新增房间</button>
+          <button v-if="canEdit" class="btn btn-primary" @click="editingRoom = null; roomFormOpen = true">{{ $t("新增房间") }}</button>
           <div
             v-if="canExport"
             class="room-batch-actions"
@@ -1460,9 +1458,7 @@ onMounted(async () => {
               aria-controls="room-batch-panel"
               :aria-expanded="String(roomBatchActionsOpen)"
               @click="toggleRoomBatchActions"
-            >
-              批量处理
-            </button>
+            >{{ $t(" 批量处理 ") }}</button>
             <div
               v-if="roomBatchActionsOpen"
               id="room-batch-panel"
@@ -1470,21 +1466,21 @@ onMounted(async () => {
               data-testid="room-batch-panel"
             >
               <div class="room-batch-head">
-                <strong>批量处理</strong>
-                <button type="button" class="icon-btn" title="关闭" @click="closeRoomBatchActions">×</button>
+                <strong>{{ $t("批量处理") }}</strong>
+                <button type="button" class="icon-btn" :title="$t(&quot;关闭&quot;)" @click="closeRoomBatchActions">×</button>
               </div>
               <div class="room-batch-grid">
                 <section v-if="canEdit" class="room-batch-section">
-                  <span>房间资料</span>
+                  <span>{{ $t("房间资料") }}</span>
                   <div class="room-batch-buttons">
-                    <button class="btn" @click="downloadRoomTemplateFromBatch">模板</button>
-                    <button class="btn" @click="triggerRoomImportFromBatch">导入</button>
+                    <button class="btn" @click="downloadRoomTemplateFromBatch">{{ $t("模板") }}</button>
+                    <button class="btn" @click="triggerRoomImportFromBatch">{{ $t("导入") }}</button>
                   </div>
                 </section>
                 <section class="room-batch-section">
-                  <span>导出</span>
+                  <span>{{ $t("导出") }}</span>
                   <div class="room-batch-buttons">
-                    <button class="btn" @click="exportRoomsFromBatch">房间</button>
+                    <button class="btn" @click="exportRoomsFromBatch">{{ $t("房间") }}</button>
                   </div>
                 </section>
               </div>
@@ -1506,27 +1502,23 @@ onMounted(async () => {
                 />
               </th>
               <th>
-                <button class="table-sort-btn centered" data-testid="rooms-sort-room-no" :class="{ active: roomSort.key === 'room_no' }" @click="toggleRoomSort('room_no')">
-                  房源 {{ roomSortIndicator('room_no') }}
+                <button class="table-sort-btn centered" data-testid="rooms-sort-room-no" :class="{ active: roomSort.key === 'room_no' }" @click="toggleRoomSort('room_no')">{{ $t(" 房源 ") }}{{ $t(roomSortIndicator('room_no')) }}
                 </button>
               </th>
               <th>
-                <button class="table-sort-btn centered" data-testid="rooms-sort-area" :class="{ active: roomSort.key === 'area' }" @click="toggleRoomSort('area')">
-                  面积 / 租金 {{ roomSortIndicator('area') }}
+                <button class="table-sort-btn centered" data-testid="rooms-sort-area" :class="{ active: roomSort.key === 'area' }" @click="toggleRoomSort('area')">{{ $t(" 面积 / 租金 ") }}{{ $t(roomSortIndicator('area')) }}
                 </button>
               </th>
               <th>
-                <button class="table-sort-btn centered" :class="{ active: roomSort.key === 'occupancy' }" @click="toggleRoomSort('occupancy')">
-                  经营状态 {{ roomSortIndicator('occupancy') }}
+                <button class="table-sort-btn centered" :class="{ active: roomSort.key === 'occupancy' }" @click="toggleRoomSort('occupancy')">{{ $t(" 经营状态 ") }}{{ $t(roomSortIndicator('occupancy')) }}
                 </button>
               </th>
               <th>
-                <button class="table-sort-btn centered" :class="{ active: roomSort.key === 'tenant_name' }" @click="toggleRoomSort('tenant_name')">
-                  客户 / 合同 {{ roomSortIndicator('tenant_name') }}
+                <button class="table-sort-btn centered" :class="{ active: roomSort.key === 'tenant_name' }" @click="toggleRoomSort('tenant_name')">{{ $t(" 客户 / 合同 ") }}{{ $t(roomSortIndicator('tenant_name')) }}
                 </button>
               </th>
-              <th>提示</th>
-              <th class="actions-cell">操作</th>
+              <th>{{ $t("提示") }}</th>
+              <th class="actions-cell">{{ $t("操作") }}</th>
             </tr>
           </thead>
           <tbody>
@@ -1545,62 +1537,60 @@ onMounted(async () => {
               </td>
               <td class="room-main-cell">
                 <strong>{{ room.room_no }}</strong>
-                <span>{{ roomSegmentLabel(room) }} · {{ roomFloorLabel(room) }} · {{ room.room_type || '--' }}</span>
-                <small v-if="showLegacyFloorWorkspace">{{ zoneLabel(getFloorZone(room)) }}</small>
+                <span>{{ $t(roomSegmentLabel(room)) }} · {{ $t(roomFloorLabel(room)) }} · {{ $t(room.room_type || '--') }}</span>
+                <small v-if="showLegacyFloorWorkspace">{{ $t(zoneLabel(getFloorZone(room))) }}</small>
               </td>
               <td class="room-money-cell">
-                <strong>{{ formatArea(room.area) }}㎡</strong>
-                <span v-if="room.contract?.monthly_rent">{{ formatCurrencyFixed(room.contract.monthly_rent) }}/月</span>
+                <strong>{{ $t(formatArea(room.area)) }}㎡</strong>
+                <span v-if="room.contract?.monthly_rent">{{ $t(formatCurrencyFixed(room.contract.monthly_rent)) }}{{ $t("/月") }}</span>
                 <span v-else>--</span>
-                <small v-if="room.contract?.unit_price">{{ formatCurrencyFixed(room.contract.unit_price) }}/㎡/天</small>
+                <small v-if="room.contract?.unit_price">{{ $t(formatCurrencyFixed(room.contract.unit_price)) }}{{ $t("/㎡/天") }}</small>
               </td>
               <td>
                 <span class="badge" :class="getRoomStatusTone(getRoomStatus(room))">
-                  {{ getRoomStatus(room) }}
+                  {{ $t(getRoomStatus(room)) }}
                 </span>
                 <div v-if="roomSignalBadges(room).length > 1" class="room-row-signals">
-                  <span v-for="badge in roomSignalBadges(room).slice(1)" :key="badge.key" class="badge compact" :class="badge.tone">{{ badge.label }}</span>
+                  <span v-for="badge in roomSignalBadges(room).slice(1)" :key="badge.key" class="badge compact" :class="badge.tone">{{ $t(badge.label) }}</span>
                 </div>
               </td>
               <td class="room-contract-cell">
                 <strong>{{ room.contract?.tenant_name || '空置' }}</strong>
                 <span>{{ room.contract?.contract_no || '--' }}</span>
-                <small v-if="room.contract?.end_date">{{ formatDate(room.contract.end_date) }} 到期</small>
+                <small v-if="room.contract?.end_date">{{ $t(formatDate(room.contract.end_date)) }}{{ $t(" 到期") }}</small>
               </td>
-              <td class="room-hint-cell">{{ roomActionReason(room) }}</td>
+              <td class="room-hint-cell">{{ $t(roomActionReason(room)) }}</td>
               <td class="actions-cell">
-                <button class="icon-btn table-action-button" data-testid="room-row-detail-action" title="查看房源详情和合同记录" aria-label="查看房源详情和合同记录" @click="openRoomContracts(room)">详情</button>
+                <button class="icon-btn table-action-button" data-testid="room-row-detail-action" :title="$t(&quot;查看房源详情和合同记录&quot;)" :aria-label="$t(&quot;查看房源详情和合同记录&quot;)" @click="openRoomContracts(room)">{{ $t("详情") }}</button>
                 <div class="room-row-more-actions" data-testid="room-row-more-actions" @keydown.esc.stop.prevent="closeRoomRowMore">
                   <button
                     type="button"
                     class="icon-btn table-action-button"
-                    title="更多"
-                    aria-label="更多房间操作"
+                    :title="$t(&quot;更多&quot;)"
+                    :aria-label="$t(&quot;更多房间操作&quot;)"
                     :aria-expanded="String(roomRowMoreOpenId === room.id)"
                     @click="toggleRoomRowMore(room)"
-                  >
-                    更多
-                  </button>
+                  >{{ $t(" 更多 ") }}</button>
                   <div v-if="roomRowMoreOpenId === room.id" class="room-row-more-popover" data-testid="room-row-more-menu">
                     <section class="room-row-more-section">
-                      <span>关联对象</span>
-                      <button type="button" :disabled="!room.contract?.contract_id" @click="openRoomContract(room); closeRoomRowMore()">查看合同</button>
-                      <button type="button" :disabled="!room.contract?.customer_id" @click="openRoomCustomer(room); closeRoomRowMore()">查看客户</button>
+                      <span>{{ $t("关联对象") }}</span>
+                      <button type="button" :disabled="!room.contract?.contract_id" @click="openRoomContract(room); closeRoomRowMore()">{{ $t("查看合同") }}</button>
+                      <button type="button" :disabled="!room.contract?.customer_id" @click="openRoomCustomer(room); closeRoomRowMore()">{{ $t("查看客户") }}</button>
                     </section>
                     <section v-if="canEdit" class="room-row-more-section">
-                      <span>资料维护</span>
-                      <button type="button" @click="editRoomFromMenu(room)">编辑房间</button>
+                      <span>{{ $t("资料维护") }}</span>
+                      <button type="button" @click="editRoomFromMenu(room)">{{ $t("编辑房间") }}</button>
                     </section>
                     <section v-if="canEdit" class="room-row-more-section danger">
-                      <span>危险操作</span>
-                      <button type="button" data-testid="room-delete-action" @click="deleteRoomFromMenu(room)">删除房间</button>
+                      <span>{{ $t("危险操作") }}</span>
+                      <button type="button" data-testid="room-delete-action" @click="deleteRoomFromMenu(room)">{{ $t("删除房间") }}</button>
                     </section>
                   </div>
                 </div>
               </td>
             </tr>
             <tr v-if="!roomsInitialLoading && !sortedRooms.length">
-              <td :colspan="canEdit ? 7 : 6" class="list-empty">暂无房间数据</td>
+              <td :colspan="canEdit ? 7 : 6" class="list-empty">{{ $t("暂无房间数据") }}</td>
             </tr>
           </tbody>
         </table>
@@ -1608,7 +1598,7 @@ onMounted(async () => {
 
       <div class="page-block table-footer">
         <div class="page-size-control">
-          <span class="helper-text">每页显示</span>
+          <span class="helper-text">{{ $t("每页显示") }}</span>
           <div class="page-size-switch" data-testid="rooms-page-size">
             <button
               v-for="option in pageSizeOptions"
@@ -1617,22 +1607,20 @@ onMounted(async () => {
               :class="{ active: roomPager.pageSize === option.value }"
               @click="changeRoomPageSize(option.value)"
             >
-              {{ option.label }}
+              {{ $t(option.label) }}
             </button>
           </div>
         </div>
-        <span class="helper-text">共 {{ sortedRooms.length }} 间 · {{ roomsShowingText }}</span>
+        <span class="helper-text">{{ $t("共 ") }}{{ $t(sortedRooms.length) }}{{ $t(" 间 · ") }}{{ $t(roomsShowingText) }}</span>
         <div class="spacer" />
-        <button v-if="hasRoomPagination" class="btn" :disabled="roomPager.page <= 1" @click="roomPager.page -= 1">上一页</button>
-        <span v-if="hasRoomPagination">{{ roomsPageLabel }}</span>
+        <button v-if="hasRoomPagination" class="btn" :disabled="roomPager.page <= 1" @click="roomPager.page -= 1">{{ $t("上一页") }}</button>
+        <span v-if="hasRoomPagination">{{ $t(roomsPageLabel) }}</span>
         <button
           v-if="hasRoomPagination"
           class="btn"
           :disabled="roomPager.page >= roomTotalPages"
           @click="roomPager.page += 1"
-        >
-          下一页
-        </button>
+        >{{ $t(" 下一页 ") }}</button>
       </div>
     </article>
     </details>
@@ -1644,103 +1632,103 @@ onMounted(async () => {
       @close="roomFormOpen = false"
       @save="saveRoom"
     />
-    <BaseModal :open="Boolean(roomDeleteTarget)" title="删除房间" size="small" @close="closeRoomDeleteConfirm">
+    <BaseModal :open="Boolean(roomDeleteTarget)" :title="$t(&quot;删除房间&quot;)" size="small" @close="closeRoomDeleteConfirm">
       <div data-testid="room-delete-confirm-modal" class="detail-list">
-        <p>确定删除房间 {{ roomDeleteTarget?.room_no || '--' }} 吗？</p>
-        <p class="helper-text">删除后无法恢复。</p>
+        <p>{{ $t("确定删除房间 ") }}{{ roomDeleteTarget?.room_no || '--' }}{{ $t(" 吗？") }}</p>
+        <p class="helper-text">{{ $t("删除后无法恢复。") }}</p>
       </div>
       <template #footer>
-        <button class="btn" data-testid="room-delete-cancel" :disabled="roomDeleteSubmitting" @click="closeRoomDeleteConfirm">取消</button>
+        <button class="btn" data-testid="room-delete-cancel" :disabled="roomDeleteSubmitting" @click="closeRoomDeleteConfirm">{{ $t("取消") }}</button>
         <button class="btn btn-danger" data-testid="room-delete-confirm" :disabled="roomDeleteSubmitting" @click="confirmDeleteRoom">
-          {{ roomDeleteSubmitting ? '删除中' : '确认删除' }}
+          {{ $t(roomDeleteSubmitting ? '删除中' : '确认删除') }}
         </button>
       </template>
     </BaseModal>
-    <BaseModal :open="roomContractsOpen" :title="roomContractTitle" @close="closeRoomContracts">
-      <div v-if="roomContractsLoading" class="compact-empty slim">正在加载合同记录</div>
+    <BaseModal :open="roomContractsOpen" :title="$t(roomContractTitle)" @close="closeRoomContracts">
+      <div v-if="roomContractsLoading" class="compact-empty slim">{{ $t("正在加载合同记录") }}</div>
       <div v-else-if="roomContractDetail" class="room-contract-panel">
         <div class="room-contract-summary">
           <div>
-            <span>分区</span>
-            <strong>{{ roomContractDetail.room ? roomSegmentLabel(roomContractDetail.room) : '--' }}</strong>
+            <span>{{ $t("分区") }}</span>
+            <strong>{{ $t(roomContractDetail.room ? roomSegmentLabel(roomContractDetail.room) : '--') }}</strong>
           </div>
           <div>
-            <span>楼层</span>
-            <strong>{{ roomFloorLabel(roomContractDetail.room) }}</strong>
+            <span>{{ $t("楼层") }}</span>
+            <strong>{{ $t(roomFloorLabel(roomContractDetail.room)) }}</strong>
           </div>
           <div>
-            <span>面积</span>
-            <strong>{{ formatArea(roomContractDetail.room?.area) }}㎡</strong>
+            <span>{{ $t("面积") }}</span>
+            <strong>{{ $t(formatArea(roomContractDetail.room?.area)) }}㎡</strong>
           </div>
           <div>
-            <span>合同记录</span>
-            <strong>{{ roomContractDetail.contracts?.length || 0 }}</strong>
+            <span>{{ $t("合同记录") }}</span>
+            <strong>{{ $t(roomContractDetail.contracts?.length || 0) }}</strong>
           </div>
         </div>
 
         <div v-if="availabilityRangeActive" class="room-contract-range">
           <span class="badge" :class="roomContractDetail.range_conflicts?.length ? 'warning' : 'info'">
-            {{ availabilityRangeLabel }}
+            {{ $t(availabilityRangeLabel) }}
           </span>
-          <strong>{{ roomContractDetail.range_conflicts?.length || 0 }} 份占用</strong>
+          <strong>{{ $t(roomContractDetail.range_conflicts?.length || 0) }}{{ $t(" 份占用") }}</strong>
         </div>
 
         <div v-if="roomOperation" class="room-operation-detail">
           <div class="room-operation-head">
             <div>
-              <div class="section-label">当前房源情况</div>
+              <div class="section-label">{{ $t("当前房源情况") }}</div>
               <h4>{{ roomOperation.current_contract?.contract_no || '--' }} · {{ roomOperation.current_contract?.tenant_name || '--' }}</h4>
             </div>
             <div class="room-contract-badges">
-              <span v-if="roomOperation.signals?.expiring_90" class="badge compact warning">90 天到期</span>
-              <span v-if="roomOperation.signals?.overdue" class="badge compact error">历史逾期</span>
-              <span v-if="roomOperation.signals?.missing_attachment" class="badge compact warning">缺合同正文</span>
+              <span v-if="roomOperation.signals?.expiring_90" class="badge compact warning">{{ $t("90 天到期") }}</span>
+              <span v-if="roomOperation.signals?.overdue" class="badge compact error">{{ $t("历史逾期") }}</span>
+              <span v-if="roomOperation.signals?.missing_attachment" class="badge compact warning">{{ $t("缺合同正文") }}</span>
             </div>
           </div>
           <div class="room-operation-grid">
             <div>
-              <span>客户</span>
+              <span>{{ $t("客户") }}</span>
               <strong>{{ roomOperation.customer?.name || '--' }}</strong>
             </div>
             <div>
-              <span>月租金</span>
-              <strong>{{ formatCurrencyFixed(roomOperation.current_contract?.monthly_rent || 0) }}</strong>
+              <span>{{ $t("月租金") }}</span>
+              <strong>{{ $t(formatCurrencyFixed(roomOperation.current_contract?.monthly_rent || 0)) }}</strong>
             </div>
             <div>
-              <span>到期日</span>
-              <strong>{{ formatDate(roomOperation.current_contract?.end_date) }}</strong>
+              <span>{{ $t("到期日") }}</span>
+              <strong>{{ $t(formatDate(roomOperation.current_contract?.end_date)) }}</strong>
             </div>
             <div>
-              <span>历史逾期</span>
-              <strong>{{ formatCurrencyFixed(roomOperation.receivable?.overdue_balance || 0) }}</strong>
+              <span>{{ $t("历史逾期") }}</span>
+              <strong>{{ $t(formatCurrencyFixed(roomOperation.receivable?.overdue_balance || 0)) }}</strong>
             </div>
             <div>
-              <span>累计未收</span>
-              <strong>{{ formatCurrencyFixed(roomOperation.receivable?.unpaid_balance || 0) }}</strong>
+              <span>{{ $t("累计未收") }}</span>
+              <strong>{{ $t(formatCurrencyFixed(roomOperation.receivable?.unpaid_balance || 0)) }}</strong>
             </div>
             <div>
-              <span>跟进提醒</span>
-              <strong>{{ roomOperation.follow_up?.next_follow_up_date ? formatDate(roomOperation.follow_up.next_follow_up_date) : '--' }}</strong>
+              <span>{{ $t("跟进提醒") }}</span>
+              <strong>{{ $t(roomOperation.follow_up?.next_follow_up_date ? formatDate(roomOperation.follow_up.next_follow_up_date) : '--') }}</strong>
             </div>
             <div>
-              <span>合同附件</span>
-              <strong>{{ attachmentSignalLabel(roomOperation) }}</strong>
+              <span>{{ $t("合同附件") }}</span>
+              <strong>{{ $t(attachmentSignalLabel(roomOperation)) }}</strong>
             </div>
             <div>
-              <span>跟进动作</span>
-              <strong>{{ followUpSignalLabel(roomOperation) }}</strong>
+              <span>{{ $t("跟进动作") }}</span>
+              <strong>{{ $t(followUpSignalLabel(roomOperation)) }}</strong>
             </div>
           </div>
           <div class="room-operation-notes">
             <span v-if="roomOperation.follow_up">{{ roomOperation.follow_up.next_action || roomOperation.follow_up.content || '待跟进' }}</span>
-            <span v-if="roomOperation.attachment_summary?.missing_required?.length">资料缺失：{{ roomOperation.attachment_summary.missing_required.join('、') }}</span>
+            <span v-if="roomOperation.attachment_summary?.missing_required?.length">{{ $t("资料缺失：") }}{{ $t(roomOperation.attachment_summary.missing_required.join('、')) }}</span>
           </div>
           <div class="room-operation-action-lane" data-testid="room-operation-action-lane">
-            <button class="btn btn-compact room-operation-primary-action" :disabled="!roomOperation.current_contract?.id" @click="openCurrentContract">查看合同</button>
+            <button class="btn btn-compact room-operation-primary-action" :disabled="!roomOperation.current_contract?.id" @click="openCurrentContract">{{ $t("查看合同") }}</button>
             <div class="room-operation-secondary-actions">
-              <button class="btn btn-compact" :disabled="!roomOperation.customer?.id" @click="openCurrentCustomer">查看客户</button>
-              <button v-if="canEdit" class="btn btn-compact" :disabled="!roomOperation.customer?.id" @click="openCurrentCustomer">登记跟进</button>
-              <button class="btn btn-compact" :disabled="!roomOperation.current_contract?.id" @click="openCurrentContract">查看附件</button>
+              <button class="btn btn-compact" :disabled="!roomOperation.customer?.id" @click="openCurrentCustomer">{{ $t("查看客户") }}</button>
+              <button v-if="canEdit" class="btn btn-compact" :disabled="!roomOperation.customer?.id" @click="openCurrentCustomer">{{ $t("登记跟进") }}</button>
+              <button class="btn btn-compact" :disabled="!roomOperation.current_contract?.id" @click="openCurrentContract">{{ $t("查看附件") }}</button>
             </div>
           </div>
         </div>
@@ -1754,20 +1742,20 @@ onMounted(async () => {
               </div>
               <div class="room-contract-badges">
                 <span class="badge compact" :class="roomContractRelationTone(contract.relation)">
-                  {{ roomContractRelationLabel(contract.relation) }}
+                  {{ $t(roomContractRelationLabel(contract.relation)) }}
                 </span>
-                <span v-if="contract.range_overlap" class="badge compact warning">所选期间占用</span>
+                <span v-if="contract.range_overlap" class="badge compact warning">{{ $t("所选期间占用") }}</span>
               </div>
             </div>
             <div class="room-contract-meta">
-              <span>{{ formatDate(contract.start_date) }} 至 {{ formatDate(contract.end_date) }}</span>
-              <span>{{ formatArea(contract.area) }}㎡</span>
-              <span>{{ formatCurrencyFixed(contract.monthly_rent) }}/月</span>
-              <span>{{ contract.internal_contact_person || '--' }}</span>
+              <span>{{ $t(formatDate(contract.start_date)) }}{{ $t(" 至 ") }}{{ $t(formatDate(contract.end_date)) }}</span>
+              <span>{{ $t(formatArea(contract.area)) }}㎡</span>
+              <span>{{ $t(formatCurrencyFixed(contract.monthly_rent)) }}{{ $t("/月") }}</span>
+              <span>{{ $t(contract.internal_contact_person || '--') }}</span>
             </div>
           </article>
         </div>
-        <div v-else class="compact-empty slim">暂无合同记录</div>
+        <div v-else class="compact-empty slim">{{ $t("暂无合同记录") }}</div>
       </div>
     </BaseModal>
   </section>

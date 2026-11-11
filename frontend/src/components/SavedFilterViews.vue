@@ -15,12 +15,12 @@ function apply() { const row = rows.value.find(row => row.name === selected.valu
 </script>
 <template>
   <details class="saved-filter-views">
-    <summary>常用筛选与链接</summary>
+    <summary>{{ $t("常用筛选与链接") }}</summary>
     <div class="saved-filter-controls">
-      <label>常用视图 <select v-model="selected" class="select" @change="apply"><option value="">选择视图</option><option v-for="row in rows" :key="row.name">{{ row.name }}</option></select></label>
-      <label>视图名称 <input v-model="name" class="input" maxlength="40" placeholder="例如：本楼即将到期" @keyup.enter="save" /></label>
-      <button class="btn" :disabled="!name.trim() || !key" @click="save">保存当前筛选</button>
-      <a v-if="link" class="btn" :href="link" target="_blank" rel="noopener">打开筛选链接</a>
+      <label>{{ $t("常用视图 ") }}<select v-model="selected" class="select" @change="apply"><option value="">{{ $t("选择视图") }}</option><option v-for="row in rows" :key="row.name">{{ row.name }}</option></select></label>
+      <label>{{ $t("视图名称 ") }}<input v-model="name" class="input" maxlength="40" :placeholder="$t(&quot;例如：本楼即将到期&quot;)" @keyup.enter="save" /></label>
+      <button class="btn" :disabled="!name.trim() || !key" @click="save">{{ $t("保存当前筛选") }}</button>
+      <a v-if="link" class="btn" :href="link" target="_blank" rel="noopener">{{ $t("打开筛选链接") }}</a>
     </div>
     <p v-if="message" class="helper-text" role="status">{{ message }}</p>
   </details>

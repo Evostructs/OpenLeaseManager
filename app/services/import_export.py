@@ -15,7 +15,9 @@ from sqlalchemy import exists, or_
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.time import now_in_timezone, today_in_timezone
+from app.core.localization import bilingual_aliases, import_value
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.database import SessionLocal
 from app.models import (
     Building,
@@ -270,6 +272,7 @@ def _content_disposition(filename: str) -> str:
 
 
 def _xlsx_response(workbook: openpyxl.Workbook, filename: str) -> StreamingResponse:
+    localize_workbook(workbook)
     sanitize_workbook(workbook)
     buffer = io.BytesIO()
     workbook.save(buffer)
@@ -429,10 +432,11 @@ def _normalize_header(value) -> str:
 
 
 def _find_header(ws, aliases: dict[str, str], *, min_matches: int = 2) -> tuple[int, dict[int, str]]:
+    aliases = bilingual_aliases(aliases)
     for row_idx, row in enumerate(ws.iter_rows(min_row=1, max_row=10, values_only=False), start=1):
         matched: dict[int, str] = {}
         for cell in row:
-            key = _normalize_header(cell.value)
+            key = _normalize_header(cell.value).casefold()
             if key in aliases:
                 matched[cell.column] = aliases[key]
         if len(set(matched.values())) >= min_matches:
@@ -459,7 +463,7 @@ def _read_import_rows(content: bytes, aliases: dict[str, str], *, min_matches: i
             field = headers.get(cell.column)
             if not field:
                 continue
-            payload[field] = cell.value
+            payload[field] = import_value(field, cell.value)
             if _cell_text(cell.value):
                 has_value = True
         if has_value:

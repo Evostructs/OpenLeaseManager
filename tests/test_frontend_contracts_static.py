@@ -286,7 +286,7 @@ def test_contracts_low_frequency_actions_are_collapsed_into_menus() -> None:
     assert "合同资料" in toolbar_source
     assert "押金" in toolbar_source
     assert "选中项" in toolbar_source
-    assert "删除选中 {{ state.selected.length }} 条" in toolbar_source
+    assert '{{ $t(" 删除选中 ") }}{{ $t(state.selected.length) }}{{ $t(" 条 ") }}' in toolbar_source
     assert ':disabled="!state.selected.length"' in toolbar_source
     assert 'class="contract-batch-popover"' in toolbar_source
 
@@ -295,10 +295,10 @@ def test_contracts_low_frequency_actions_are_collapsed_into_menus() -> None:
     assert "导出数据" not in toolbar_source.split('data-testid="contract-batch-trigger"')[0]
     assert "导出押金" not in toolbar_source.split('data-testid="contract-batch-trigger"')[0]
 
-    assert ">详情</button>" in row_source
-    assert ">客户</button>" in row_source
-    assert ">应收</button>" in row_source
-    assert 'title="更多"' in row_source
+    assert '>{{ $t("详情") }}</button>' in row_source
+    assert '>{{ $t("客户") }}</button>' in row_source
+    assert '>{{ $t("应收") }}</button>' in row_source
+    assert ':title="$t(&quot;更多&quot;)"' in row_source
     assert "更多" in row_source
     assert "合同流转" in row_source
     assert "资料维护" in row_source
@@ -322,7 +322,7 @@ def test_contract_row_receivables_action_uses_context_modal() -> None:
     detail_modal_source = _source(CONTRACT_DETAIL_MODAL)
     context_modal_source = _source(CONTEXT_CONTRACT_DETAIL_MODAL)
     style_source = load_style_source()
-    row_action_start = contracts_source.index('title="查看应收"')
+    row_action_start = contracts_source.index(':title="$t(&quot;查看应收&quot;)"')
     row_action_end = contracts_source.index('class="contract-row-more-actions"', row_action_start)
     row_action_source = contracts_source[row_action_start:row_action_end]
 
@@ -330,7 +330,7 @@ def test_contract_row_receivables_action_uses_context_modal() -> None:
     assert "openDetail(row, { initialSection: 'receivables' })" in contracts_source
     assert '@click="openReceivablesDetail(row)"' in row_action_source
     assert "emit('select-tab', 'receivables')" not in row_action_source
-    assert 'title="查看月度应收"' not in row_action_source
+    assert ':title="$t(&quot;查看月度应收&quot;)"' not in row_action_source
     assert 'v-if="props.user?.role !== \'viewer\'" class="btn" @click="emit(\'select-tab\', \'receivables\')"' in contracts_source
     assert ':initial-section="detailInitialSection"' in contracts_source
     assert "initialSection" in detail_modal_source
@@ -406,7 +406,7 @@ def test_contract_change_preview_flow_uses_app_native_modal() -> None:
     assert "changePreviewMessage" not in contracts_source
     assert "ContractChangePreviewModal" in contracts_source
     assert ':open="changePreviewOpen"' in contracts_source
-    assert 'title="确认合同变更"' in modal_source
+    assert ':title="$t(&quot;确认合同变更&quot;)"' in modal_source
     assert 'data-testid="contract-change-preview-modal"' in modal_source
     assert 'data-testid="contract-change-preview-cancel"' in modal_source
     assert 'data-testid="contract-change-preview-confirm"' in modal_source
@@ -436,7 +436,7 @@ def test_rent_term_delete_flow_uses_app_native_modal() -> None:
     assert "function closeRentTermDeleteConfirm()" in delete_source
     assert "async function confirmDeleteRentTerm()" in delete_source
     assert '@delete-rent-term="deleteRentTerm"' in contracts_source
-    assert 'title="删除租金条款"' in contracts_source
+    assert ':title="$t(&quot;删除租金条款&quot;)"' in contracts_source
     assert 'data-testid="rent-term-delete-confirm-modal"' in contracts_source
     assert 'data-testid="rent-term-delete-cancel"' in contracts_source
     assert 'data-testid="rent-term-delete-confirm"' in contracts_source

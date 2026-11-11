@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 from html import escape
+from app.core.localization import display, request_locale, localize_static_html
 import re
 
 from fastapi import HTTPException
@@ -146,24 +147,24 @@ def _render_html(
     notes: str,
 ) -> str:
     row_html = "\n".join(
-        f"<tr><th>{escape(label)}</th><td>{escape(_display(value))}</td></tr>"
+        f"<tr><th>{escape(display(label))}</th><td>{escape(_display(value))}</td></tr>"
         for label, value in rows
     )
     instruction_html = (
-        f"<section class=\"document-block\"><h2>付款说明</h2><p>{escape(payment_instruction)}</p></section>"
+        f"<section class=\"document-block\"><h2>{escape(display('付款说明'))}</h2><p>{escape(payment_instruction)}</p></section>"
         if payment_instruction
         else ""
     )
     notes_html = (
-        f"<section class=\"document-block\"><h2>备注</h2><p>{escape(notes)}</p></section>"
+        f"<section class=\"document-block\"><h2>{escape(display('备注'))}</h2><p>{escape(notes)}</p></section>"
         if notes
         else ""
     )
     return f"""<!doctype html>
-<html lang="zh-CN">
+<html lang="{request_locale.get()}">
 <head>
   <meta charset="utf-8" />
-  <title>{escape(title)}</title>
+  <title>{escape(display(title))}</title>
   <style>
     @page {{ size: A4; margin: 22mm 20mm; }}
     * {{ box-sizing: border-box; }}
@@ -245,12 +246,12 @@ def _render_html(
 </head>
 <body data-document-type="{escape(document_type)}">
   <main class="page">
-    <h1>{escape(title)}</h1>
+    <h1>{escape(display(title))}</h1>
     <div class="meta">
-      <span>出具方：{escape(issuer)}</span>
-      <span>生成日期：{escape(notice_date.isoformat())}</span>
+      <span>{escape(display('出具方：'))}{escape(issuer)}</span>
+      <span>{escape(display('生成日期：'))}{escape(notice_date.isoformat())}</span>
     </div>
-    <p class="lead">{escape(lead)}</p>
+    <p class="lead">{escape(display(lead))}</p>
     <table>
       <tbody>
         {row_html}
@@ -262,7 +263,7 @@ def _render_html(
       <strong>{escape(issuer)}</strong>
       <span>{escape(notice_date.isoformat())}</span>
     </div>
-    <div class="print-note">本文件由租赁管理系统生成，可直接打印或另存为 PDF。</div>
+    <div class="print-note">{escape(display('本文件由租赁管理系统生成，可直接打印或另存为 PDF。'))}</div>
   </main>
 </body>
 </html>"""

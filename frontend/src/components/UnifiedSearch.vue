@@ -22,15 +22,15 @@ async function search() {
 function choose(type, item) { if (type === 'room') emit('close'); emit('select', { type, item }) }
 </script>
 <template>
-  <BaseModal :open="open" title="查找合同、客户或房号" :layer-index="0" @close="emit('close')">
-    <p class="helper-text">范围：{{ scopeLabel }}。只查询当前可访问的业务资料，每类最多显示 6 条。</p>
+  <BaseModal :open="open" :title="$t(&quot;查找合同、客户或房号&quot;)" :layer-index="0" @close="emit('close')">
+    <p class="helper-text">{{ $t("范围：") }}{{ $t(scopeLabel) }}{{ $t("。只查询当前可访问的业务资料，每类最多显示 6 条。") }}</p>
     <form class="search-query" @submit.prevent="search">
-      <input v-model="keyword" class="input" maxlength="160" aria-label="统一查找关键词" placeholder="合同号、客户名称或房号" />
-      <button class="btn btn-primary" :disabled="busy || !keyword.trim()">{{ busy ? '查找中…' : '查找' }}</button>
+      <input v-model="keyword" class="input" maxlength="160" :aria-label="$t(&quot;统一查找关键词&quot;)" :placeholder="$t(&quot;合同号、客户名称或房号&quot;)" />
+      <button class="btn btn-primary" :disabled="busy || !keyword.trim()">{{ $t(busy ? '查找中…' : '查找') }}</button>
     </form>
-    <p v-if="message" role="status">{{ message }}</p>
+    <p v-if="message" role="status">{{ $t(message) }}</p>
     <section v-for="group in groups" :key="group.type" class="search-group">
-      <h4>{{ group.label }} · {{ group.total }} 条</h4>
+      <h4>{{ $t(group.label) }} · {{ $t(group.total) }}{{ $t(" 条") }}</h4>
       <button v-for="item in group.items" :key="item.id" class="search-result" @click="choose(group.type,item)">
         <strong>{{ item.contract_no || item.name || item.room_no }}</strong>
         <span>{{ item.tenant_name || item.tower || item.status || group.label }}</span>

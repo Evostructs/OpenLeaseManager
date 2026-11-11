@@ -713,13 +713,13 @@ onMounted(() => {
     <article class="card operations-dashboard-card operations-command-card">
       <div class="card-header compact">
         <div>
-          <div class="section-label">待办队列</div>
-          <h3 class="card-title">今日运营处理台</h3>
+          <div class="section-label">{{ $t("待办队列") }}</div>
+          <h3 class="card-title">{{ $t("今日运营处理台") }}</h3>
         </div>
         <div class="pill-group operation-command-actions">
-          <span v-if="operationsRefreshing || operationsV2Loading || trendRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
-          <span class="metric-pill info">月份 {{ operations.month || '--' }}</span>
-          <span class="metric-pill warning">完整队列 {{ formatNumber(totalQueueCount) }}</span>
+          <span v-if="operationsRefreshing || operationsV2Loading || trendRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
+          <span class="metric-pill info">{{ $t("月份 ") }}{{ $t(operations.month || '--') }}</span>
+          <span class="metric-pill warning">{{ $t("完整队列 ") }}{{ $t(formatNumber(totalQueueCount)) }}</span>
         </div>
       </div>
 
@@ -729,22 +729,22 @@ onMounted(() => {
         <section
           class="today-priority-map"
           data-testid="today-priority-map"
-          aria-label="今日处理主线"
+          :aria-label="$t(&quot;今日处理主线&quot;)"
         >
           <div class="today-priority-signal" :class="operationPrimaryFocus?.group.tone || 'success'">
-            <span class="section-label">今日处理主线</span>
-            <strong>{{ operationPrimaryFocus ? operationItemTitle(operationPrimaryFocus.item) : '暂无今日优先事项' }}</strong>
+            <span class="section-label">{{ $t("今日处理主线") }}</span>
+            <strong>{{ $t(operationPrimaryFocus ? operationItemTitle(operationPrimaryFocus.item) : '暂无今日优先事项') }}</strong>
             <small>
               {{
-                operationPrimaryFocus
+                $t(operationPrimaryFocus
                   ? `${operationPrimaryFocus.group.label} · ${operationItemNextAction(operationPrimaryFocus.item)}`
-                  : '今日队列已清空'
+                  : '今日队列已清空')
               }}
             </small>
             <span class="today-priority-facts">
-              <b>总待办 {{ formatNumber(totalQueueCount) }}</b>
-              <b>高优先级 {{ formatNumber(operationBlockingCount) }}</b>
-              <b>{{ formatCurrency(metrics.overdue_balance || 0) }}</b>
+              <b>{{ $t("总待办 ") }}{{ $t(formatNumber(totalQueueCount)) }}</b>
+              <b>{{ $t("高优先级 ") }}{{ $t(formatNumber(operationBlockingCount)) }}</b>
+              <b>{{ $t(formatCurrency(metrics.overdue_balance || 0)) }}</b>
             </span>
           </div>
           <div class="today-priority-lanes">
@@ -759,15 +759,15 @@ onMounted(() => {
               @click="focusOperationLane(lane.key)"
             >
               <span class="today-priority-lane-head">
-                <strong>{{ lane.label }}</strong>
-                <b>{{ formatNumber(lane.totalCount) }}</b>
+                <strong>{{ $t(lane.label) }}</strong>
+                <b>{{ $t(formatNumber(lane.totalCount)) }}</b>
               </span>
               <span class="today-priority-meter" aria-hidden="true">
                 <i :style="{ width: lane.width }"></i>
               </span>
               <span class="today-priority-lane-copy">
-                <span>{{ lane.item ? operationItemTitle(lane.item) : lane.emptyText }}</span>
-                <small>{{ lane.item ? operationLaneDigest(lane.item) : lane.purpose }}</small>
+                <span>{{ $t(lane.item ? operationItemTitle(lane.item) : lane.emptyText) }}</span>
+                <small>{{ $t(lane.item ? operationLaneDigest(lane.item) : lane.purpose) }}</small>
               </span>
             </button>
           </div>
@@ -777,11 +777,11 @@ onMounted(() => {
           v-if="operationTodayActionQueue.length"
           class="today-action-queue"
           data-testid="today-action-queue"
-          aria-label="今日紧急队列"
+          :aria-label="$t(&quot;今日紧急队列&quot;)"
         >
           <div class="today-action-queue-head">
-            <span class="section-label">今日紧急队列</span>
-            <b>{{ formatNumber(operationTodayActionQueue.length) }}</b>
+            <span class="section-label">{{ $t("今日紧急队列") }}</span>
+            <b>{{ $t(formatNumber(operationTodayActionQueue.length)) }}</b>
           </div>
           <div class="today-action-queue-list">
             <article
@@ -796,26 +796,26 @@ onMounted(() => {
                 :data-testid="`today-action-row-${index}`"
                 @click="openOperationItem(entry.item)"
               >
-                <span class="operation-rank-chip">{{ index + 1 }}</span>
+                <span class="operation-rank-chip">{{ $t(index + 1) }}</span>
                 <span>
-                  <strong>{{ operationItemTitle(entry.item) }}</strong>
-                  <small>{{ entry.group.label }} · {{ operationItemTiming(entry.item) }}</small>
+                  <strong>{{ $t(operationItemTitle(entry.item)) }}</strong>
+                  <small>{{ $t(entry.group.label) }} · {{ $t(operationItemTiming(entry.item)) }}</small>
                 </span>
               </button>
               <button type="button" class="operation-priority-action" @click="openOperationAction(entry.item)">
-                {{ operationItemActionLabel(entry.item) }}
+                {{ $t(operationItemActionLabel(entry.item)) }}
               </button>
             </article>
           </div>
         </section>
         <section v-else class="today-action-queue compact-empty" data-testid="today-action-queue">
-          <strong>今日紧急队列已清空</strong>
+          <strong>{{ $t("今日紧急队列已清空") }}</strong>
         </section>
 
-        <section class="operation-pending-strip" data-testid="operation-pending-strip" aria-label="资料和押金缺口">
+        <section class="operation-pending-strip" data-testid="operation-pending-strip" :aria-label="$t(&quot;资料和押金缺口&quot;)">
           <div class="operation-pending-head">
-            <span class="section-label">关键缺口</span>
-            <b>{{ formatNumber(operationPendingItems.length) }}</b>
+            <span class="section-label">{{ $t("关键缺口") }}</span>
+            <b>{{ $t(formatNumber(operationPendingItems.length)) }}</b>
           </div>
           <button
             v-for="entry in operationPendingItems"
@@ -825,11 +825,11 @@ onMounted(() => {
             :class="entry.group.tone"
             @click="openOperationItem(entry.item)"
           >
-            <strong>{{ entry.label }}</strong>
-            <span>{{ operationItemTitle(entry.item) }}</span>
-            <small>{{ operationItemNextAction(entry.item) }}</small>
+            <strong>{{ $t(entry.label) }}</strong>
+            <span>{{ $t(operationItemTitle(entry.item)) }}</span>
+            <small>{{ $t(operationItemNextAction(entry.item)) }}</small>
           </button>
-          <span v-if="!operationPendingItems.length" class="operation-pending-empty">暂无资料或押金缺口</span>
+          <span v-if="!operationPendingItems.length" class="operation-pending-empty">{{ $t("暂无资料或押金缺口") }}</span>
         </section>
       </div>
     </article>
@@ -838,15 +838,15 @@ onMounted(() => {
       <article class="card operations-dashboard-card operation-queue-panel" data-testid="operations-queue">
         <div class="card-header compact">
           <div>
-            <div class="section-label">优先处理</div>
-            <h3 class="card-title">处理队列</h3>
+            <div class="section-label">{{ $t("优先处理") }}</div>
+            <h3 class="card-title">{{ $t("处理队列") }}</h3>
           </div>
           <span class="operation-panel-actions">
-            <span class="metric-pill info">{{ activeQueueFilterLabel }}</span>
+            <span class="metric-pill info">{{ $t(activeQueueFilterLabel) }}</span>
           </span>
         </div>
 
-        <div class="operation-filter-strip" data-testid="operation-filter-strip" role="tablist" aria-label="待办类型筛选">
+        <div class="operation-filter-strip" data-testid="operation-filter-strip" role="tablist" :aria-label="$t(&quot;待办类型筛选&quot;)">
           <button
             v-for="filter in operationQueueFilters"
             :key="filter.key"
@@ -858,7 +858,7 @@ onMounted(() => {
             :data-testid="`operation-filter-${filter.key}`"
             @click="activeQueueFilter = filter.key"
           >
-            <span>{{ filter.shortLabel }}</span>
+            <span>{{ $t(filter.shortLabel) }}</span>
             <b>{{ formatNumber(filter.totalCount) }}</b>
           </button>
         </div>
@@ -874,10 +874,10 @@ onMounted(() => {
           <section v-for="(group, groupIndex) in visibleQueueGroups" :key="group.key" class="operation-workgroup operation-queue-group" :class="group.tone">
             <div class="operation-workgroup-title operation-queue-title">
               <span class="operation-queue-heading">
-                <strong>{{ group.label }}</strong>
-                <small>{{ group.helper }}</small>
+                <strong>{{ $t(group.label) }}</strong>
+                <small>{{ $t(group.helper) }}</small>
               </span>
-              <span class="metric-pill" :class="group.tone">{{ formatNumber(group.totalCount) }}</span>
+              <span class="metric-pill" :class="group.tone">{{ $t(formatNumber(group.totalCount)) }}</span>
             </div>
             <div v-if="group.items.length" class="operation-work-rows">
               <div
@@ -896,24 +896,24 @@ onMounted(() => {
                   <span class="operation-severity-rail" aria-hidden="true"></span>
                   <span class="operation-work-main">
                     <span class="operation-work-title">
-                      <span class="operation-rank-chip">{{ operationRowRank(groupIndex, itemIndex) }}</span>
-                      <strong>{{ operationItemTitle(item) }}</strong>
+                      <span class="operation-rank-chip">{{ $t(operationRowRank(groupIndex, itemIndex)) }}</span>
+                      <strong>{{ $t(operationItemTitle(item)) }}</strong>
                     </span>
                     <span class="operation-work-reason">
-                      <span class="badge" :class="operationSeverityClass(item.severity)">{{ item.label }}</span>
-                      <small>{{ operationItemReason(item) }}</small>
+                      <span class="badge" :class="operationSeverityClass(item.severity)">{{ $t(item.label) }}</span>
+                      <small>{{ $t(operationItemReason(item)) }}</small>
                     </span>
                   </span>
                   <span class="operation-signal-list">
                     <span v-for="signal in operationItemSignals(item)" :key="`${signal.label}-${signal.value}`" class="operation-signal">
-                      <small>{{ signal.label }}</small>
-                      <b>{{ signal.value }}</b>
+                      <small>{{ $t(signal.label) }}</small>
+                      <b>{{ $t(signal.value) }}</b>
                     </span>
                   </span>
                   <span class="operation-row-action">
-                    <em>{{ operationItemValueLabel(item) }}</em>
-                    <b>{{ operationItemValue(item) || '查看' }}</b>
-                    <small>{{ operationItemDestinationLabel(item) }}</small>
+                    <em>{{ $t(operationItemValueLabel(item)) }}</em>
+                    <b>{{ $t(operationItemValue(item) || '查看') }}</b>
+                    <small>{{ $t(operationItemDestinationLabel(item)) }}</small>
                   </span>
                 </button>
                 <span class="operation-action-stack">
@@ -923,7 +923,7 @@ onMounted(() => {
                     :data-testid="`operation-priority-action-${operationRowRank(groupIndex, itemIndex) - 1}`"
                     @click="openOperationAction(item)"
                   >
-                    {{ operationItemActionLabel(item) }}
+                    {{ $t(operationItemActionLabel(item)) }}
                   </button>
                   <button
                     v-if="operationSecondaryActionLabel(item)"
@@ -932,7 +932,7 @@ onMounted(() => {
                     :data-testid="`operation-secondary-action-${operationRowRank(groupIndex, itemIndex) - 1}`"
                     @click="navigateOperationItem(item)"
                   >
-                    {{ operationSecondaryActionLabel(item) }}
+                    {{ $t(operationSecondaryActionLabel(item)) }}
                   </button>
                 </span>
               </div>
@@ -940,36 +940,36 @@ onMounted(() => {
           </section>
         </div>
         <div v-else class="compact-empty operation-empty-state">
-          <strong>当前无高优先级事项</strong>
+          <strong>{{ $t("当前无高优先级事项") }}</strong>
           <div class="btn-row">
-            <button v-if="activeQueueFilter !== 'all'" type="button" class="btn btn-compact" @click="activeQueueFilter = 'all'">查看全部</button>
-            <button type="button" class="btn btn-compact" @click="emit('select-tab', 'contracts')">查看合同</button>
-            <button type="button" class="btn btn-compact" @click="emit('select-tab', 'risks')">风险中心</button>
+            <button v-if="activeQueueFilter !== 'all'" type="button" class="btn btn-compact" @click="activeQueueFilter = 'all'">{{ $t("查看全部") }}</button>
+            <button type="button" class="btn btn-compact" @click="emit('select-tab', 'contracts')">{{ $t("查看合同") }}</button>
+            <button type="button" class="btn btn-compact" @click="emit('select-tab', 'risks')">{{ $t("风险中心") }}</button>
           </div>
         </div>
       </article>
 
       <details class="demo-secondary-details operations-secondary-details">
         <summary>
-          <span>指标与趋势</span>
-          <strong>关键指标 / 回款走势</strong>
+          <span>{{ $t("指标与趋势") }}</span>
+          <strong>{{ $t("关键指标 / 回款走势") }}</strong>
         </summary>
         <aside class="operation-side-stack">
           <article class="card operations-dashboard-card operation-health-card" data-testid="operations-health">
           <div class="card-header compact">
             <div>
-              <div class="section-label">经营指标</div>
-              <h3 class="card-title">关键指标</h3>
+              <div class="section-label">{{ $t("经营指标") }}</div>
+              <h3 class="card-title">{{ $t("关键指标") }}</h3>
             </div>
           </div>
           <div class="operation-health-grid">
             <div v-for="item in operationHealthCards" :key="item.key" class="health-metric" :class="item.tone">
               <div class="health-metric-head">
-                <span>{{ item.label }}</span>
+                <span>{{ $t(item.label) }}</span>
                 <i :class="item.tone"></i>
               </div>
-              <strong>{{ item.value }}</strong>
-              <small>{{ item.helper }}</small>
+              <strong>{{ $t(item.value) }}</strong>
+              <small>{{ $t(item.helper) }}</small>
               <div v-if="item.progress != null" class="health-meter" :class="item.tone">
                 <i :style="{ width: `${item.progress}%` }"></i>
               </div>
@@ -980,11 +980,11 @@ onMounted(() => {
         <article class="card operations-dashboard-card operation-trend-panel" data-testid="operations-trend">
           <div class="card-header compact">
             <div>
-              <div class="section-label">趋势</div>
-              <h3 class="card-title">近 6 个月回款走势</h3>
+              <div class="section-label">{{ $t("趋势") }}</div>
+              <h3 class="card-title">{{ $t("近 6 个月回款走势") }}</h3>
             </div>
-            <span v-if="trendRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
-            <span v-else-if="latestTrend" class="metric-pill info">{{ latestTrend.month }} 回款率 {{ latestTrend.received_rate || 0 }}%</span>
+            <span v-if="trendRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
+            <span v-else-if="latestTrend" class="metric-pill info">{{ $t(latestTrend.month) }}{{ $t(" 回款率 ") }}{{ $t(latestTrend.received_rate || 0) }}%</span>
           </div>
 
           <div v-if="trendInitialLoading" class="operation-trend-skeleton" data-testid="operations-trend-skeleton">
@@ -999,35 +999,35 @@ onMounted(() => {
           </div>
           <div v-else-if="operationTrendRows.length" class="operation-trend-bars">
             <div v-for="item in operationTrendRows" :key="item.month" class="operation-trend-row">
-              <strong>{{ item.month.slice(5) }}</strong>
+              <strong>{{ $t(item.month.slice(5)) }}</strong>
               <span class="operation-trend-track">
                 <i class="received" :style="{ width: trendBarWidth(item, 'received') }"></i>
                 <i class="unpaid" :style="{ width: trendBarWidth(item, 'unpaid_balance') }"></i>
               </span>
-              <small>{{ item.received_rate || 0 }}%</small>
+              <small>{{ $t(item.received_rate || 0) }}%</small>
             </div>
           </div>
-          <div v-else class="operation-queue-empty">暂无趋势数据</div>
+          <div v-else class="operation-queue-empty">{{ $t("暂无趋势数据") }}</div>
 
           <div class="operation-trend-table-wrap">
             <TableSkeleton v-if="trendInitialLoading" :rows="4" :columns="5" />
             <table v-else class="operation-trend-table">
               <thead>
                 <tr>
-                  <th>月份</th>
-                  <th>应收</th>
-                  <th>已收</th>
-                  <th>未收</th>
-                  <th>逾期</th>
+                  <th>{{ $t("月份") }}</th>
+                  <th>{{ $t("应收") }}</th>
+                  <th>{{ $t("已收") }}</th>
+                  <th>{{ $t("未收") }}</th>
+                  <th>{{ $t("逾期") }}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="item in operationTrendRows" :key="`table-${item.month}`">
-                  <td>{{ item.month }}</td>
-                  <td>{{ formatCurrency(item.receivable || 0) }}</td>
-                  <td>{{ formatCurrency(item.received || 0) }}</td>
-                  <td>{{ formatCurrency(item.unpaid_balance || 0) }}</td>
-                  <td>{{ formatCurrency(item.overdue_balance || 0) }}</td>
+                  <td>{{ $t(item.month) }}</td>
+                  <td>{{ $t(formatCurrency(item.receivable || 0)) }}</td>
+                  <td>{{ $t(formatCurrency(item.received || 0)) }}</td>
+                  <td>{{ $t(formatCurrency(item.unpaid_balance || 0)) }}</td>
+                  <td>{{ $t(formatCurrency(item.overdue_balance || 0)) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -1037,16 +1037,16 @@ onMounted(() => {
       </details>
     </div>
 
-    <BaseModal :open="Boolean(operationTargetItem)" title="房源事项" size="small" @close="closeOperationTarget">
+    <BaseModal :open="Boolean(operationTargetItem)" :title="$t(&quot;房源事项&quot;)" size="small" @close="closeOperationTarget">
       <div v-if="operationTargetItem" class="operation-target-context" data-testid="operation-target-context-modal">
         <div class="risk-target-summary">
           <div class="risk-selected-badges">
             <span class="badge compact" :class="operationSeverityClass(operationTargetItem.severity)">
-              {{ operationTargetItem.label || operationItemReason(operationTargetItem) }}
+              {{ $t(operationTargetItem.label || operationItemReason(operationTargetItem)) }}
             </span>
-            <span class="badge compact muted">{{ operationItemDestinationLabel(operationTargetItem) }}</span>
+            <span class="badge compact muted">{{ $t(operationItemDestinationLabel(operationTargetItem)) }}</span>
           </div>
-          <strong>{{ operationTargetTitle }}</strong>
+          <strong>{{ $t(operationTargetTitle) }}</strong>
         </div>
 
         <div v-if="operationTargetFacts.length" class="risk-selected-facts">
@@ -1056,14 +1056,14 @@ onMounted(() => {
             class="risk-selected-fact"
             :class="fact.tone"
           >
-            <small>{{ fact.label }}</small>
-            <b>{{ fact.value }}</b>
+            <small>{{ $t(fact.label) }}</small>
+            <b>{{ $t(fact.value) }}</b>
           </span>
         </div>
 
         <div class="risk-selected-next">
-          <span>下一步</span>
-          <strong>{{ operationTargetNextAction }}</strong>
+          <span>{{ $t("下一步") }}</span>
+          <strong>{{ $t(operationTargetNextAction) }}</strong>
           <div class="risk-target-actions">
             <button
               v-if="operationTargetItem.contract_id"
@@ -1071,33 +1071,27 @@ onMounted(() => {
               class="btn btn-primary btn-compact"
               data-testid="operation-target-contract-button"
               @click="openOperationTargetContract"
-            >
-              查看合同
-            </button>
+            >{{ $t(" 查看合同 ") }}</button>
             <button
               v-if="operationTargetItem.customer_id"
               type="button"
               class="btn btn-compact"
               data-testid="operation-target-customer-button"
               @click="openOperationTargetCustomer"
-            >
-              查看客户
-            </button>
+            >{{ $t(" 查看客户 ") }}</button>
             <button
               v-if="operationTargetItem.room_no"
               type="button"
               class="btn btn-compact"
               data-testid="operation-target-room-tab-button"
               @click="goOperationTargetRoom"
-            >
-              前往房间管理
-            </button>
+            >{{ $t(" 前往房间管理 ") }}</button>
           </div>
         </div>
       </div>
 
       <template #footer>
-        <button class="btn" @click="closeOperationTarget">关闭</button>
+        <button class="btn" @click="closeOperationTarget">{{ $t("关闭") }}</button>
       </template>
     </BaseModal>
   </section>

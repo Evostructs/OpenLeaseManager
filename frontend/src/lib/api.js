@@ -1,3 +1,4 @@
+import { locale } from '../i18n/index.js'
 import { beginReadyTask, operationNow, recordApiTiming } from './operationTelemetry.js'
 import { buildScopedApiUrl, buildScopedDownloadUrl } from './propertyScope.js'
 
@@ -128,6 +129,7 @@ export async function api(path, options = {}) {
     ...requestOptions
   }
 
+  config.headers = { ...config.headers, 'X-OpenLease-Locale': locale.value }
   const started = operationNow()
   const finishReady = beginReadyTask('api')
   let headerTime = null, responseStatus = 0, serverMs = null

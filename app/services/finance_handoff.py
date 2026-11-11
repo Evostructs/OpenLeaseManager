@@ -15,6 +15,7 @@ from openpyxl.styles import Font, PatternFill
 from sqlalchemy.exc import OperationalError
 
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.core.time import now_in_timezone
 from app.finance_models import FinancePeriod, FinancePeriodEvent
 from app.models import Building
@@ -142,6 +143,7 @@ def _workbook(context, summary, tables):
             cell.fill = PatternFill('solid', fgColor='245DA8')
         for cells in sheet.columns:
             sheet.column_dimensions[cells[0].column_letter].width = min(55, max(16, len(str(cells[0].value or '')) * 2))
+    localize_workbook(wb)
     sanitize_workbook(wb)
     stream = io.BytesIO()
     wb.save(stream)

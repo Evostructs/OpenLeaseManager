@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.core.time import today_in_timezone
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.models import Contract, OperationLog
 from app.services.common import customer_display_name
 
@@ -255,6 +256,8 @@ def export_audit_logs(
 
     for idx, width in enumerate([20, 12, 14, 16, 16, 50], 1):
         ws.column_dimensions[chr(64 + idx)].width = width
+
+    localize_workbook(wb)
 
     sanitize_workbook(wb)
     buffer = io.BytesIO()

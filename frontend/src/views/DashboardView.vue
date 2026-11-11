@@ -1,4 +1,5 @@
 <script setup>
+import { t } from '../i18n/index.js'
 import { computed, ref } from 'vue'
 import { formatArea, formatCurrency, formatDate, formatNumber } from '../lib/format'
 import { openDownload } from '../lib/api'
@@ -142,7 +143,7 @@ const judgementText = computed(() => {
   const urgent = mostUrgentLane.value
   const hasPressure = trafficOverview.value.some((item) => item.key !== 'green' && item.value > 0)
   if (!hasPressure) return '今日暂无待处理风险。'
-  return `最紧急：${urgent?.label || '经营'}。先处理 Top 3 急项。`
+  return `最紧急：${t(urgent?.label || '经营')}。先处理 Top 3 急项。`
 })
 
 const judgementChips = computed(() => {
@@ -509,14 +510,14 @@ function exportOperationsDailyReport() {
     <article v-if="detailListsAvailable" class="card dashboard-summary-card dashboard-actions-card" data-testid="dashboard-actions">
       <div class="card-header compact">
         <div>
-          <div class="section-label">今日指挥板</div>
-          <h3 class="card-title">今日先看这三件事</h3>
+          <div class="section-label">{{ $t("今日指挥板") }}</div>
+          <h3 class="card-title">{{ $t("今日先看这三件事") }}</h3>
         </div>
         <div class="pill-group">
-          <button class="btn btn-compact" data-testid="dashboard-export-daily-report" @click="exportOperationsDailyReport">导出经营日报</button>
-          <span v-if="loading || operationsLoading" class="metric-pill info">读取中</span>
-          <span class="metric-pill info">月份 {{ operations.month || '--' }}</span>
-          <span class="metric-pill warning">Top 3 / {{ operations.todos?.length || 0 }}</span>
+          <button class="btn btn-compact" data-testid="dashboard-export-daily-report" @click="exportOperationsDailyReport">{{ $t("导出经营日报") }}</button>
+          <span v-if="loading || operationsLoading" class="metric-pill info">{{ $t("读取中") }}</span>
+          <span class="metric-pill info">{{ $t("月份 ") }}{{ $t(operations.month || '--') }}</span>
+          <span class="metric-pill warning">Top 3 / {{ $t(operations.todos?.length || 0) }}</span>
         </div>
       </div>
 
@@ -531,18 +532,18 @@ function exportOperationsDailyReport() {
           :aria-pressed="selectedTrafficTone === item.key"
           @click="selectTrafficTone(item.key)"
         >
-          <span>{{ item.label }}</span>
+          <span>{{ $t(item.label) }}</span>
           <AnimatedNumber :value="formatNumber(item.value)" />
-          <small>{{ item.helper }}</small>
+          <small>{{ $t(item.helper) }}</small>
         </button>
       </div>
 
       <div class="dashboard-judgement" data-testid="dashboard-judgement">
-        <strong>{{ judgementText }}</strong>
+        <strong>{{ $t(judgementText) }}</strong>
         <div class="dashboard-judgement-chips">
           <span v-for="item in judgementChips" :key="item.key" class="dashboard-chip" :class="item.tone">
-            <b>{{ item.value }}</b>
-            <small>{{ item.label }}</small>
+            <b>{{ $t(item.value) }}</b>
+            <small>{{ $t(item.label) }}</small>
           </span>
         </div>
       </div>
@@ -556,28 +557,24 @@ function exportOperationsDailyReport() {
           :data-testid="lane.testId"
         >
           <div class="dashboard-lane-head">
-            <span>{{ lane.label }}</span>
-            <strong>{{ lane.title }}</strong>
-            <small>{{ lane.helper }}</small>
+            <span>{{ $t(lane.label) }}</span>
+            <strong>{{ $t(lane.title) }}</strong>
+            <small>{{ $t(lane.helper) }}</small>
           </div>
           <button type="button" class="dashboard-lane-nav" @click="navigateLane(lane)">
-            {{ lane.action }}
+            {{ $t(lane.action) }}
           </button>
         </section>
-        <div v-if="selectedTrafficTone && !filteredPriorityLanes.length" class="compact-empty">
-          暂无{{ selectedTrafficLabel }}色经营信号
-        </div>
+        <div v-if="selectedTrafficTone && !filteredPriorityLanes.length" class="compact-empty">{{ $t(" 暂无") }}{{ $t(selectedTrafficLabel) }}{{ $t("色经营信号 ") }}</div>
       </div>
 
       <div class="dashboard-action-list today-top-actions" data-testid="today-top-actions">
         <div class="today-top-actions-head">
           <div>
-            <span>Top 3 急项</span>
-            <strong>先处理最影响今日节奏的事项</strong>
+            <span>{{ $t("Top 3 急项") }}</span>
+            <strong>{{ $t("先处理最影响今日节奏的事项") }}</strong>
           </div>
-          <button type="button" class="btn btn-compact" data-testid="today-open-operations-queue" @click="emit('select-tab', 'operations')">
-            查看完整待办队列
-          </button>
+          <button type="button" class="btn btn-compact" data-testid="today-open-operations-queue" @click="emit('select-tab', 'operations')">{{ $t(" 查看完整待办队列 ") }}</button>
         </div>
         <div
           v-for="(action, index) in todayActions"
@@ -591,17 +588,17 @@ function exportOperationsDailyReport() {
             :data-testid="`dashboard-action-row-${index}`"
             @click="openAction(action)"
           >
-            <span class="dashboard-action-rank" :class="actionTone(action)">{{ index + 1 }}</span>
+            <span class="dashboard-action-rank" :class="actionTone(action)">{{ $t(index + 1) }}</span>
             <span class="dashboard-action-main">
               <span class="dashboard-action-title-line">
-                <span class="badge" :class="actionTone(action)">{{ action.label || '待办' }}</span>
-                <strong>{{ actionTitle(action) }}</strong>
+                <span class="badge" :class="actionTone(action)">{{ $t(action.label || '待办') }}</span>
+                <strong>{{ $t(actionTitle(action)) }}</strong>
               </span>
-              <small>{{ actionMeta(action) }}</small>
+              <small>{{ $t(actionMeta(action)) }}</small>
             </span>
             <span class="dashboard-action-side">
-              <b>{{ actionValue(action) || '查看' }}</b>
-              <small>{{ actionContextCta(action) }}</small>
+              <b>{{ $t(actionValue(action) || '查看') }}</b>
+              <small>{{ $t(actionContextCta(action)) }}</small>
             </span>
           </button>
           <button
@@ -611,33 +608,30 @@ function exportOperationsDailyReport() {
             :data-testid="`dashboard-action-nav-${index}`"
             @click="navigateAction(action)"
           >
-            {{ actionCta(action) }}
+            {{ $t(actionCta(action)) }}
           </button>
         </div>
-        <div v-if="!todayActions.length" class="compact-empty">
-          今日暂无需要优先处理的经营动作
-        </div>
+        <div v-if="!todayActions.length" class="compact-empty">{{ $t(" 今日暂无需要优先处理的经营动作 ") }}</div>
       </div>
     </article>
 
     <article v-else class="card dashboard-summary-card dashboard-snapshot-card" data-testid="snapshot-dashboard-summary">
       <div class="card-header compact">
         <div>
-          <div class="section-label">{{ dashboardDataModeLabel }}</div>
-          <h3 class="card-title">{{ operationsProfileView.positioning || '当前楼宇按整楼口径展示' }}</h3>
+          <div class="section-label">{{ $t(dashboardDataModeLabel) }}</div>
+          <h3 class="card-title">{{ $t(operationsProfileView.positioning || '当前楼宇按整楼口径展示') }}</h3>
         </div>
         <div class="dashboard-snapshot-meta">
           <span
             v-if="isSimulatedData"
             class="metric-pill warning"
             data-testid="snapshot-dashboard-simulated-data"
-          >模拟数据</span>
-          <span class="metric-pill info">统计日 {{ snapshot.as_of_date || '--' }}</span>
+          >{{ $t("模拟数据") }}</span>
+          <span class="metric-pill info">{{ $t("统计日 ") }}{{ $t(snapshot.as_of_date || '--') }}</span>
         </div>
       </div>
       <p class="compact-empty">
-        {{ detailFactsUnavailableReason }}，因此不展示空白明细模块，也不把未知数据当作 0。
-      </p>
+        {{ $t(detailFactsUnavailableReason) }}{{ $t("，因此不展示空白明细模块，也不把未知数据当作 0。 ") }}</p>
       <section
         v-if="operationsProfileView.configured"
         class="building-profile-brief"
@@ -645,15 +639,15 @@ function exportOperationsDailyReport() {
         :data-structure="operationsProfileView.structureType"
       >
         <div class="building-profile-identity">
-          <span>{{ isSimulatedData ? '模拟运营形态' : '楼宇运营形态' }}</span>
-          <strong>{{ operationsProfileView.structureLabel }}</strong>
-          <small>当前数据粒度：{{ operationsProfileView.granularityLabel }}</small>
-          <p>{{ operationsProfileView.structureDetail }}</p>
+          <span>{{ $t(isSimulatedData ? '模拟运营形态' : '楼宇运营形态') }}</span>
+          <strong>{{ $t(operationsProfileView.structureLabel) }}</strong>
+          <small>{{ $t("当前数据粒度：") }}{{ $t(operationsProfileView.granularityLabel) }}</small>
+          <p>{{ $t(operationsProfileView.structureDetail) }}</p>
         </div>
         <div class="building-profile-focus">
-          <span>当前运营重点</span>
+          <span>{{ $t("当前运营重点") }}</span>
           <div>
-            <b v-for="item in operationsProfileView.focus" :key="item">{{ item }}</b>
+            <b v-for="item in operationsProfileView.focus" :key="item">{{ $t(item) }}</b>
           </div>
         </div>
         <div class="building-profile-groups">
@@ -665,23 +659,23 @@ function exportOperationsDailyReport() {
           >
             <header>
               <span>{{ group.name }}</span>
-              <strong>{{ group.statusLabel }}</strong>
+              <strong>{{ $t(group.statusLabel) }}</strong>
             </header>
             <p>{{ group.note }}</p>
-            <small>范围：{{ group.zoneLabel }}</small>
+            <small>{{ $t("范围：") }}{{ $t(group.zoneLabel) }}</small>
           </article>
         </div>
         <p
           v-if="operationsProfileView.unavailableGroupSafety"
           class="building-profile-safety"
           data-testid="building-profile-safety"
-        >{{ operationsProfileView.unavailableGroupSafety }}</p>
+        >{{ $t(operationsProfileView.unavailableGroupSafety) }}</p>
       </section>
       <div class="health-signal-items" data-testid="snapshot-dashboard-metrics">
         <MetricTile
           v-for="item in snapshotFacts"
           :key="item.code"
-          :label="item.label"
+          :label="$t(item.label)"
           :value="item.value"
           :helper="item.available ? snapshotMetricSourceLabel : item.reason"
           :tone="item.available ? 'info' : 'warning'"
@@ -694,41 +688,41 @@ function exportOperationsDailyReport() {
           class="btn btn-compact"
           data-testid="snapshot-dashboard-open-evidence"
           @click="emit('select-tab', 'evidence')"
-        >查看数据依据</button>
+        >{{ $t("查看数据依据") }}</button>
         <button
           v-if="availableTabs.includes('exchange')"
           type="button"
           class="btn btn-compact"
           data-testid="snapshot-dashboard-open-exchange"
           @click="emit('select-tab', 'exchange')"
-        >进入文件交换</button>
+        >{{ $t("进入文件交换") }}</button>
       </div>
     </article>
 
     <details v-if="detailListsAvailable" class="demo-secondary-details dashboard-health-details">
       <summary>
-        <span>核心指标</span>
-        <strong>经营健康度</strong>
+        <span>{{ $t("核心指标") }}</span>
+        <strong>{{ $t("经营健康度") }}</strong>
       </summary>
     <article class="card dashboard-summary-card" data-testid="dashboard-health">
       <div class="card-header compact">
         <div>
-          <div class="section-label">核心指标</div>
-          <h3 class="card-title">经营健康度</h3>
+          <div class="section-label">{{ $t("核心指标") }}</div>
+          <h3 class="card-title">{{ $t("经营健康度") }}</h3>
         </div>
       </div>
 
       <div class="health-signal-band" data-testid="dashboard-signal-band">
         <div v-for="group in healthSignalGroups" :key="group.key" class="health-signal-group" :class="group.tone">
           <div class="health-signal-label">
-            <span>{{ group.label }}</span>
-            <strong>{{ group.headline }}</strong>
+            <span>{{ $t(group.label) }}</span>
+            <strong>{{ $t(group.headline) }}</strong>
           </div>
           <div class="health-signal-items">
             <MetricTile
               v-for="item in group.items"
               :key="item.key"
-              :label="item.label"
+              :label="$t(item.label)"
               :value="item.value"
               :helper="item.helper"
               :tone="item.tone"

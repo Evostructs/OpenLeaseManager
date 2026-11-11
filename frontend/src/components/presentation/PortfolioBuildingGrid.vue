@@ -41,9 +41,9 @@ function openEvidence(card, metric) {
     <header class="portfolio-section-header">
       <div>
         <span class="portfolio-section-index">01</span>
-        <h2 id="portfolio-buildings-title">楼宇经营对照</h2>
+        <h2 id="portfolio-buildings-title">{{ $t("楼宇经营对照") }}</h2>
       </div>
-      <p>点击楼名查看详情</p>
+      <p>{{ $t("点击楼名查看详情") }}</p>
     </header>
 
     <div v-if="cards.length" class="portfolio-building-grid">
@@ -64,12 +64,12 @@ function openEvidence(card, metric) {
             @click="selectBuilding(card)"
           >
             <strong>{{ card.name }}</strong>
-            <small>{{ card.code }}</small>
+            <small>{{ $t(card.code) }}</small>
           </button>
           <span
             class="portfolio-building-status"
             :data-testid="`portfolio-building-status-${card.code}`"
-          >{{ card.statusLabel }}</span>
+          >{{ $t(card.statusLabel) }}</span>
         </header>
 
         <div v-if="card.metrics.length" class="portfolio-building-metrics">
@@ -79,11 +79,11 @@ function openEvidence(card, metric) {
               class="portfolio-building-metric"
               :class="{ unavailable: !metric.available }"
               :disabled="!allowBusinessNavigation || !metric.target"
-              :title="metric.unavailableReason || metric.label"
+              :title="$t(metric.unavailableReason || metric.label)"
               @click="openMetric(card, metric)"
             >
-              <span>{{ metric.label }}</span>
-              <b>{{ metric.value }}</b>
+              <span>{{ $t(metric.label) }}</span>
+              <b>{{ $t(metric.value) }}</b>
             </button>
             <button
               v-if="allowEvidence"
@@ -92,25 +92,21 @@ function openEvidence(card, metric) {
               :aria-label="`查看${card.name}${metric.label}依据`"
               :data-testid="`portfolio-building-evidence-${card.code}-${metric.key}`"
               @click="openEvidence(card, metric)"
-            >
-              查看依据
-            </button>
+            >{{ $t(" 查看依据 ") }}</button>
           </div>
         </div>
 
         <footer>
-          <span v-if="card.metricCount">{{ card.availableCount }}/{{ card.metricCount }} 项可用</span>
-          <span v-else>不展示逐楼指标</span>
+          <span v-if="card.metricCount">{{ $t(card.availableCount) }}/{{ $t(card.metricCount) }}{{ $t(" 项可用") }}</span>
+          <span v-else>{{ $t("不展示逐楼指标") }}</span>
           <span v-if="card.reason" :title="card.reason">{{ card.reason }}</span>
-          <span v-else-if="card.publishedAt">发布 {{ card.publishedAt.slice(0, 10) }}</span>
-          <span v-else>同日口径</span>
+          <span v-else-if="card.publishedAt">{{ $t("发布 ") }}{{ $t(card.publishedAt.slice(0, 10)) }}</span>
+          <span v-else>{{ $t("同日口径") }}</span>
         </footer>
       </article>
     </div>
 
-    <div v-else class="portfolio-building-empty">
-      暂无可展示的楼宇数据。
-    </div>
+    <div v-else class="portfolio-building-empty">{{ $t(" 暂无可展示的楼宇数据。 ") }}</div>
   </section>
 </template>
 

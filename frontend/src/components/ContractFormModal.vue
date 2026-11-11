@@ -1,4 +1,5 @@
 <script setup>
+import { t } from '../i18n/index.js'
 import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { api } from '../lib/api'
 import { profileSpaceOptions } from '../lib/roomsDomain'
@@ -456,7 +457,7 @@ function isFormDirty() {
 
 function requestClose() {
   if (props.saving) return
-  if (isFormDirty() && !window.confirm('当前合同表单有未保存的修改，确定关闭？')) return
+  if (isFormDirty() && !window.confirm(t('当前合同表单有未保存的修改，确定关闭？'))) return
   emit('close')
 }
 
@@ -501,71 +502,71 @@ function submit() {
     <div class="contract-form-shell" data-testid="contract-form-shell">
       <section class="contract-form-summary" data-testid="contract-form-summary">
         <div class="contract-form-summary-item">
-          <span>客户</span>
-          <strong :title="summaryCustomerName">{{ summaryCustomerName }}</strong>
+          <span>{{ $t("客户") }}</span>
+          <strong :title="$t(summaryCustomerName)">{{ $t(summaryCustomerName) }}</strong>
         </div>
         <div class="contract-form-summary-item">
-          <span>房源</span>
-          <strong>{{ summaryRoomCount }}</strong>
+          <span>{{ $t("房源") }}</span>
+          <strong>{{ $t(summaryRoomCount) }}</strong>
         </div>
         <div class="contract-form-summary-item">
-          <span>面积</span>
-          <strong>{{ summaryAreaText }}</strong>
+          <span>{{ $t("面积") }}</span>
+          <strong>{{ $t(summaryAreaText) }}</strong>
         </div>
         <div class="contract-form-summary-item">
-          <span>月租</span>
-          <strong>{{ summaryRentText }}</strong>
+          <span>{{ $t("月租") }}</span>
+          <strong>{{ $t(summaryRentText) }}</strong>
         </div>
         <div class="contract-form-summary-item wide">
-          <span>租期</span>
-          <strong :title="summaryLeaseWindowText">{{ summaryLeaseWindowText }}</strong>
+          <span>{{ $t("租期") }}</span>
+          <strong :title="$t(summaryLeaseWindowText)">{{ $t(summaryLeaseWindowText) }}</strong>
         </div>
         <div class="contract-form-summary-item status" :class="summaryConflictTone" data-testid="contract-form-conflict-status">
-          <span>房态</span>
-          <strong>{{ summaryConflictText }}</strong>
+          <span>{{ $t("房态") }}</span>
+          <strong>{{ $t(summaryConflictText) }}</strong>
         </div>
       </section>
 
       <section class="contract-form-section" data-testid="contract-form-section-object">
         <div class="contract-form-section-heading">
-          <h4>合同对象</h4>
+          <h4>{{ $t("合同对象") }}</h4>
         </div>
         <div class="contract-form-grid">
           <label class="form-field">
-            <span class="section-label">合同编号</span>
+            <span class="section-label">{{ $t("合同编号") }}</span>
             <input v-model="form.contract_no" class="input" />
           </label>
           <label class="form-field">
-            <span class="section-label">客户资料</span>
+            <span class="section-label">{{ $t("客户资料") }}</span>
             <select v-model="form.customer_id" class="select" @change="applyCustomerSelection">
-              <option :value="null">{{ customersLoading ? '客户读取中' : '不关联客户资料' }}</option>
+              <option :value="null">{{ $t(customersLoading ? '客户读取中' : '不关联客户资料') }}</option>
               <option v-for="customer in customerOptions" :key="customer.id" :value="customer.id">
-                {{ customer.name }}{{ customer.short_name ? ` / ${customer.short_name}` : '' }}
+                {{ customer.name }}{{ $t(customer.short_name ? ` / ${customer.short_name}` : '') }}
               </option>
             </select>
           </label>
           <label class="form-field">
-            <span class="section-label">客户名称</span>
+            <span class="section-label">{{ $t("客户名称") }}</span>
             <input v-model="form.tenant_name" class="input" />
           </label>
           <label class="form-field">
-            <span class="section-label">签约类型</span>
+            <span class="section-label">{{ $t("签约类型") }}</span>
             <select v-model="form.lease_type" class="select">
-              <option v-for="option in signingTypeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+              <option v-for="option in signingTypeOptions" :key="option.value" :value="option.value">{{ $t(option.label) }}</option>
             </select>
           </label>
           <label class="form-field">
-            <span class="section-label">到期处置</span>
+            <span class="section-label">{{ $t("到期处置") }}</span>
             <select v-model="form.disposal" class="select">
-              <option value="">未确定</option>
-              <option value="已续租">已续租</option>
-              <option value="已变更">已变更</option>
-              <option value="已退租">已退租</option>
-              <option value="逾期占用">逾期占用</option>
+              <option value="">{{ $t("未确定") }}</option>
+              <option value="已续租">{{ $t("已续租") }}</option>
+              <option value="已变更">{{ $t("已变更") }}</option>
+              <option value="已退租">{{ $t("已退租") }}</option>
+              <option value="逾期占用">{{ $t("逾期占用") }}</option>
             </select>
           </label>
           <label class="form-field">
-            <span class="section-label">关联合同编号</span>
+            <span class="section-label">{{ $t("关联合同编号") }}</span>
             <input v-model="form.prev_contract_no" class="input" />
           </label>
         </div>
@@ -574,26 +575,26 @@ function submit() {
       <section class="contract-form-section" data-testid="contract-form-section-rooms">
         <div class="contract-form-section-heading">
           <div>
-            <h4>房源明细</h4>
-            <span class="contract-form-heading-meta" :class="{ error: roomAvailabilityError }">{{ availabilityStatusText }}</span>
+            <h4>{{ $t("房源明细") }}</h4>
+            <span class="contract-form-heading-meta" :class="{ error: roomAvailabilityError }">{{ $t(availabilityStatusText) }}</span>
           </div>
-          <button type="button" class="btn btn-compact" @click="addRoomItem">新增房源</button>
+          <button type="button" class="btn btn-compact" @click="addRoomItem">{{ $t("新增房源") }}</button>
         </div>
         <div class="contract-room-items">
           <div class="contract-room-row contract-room-row-head">
-            <span>塔楼</span>
-            <span>室号</span>
-            <span>起租日</span>
-            <span>终止日</span>
-            <span>面积</span>
-            <span>日租单价</span>
-            <span>月租金</span>
-            <span>操作</span>
+            <span>{{ $t("塔楼") }}</span>
+            <span>{{ $t("室号") }}</span>
+            <span>{{ $t("起租日") }}</span>
+            <span>{{ $t("终止日") }}</span>
+            <span>{{ $t("面积") }}</span>
+            <span>{{ $t("日租单价") }}</span>
+            <span>{{ $t("月租金") }}</span>
+            <span>{{ $t("操作") }}</span>
           </div>
           <div v-for="(item, index) in form.room_items" :key="index" class="contract-room-row">
             <select v-model="item.tower" class="select">
-              <option value="">选择分区</option>
-              <option v-for="option in contractSpaceOptions" :key="option.code" :value="option.value">{{ option.label }}</option>
+              <option value="">{{ $t("选择分区") }}</option>
+              <option v-for="option in contractSpaceOptions" :key="option.code" :value="option.value">{{ $t(option.label) }}</option>
             </select>
             <div class="contract-room-selector">
               <input
@@ -606,99 +607,98 @@ function submit() {
                 v-if="roomAvailabilityText(item)"
                 class="room-availability-note"
                 :class="roomAvailabilityClass(item)"
-                :title="roomAvailabilityText(item)"
+                :title="$t(roomAvailabilityText(item))"
               >
-                {{ roomAvailabilityText(item) }}
+                {{ $t(roomAvailabilityText(item)) }}
               </small>
             </div>
-            <DatePickerInput v-model="item.start_date" placeholder="继承合同" />
-            <DatePickerInput v-model="item.end_date" placeholder="继承合同" />
+            <DatePickerInput v-model="item.start_date" :placeholder="$t(&quot;继承合同&quot;)" />
+            <DatePickerInput v-model="item.end_date" :placeholder="$t(&quot;继承合同&quot;)" />
             <input v-model.number="item.area" type="number" class="input" />
             <input v-model.number="item.unit_price" type="number" class="input" />
             <input :value="item.monthly_rent" type="number" class="input" readonly />
-            <button type="button" class="btn btn-danger btn-compact" :disabled="form.room_items.length <= 1" @click="removeRoomItem(index)">删除</button>
+            <button type="button" class="btn btn-danger btn-compact" :disabled="form.room_items.length <= 1" @click="removeRoomItem(index)">{{ $t("删除") }}</button>
           </div>
           <datalist id="contract-room-options">
-            <option v-for="room in roomOptions" :key="room.id" :value="room.room_no" :label="roomOptionLabel(room)" />
+            <option v-for="room in roomOptions" :key="room.id" :value="room.room_no" :label="$t(roomOptionLabel(room))" />
           </datalist>
         </div>
         <div v-if="roomConflictItems.length" class="contract-room-conflicts">
           <div v-for="conflict in roomConflictItems" :key="`${conflict.index}-${conflict.item.room_no}`" class="contract-room-conflict">
-            {{ conflict.item.room_no }} 已被 {{ roomContractLabel(conflict.room) }} 占用
-          </div>
+            {{ conflict.item.room_no }}{{ $t(" 已被 ") }}{{ $t(roomContractLabel(conflict.room)) }}{{ $t(" 占用 ") }}</div>
         </div>
         <div v-if="roomDateErrorItems.length" class="contract-room-conflicts">
           <div v-for="error in roomDateErrorItems" :key="`date-${error.index}`" class="contract-room-conflict">
-            {{ error.item.room_no || `第 ${error.index + 1} 行` }}：{{ error.message }}
+            {{ error.item.room_no || `第 ${error.index + 1} 行` }}：{{ $t(error.message) }}
           </div>
         </div>
       </section>
 
       <section class="contract-form-section" data-testid="contract-form-section-rent">
         <div class="contract-form-section-heading">
-          <h4>租期租金</h4>
-          <InfoHint text="月租由房源面积和日租单价汇总；中介佣金可按实际约定调整。" />
+          <h4>{{ $t("租期租金") }}</h4>
+          <InfoHint :text="$t(&quot;月租由房源面积和日租单价汇总；中介佣金可按实际约定调整。&quot;)" />
         </div>
         <div class="contract-form-grid">
           <div class="form-field">
-            <span class="section-label">起租日</span>
+            <span class="section-label">{{ $t("起租日") }}</span>
             <DatePickerInput v-model="form.start_date" />
           </div>
           <div class="form-field">
-            <span class="section-label">终止日</span>
+            <span class="section-label">{{ $t("终止日") }}</span>
             <DatePickerInput v-model="form.end_date" />
           </div>
           <label class="form-field">
-            <span class="section-label">合计面积</span>
+            <span class="section-label">{{ $t("合计面积") }}</span>
             <input v-model.number="form.area" type="number" class="input" readonly />
           </label>
           <label class="form-field">
-            <span class="section-label">平均日租</span>
+            <span class="section-label">{{ $t("平均日租") }}</span>
             <input v-model.number="form.unit_price" type="number" class="input" readonly />
           </label>
           <label class="form-field">
-            <span class="section-label">月租金</span>
+            <span class="section-label">{{ $t("月租金") }}</span>
             <input v-model.number="form.monthly_rent" type="number" class="input" readonly />
           </label>
           <label class="form-field">
-            <span class="section-label">免租期（月）</span>
-            <input v-model.number="form.free_period" type="number" class="input" title="自起租日起连续免租 N 个自然月，如 1/25 起租免 1 个月即免至 2/24" />
-            <span class="form-field-hint">自起租日起连续免租，如 1/25 起免 1 个月即免至 2/24</span>
+            <span class="section-label">{{ $t("免租期（月）") }}</span>
+            <input v-model.number="form.free_period" type="number" class="input" :title="$t(&quot;自起租日起连续免租 N 个自然月，如 1/25 起租免 1 个月即免至 2/24&quot;)" />
+            <span class="form-field-hint">{{ $t("自起租日起连续免租，如 1/25 起免 1 个月即免至 2/24") }}</span>
           </label>
           <label class="form-field">
-            <span class="section-label">中介佣金</span>
+            <span class="section-label">{{ $t("中介佣金") }}</span>
             <input v-model.number="form.broker_fee" type="number" class="input" @input="markBrokerFeeManual" />
           </label>
           <label class="form-field">
-            <span class="section-label">付款日（每月）</span>
-            <input v-model.number="form.payment_due_day" type="number" min="1" max="31" class="input" placeholder="留空=月末" />
-            <span class="form-field-hint">租金每月到期日（1-31），留空按月末到期</span>
+            <span class="section-label">{{ $t("付款日（每月）") }}</span>
+            <input v-model.number="form.payment_due_day" type="number" min="1" max="31" class="input" :placeholder="$t(&quot;留空=月末&quot;)" />
+            <span class="form-field-hint">{{ $t("租金每月到期日（1-31），留空按月末到期") }}</span>
           </label>
         </div>
       </section>
 
       <section class="contract-form-section" data-testid="contract-form-section-deposit">
         <div class="contract-form-section-heading">
-          <h4>押金物业</h4>
+          <h4>{{ $t("押金物业") }}</h4>
         </div>
         <div class="contract-form-grid compact">
           <label class="form-field">
-            <span class="section-label">押金</span>
+            <span class="section-label">{{ $t("押金") }}</span>
             <input v-model.number="form.deposit" type="number" class="input" />
           </label>
           <label class="form-field">
-            <span class="section-label">押金状态</span>
+            <span class="section-label">{{ $t("押金状态") }}</span>
             <select v-model="form.deposit_status" class="select">
-              <option value="">未标注</option>
-              <option value="已收">已收</option>
-              <option value="已退">已退</option>
-              <option value="部分退还">部分退还</option>
-              <option value="未收">未收</option>
-              <option value="待收">待收</option>
+              <option value="">{{ $t("未标注") }}</option>
+              <option value="已收">{{ $t("已收") }}</option>
+              <option value="已退">{{ $t("已退") }}</option>
+              <option value="部分退还">{{ $t("部分退还") }}</option>
+              <option value="未收">{{ $t("未收") }}</option>
+              <option value="待收">{{ $t("待收") }}</option>
             </select>
           </label>
           <label class="form-field">
-            <span class="section-label">物业费单价</span>
+            <span class="section-label">{{ $t("物业费单价") }}</span>
             <input v-model.number="form.property_fee_rate" type="number" class="input" />
           </label>
         </div>
@@ -706,29 +706,29 @@ function submit() {
 
       <section class="contract-form-section" data-testid="contract-form-section-contact">
         <div class="contract-form-section-heading">
-          <h4>联系人</h4>
+          <h4>{{ $t("联系人") }}</h4>
         </div>
         <div class="contract-form-grid">
           <label class="form-field">
-            <span class="section-label">客户方对接人</span>
+            <span class="section-label">{{ $t("客户方对接人") }}</span>
             <input v-model="form.contact_person" class="input" />
           </label>
           <label class="form-field">
-            <span class="section-label">联系电话</span>
+            <span class="section-label">{{ $t("联系电话") }}</span>
             <input v-model="form.contact_phone" type="tel" maxlength="30" class="input" @blur="checkContactPhone" @input="contactPhoneWarn = ''" />
-            <span v-if="contactPhoneWarn" class="form-field-warn">{{ contactPhoneWarn }}</span>
+            <span v-if="contactPhoneWarn" class="form-field-warn">{{ $t(contactPhoneWarn) }}</span>
           </label>
           <label class="form-field">
-            <span class="section-label">邮箱</span>
+            <span class="section-label">{{ $t("邮箱") }}</span>
             <input v-model="form.contact_email" type="email" maxlength="100" class="input" @blur="checkContactEmail" @input="contactEmailWarn = ''" />
-            <span v-if="contactEmailWarn" class="form-field-warn">{{ contactEmailWarn }}</span>
+            <span v-if="contactEmailWarn" class="form-field-warn">{{ $t(contactEmailWarn) }}</span>
           </label>
           <label class="form-field">
-            <span class="section-label">我方对接人</span>
+            <span class="section-label">{{ $t("我方对接人") }}</span>
             <input v-model="form.internal_contact_person" class="input" />
           </label>
           <label class="form-field">
-            <span class="section-label">我方飞书ID</span>
+            <span class="section-label">{{ $t("我方飞书ID") }}</span>
             <input v-model="form.internal_contact_feishu_id" class="input" />
           </label>
         </div>
@@ -736,18 +736,18 @@ function submit() {
 
       <section class="contract-form-section" data-testid="contract-form-section-notes">
         <div class="contract-form-section-heading">
-          <h4>备注</h4>
+          <h4>{{ $t("备注") }}</h4>
         </div>
         <label class="form-field">
-          <span class="section-label">内部备注</span>
+          <span class="section-label">{{ $t("内部备注") }}</span>
           <textarea v-model="form.notes" class="textarea" />
         </label>
       </section>
     </div>
 
     <template #footer>
-      <button class="btn" :disabled="saving" @click="requestClose">取消</button>
-      <button class="btn btn-primary" data-testid="contract-form-save" :disabled="!canSubmit || saving" @click="submit">{{ saving ? '保存中…' : '保存' }}</button>
+      <button class="btn" :disabled="saving" @click="requestClose">{{ $t("取消") }}</button>
+      <button class="btn btn-primary" data-testid="contract-form-save" :disabled="!canSubmit || saving" @click="submit">{{ $t(saving ? '保存中…' : '保存') }}</button>
     </template>
   </BaseModal>
 </template>

@@ -1,4 +1,5 @@
 <script setup>
+import { locale } from '../i18n/index.js'
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -28,8 +29,8 @@ const yearPageStart = ref(Math.floor(cursorYear.value / 12) * 12)
 const pickerMode = computed(() => (props.mode === 'month' ? 'month' : 'date'))
 const isMonthMode = computed(() => pickerMode.value === 'month')
 const resolvedPlaceholder = computed(() => props.placeholder || (isMonthMode.value ? '选择月份' : '选择日期'))
-const weekdays = ['日', '一', '二', '三', '四', '五', '六']
-const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+const weekdays = computed(() => locale.value === 'en' ? ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'] : ['日', '一', '二', '三', '四', '五', '六'])
+const monthLabels = computed(() => locale.value === 'en' ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] : ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'])
 
 function pad(value) {
   return String(value).padStart(2, '0')
@@ -114,7 +115,7 @@ const calendarDays = computed(() => {
 
 const monthOptions = computed(() => {
   const currentMonth = todayMonth()
-  return monthLabels.map((label, index) => {
+  return monthLabels.value.map((label, index) => {
     const value = formatMonthValue(cursorYear.value, index)
     return {
       label,
@@ -229,14 +230,14 @@ onBeforeUnmount(() => {
 <template>
   <div ref="root" class="date-picker" :class="`date-picker-${pickerMode}`">
     <button type="button" class="date-picker-trigger" :aria-expanded="open" @click="toggleOpen">
-      <span :class="{ 'date-picker-placeholder': !displayValue }">{{ displayValue || resolvedPlaceholder }}</span>
+      <span :class="{ 'date-picker-placeholder': !displayValue }">{{ $t(displayValue || resolvedPlaceholder) }}</span>
       <span class="date-picker-calendar-icon" aria-hidden="true"></span>
     </button>
 
     <div v-if="open" class="date-picker-panel">
       <div class="date-picker-header">
         <button type="button" class="date-picker-nav" @click="shiftPeriod(-1)">‹</button>
-        <button type="button" class="date-picker-title" @click="openYearPicker">{{ panelTitle }}</button>
+        <button type="button" class="date-picker-title" @click="openYearPicker">{{ $t(panelTitle) }}</button>
         <button type="button" class="date-picker-nav" @click="shiftPeriod(1)">›</button>
       </div>
 
@@ -249,7 +250,7 @@ onBeforeUnmount(() => {
           :class="{ selected: item.selected, today: item.current }"
           @click="selectYear(item.year)"
         >
-          {{ item.year }}
+          {{ $t(item.year) }}
         </button>
       </div>
 
@@ -262,13 +263,13 @@ onBeforeUnmount(() => {
           :class="{ selected: item.selected, today: item.today }"
           @click="selectMonth(item.value)"
         >
-          {{ item.label }}
+          {{ $t(item.label) }}
         </button>
       </div>
 
       <div v-else class="date-picker-day-panel">
         <div class="date-picker-weekdays">
-          <span v-for="weekday in weekdays" :key="weekday">{{ weekday }}</span>
+          <span v-for="weekday in weekdays" :key="weekday">{{ $t(weekday) }}</span>
         </div>
         <div class="date-picker-day-grid">
           <button
@@ -279,14 +280,14 @@ onBeforeUnmount(() => {
             :class="{ outside: item.outside, selected: item.selected, today: item.today }"
             @click="selectDate(item.value)"
           >
-            {{ item.day }}
+            {{ $t(item.day) }}
           </button>
         </div>
       </div>
 
       <div class="date-picker-footer">
-        <button type="button" class="date-picker-link" @click="clearValue">清除</button>
-        <button type="button" class="date-picker-link strong" @click="selectToday">今天</button>
+        <button type="button" class="date-picker-link" @click="clearValue">{{ $t("清除") }}</button>
+        <button type="button" class="date-picker-link strong" @click="selectToday">{{ $t("今天") }}</button>
       </div>
     </div>
   </div>

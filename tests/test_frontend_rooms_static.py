@@ -162,8 +162,8 @@ def test_room_row_actions_are_folded_into_more_menu() -> None:
     assert 'data-testid="room-row-detail-action"' in action_source
     assert 'data-testid="room-row-more-actions"' in action_source
     assert 'data-testid="room-row-more-menu"' in action_source
-    assert ">详情</button>" in before_menu
-    assert re.search(r">\s*更多\s*</button>", before_menu)
+    assert '>{{ $t("详情") }}</button>' in before_menu
+    assert re.search('>\\s*\\{\\{ \\$t\\(" 更多 "\\) \\}\\}\\s*</button>', before_menu)
 
     assert "查看合同" in menu_source
     assert "查看客户" in menu_source
@@ -176,8 +176,8 @@ def test_room_row_actions_are_folded_into_more_menu() -> None:
 
     assert "编辑房间" not in before_menu
     assert "删除房间" not in before_menu
-    assert 'title="编辑房间"' not in before_menu
-    assert 'title="删除房间"' not in before_menu
+    assert ':title="$t(&quot;编辑房间&quot;)"' not in before_menu
+    assert ':title="$t(&quot;删除房间&quot;)"' not in before_menu
 
 
 def test_room_row_more_menu_has_mobile_safe_styles() -> None:
@@ -247,7 +247,7 @@ def test_rooms_first_screen_replaces_metric_wall_with_status_overview_and_floor_
     assert 'class="room-status-overview"' in summary_source
     assert 'class="room-status-stack"' in summary_source
     assert 'class="room-status-segment"' in summary_source
-    assert "{{ occupancyRate }}%" in summary_source
+    assert '{{ $t(occupancyRate) }}%' in summary_source
     assert "空置集中 Top 3" in summary_source
     assert 'data-testid="room-floor-map"' in source
     assert ".rooms-heatmap-panel" in load_style_source()

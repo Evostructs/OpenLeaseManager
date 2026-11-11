@@ -51,13 +51,13 @@ onBeforeUnmount(() => focusSession?.release())
       >
         <header class="modal-header">
           <div>
-            <div class="section-label">帮助</div>
-            <h3 id="control-help-title" class="card-title">页面提示</h3>
+            <div class="section-label">{{ $t("帮助") }}</div>
+            <h3 id="control-help-title" class="card-title">{{ $t("页面提示") }}</h3>
           </div>
           <button
             type="button"
             class="icon-btn"
-            aria-label="关闭帮助"
+            :aria-label="$t(&quot;关闭帮助&quot;)"
             data-testid="control-help-close"
             @click="close"
           >
@@ -67,27 +67,27 @@ onBeforeUnmount(() => focusSession?.release())
 
         <div class="modal-body control-help-body">
           <p class="control-help-current" data-testid="control-help-current-page">
-            {{ content.title || title }}
+            {{ $t(content.title || title) }}
           </p>
 
           <section class="control-help-section">
-            <h4>本页看什么</h4>
+            <h4>{{ $t("本页看什么") }}</h4>
             <ul>
-              <li v-for="item in content.look" :key="item">{{ item }}</li>
+              <li v-for="item in content.look" :key="item">{{ $t(item) }}</li>
             </ul>
           </section>
 
           <section class="control-help-section">
-            <h4>下一步做什么</h4>
+            <h4>{{ $t("下一步做什么") }}</h4>
             <ul>
-              <li v-for="item in content.next" :key="item">{{ item }}</li>
+              <li v-for="item in content.next" :key="item">{{ $t(item) }}</li>
             </ul>
           </section>
 
           <section class="control-help-section">
-            <h4>常见口径</h4>
+            <h4>{{ $t("常见口径") }}</h4>
             <ul>
-              <li v-for="item in content.terms" :key="item">{{ item }}</li>
+              <li v-for="item in content.terms" :key="item">{{ $t(item) }}</li>
             </ul>
           </section>
         </div>

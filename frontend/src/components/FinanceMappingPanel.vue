@@ -47,24 +47,24 @@ onBeforeUnmount(()=>{sequence++;emit('dirty',false);emit('busy',false)})
 </script>
 <template>
  <section class="mapping-panel">
-  <div class="mapping-heading"><div><span class="mapping-eyebrow">客户财务配置 · 第 {{ profile.revision }} 次修订</span><h3>业务交得清，财务接得上。</h3><p>{{ profile.ready?'法人、账套与科目映射已确认。':'配置法人、账套、科目和银行简称，供财务人员核对交接。' }}</p></div><button type="button" :disabled="busy" @click="expanded=!expanded">{{ expanded?'收起配置':'查看财务映射' }}</button></div>
-  <p v-if="profile.missing.length" class="mapping-gaps">待补齐：{{ profile.missing.join('、') }}</p>
+  <div class="mapping-heading"><div><span class="mapping-eyebrow">{{ $t("客户财务配置 · 第 ") }}{{ $t(profile.revision) }}{{ $t(" 次修订") }}</span><h3>{{ $t("业务交得清，财务接得上。") }}</h3><p>{{ $t(profile.ready?'法人、账套与科目映射已确认。':'配置法人、账套、科目和银行简称，供财务人员核对交接。') }}</p></div><button type="button" :disabled="busy" @click="expanded=!expanded">{{ $t(expanded?'收起配置':'查看财务映射') }}</button></div>
+  <p v-if="profile.missing.length" class="mapping-gaps">{{ $t("待补齐：") }}{{ $t(profile.missing.join('、')) }}</p>
   <form v-if="expanded" @submit.prevent="save">
-   <p v-if="error" class="mapping-error" role="alert">{{ error }}</p><p v-if="notice" role="status">{{ notice }}</p>
+   <p v-if="error" class="mapping-error" role="alert">{{ $t(error) }}</p><p v-if="notice" role="status">{{ $t(notice) }}</p>
    <fieldset :disabled="!canConfigure||busy" @input="changed"><div class="mapping-grid">
-    <label>法人名称<input v-model="draft.company_name" maxlength="150"></label><label>财务组织编码<input v-model="draft.company_code" maxlength="40"></label>
-    <label>财务系统<input v-model="draft.erp_system" maxlength="80" placeholder="例如：用友、金蝶、SAP"></label><label>账套编码<input v-model="draft.book_code" maxlength="40"></label>
-    <label>金额含税口径<select v-model="draft.tax_basis"><option value="">请选择</option><option value="gross">含税金额</option><option value="net">不含税金额</option><option value="not_applicable">不适用，由财务另行确认</option></select></label>
-    <label v-for="(label,key) in accounts" :key="key">{{ label }}科目编码<input v-model="draft.accounts[key]" maxlength="40"></label>
-   </div><h4>银行简称 → 财务账户编码</h4>
-   <div v-for="(row,index) in banks" :key="index" class="mapping-bank"><label>银行简称<input v-model="row.label" maxlength="100" placeholder="与银行流水中的账户简称一致"></label><label>财务账户编码<input v-model="row.code" maxlength="40"></label><button type="button" @click="banks.splice(index,1);draft.confirmed=false">移除此映射</button></div>
-   <button type="button" @click="banks.push({label:'',code:''});draft.confirmed=false">增加银行映射</button>
-   <label class="mapping-note">核对依据<textarea v-model="draft.note" maxlength="2000" placeholder="科目表版本、客户财务确认依据"></textarea></label>
-   <label class="mapping-check"><input v-model="draft.confirmed" type="checkbox">已与客户财务核对法人、金额口径、科目和银行映射</label>
+    <label>{{ $t("法人名称") }}<input v-model="draft.company_name" maxlength="150"></label><label>{{ $t("财务组织编码") }}<input v-model="draft.company_code" maxlength="40"></label>
+    <label>{{ $t("财务系统") }}<input v-model="draft.erp_system" maxlength="80" :placeholder="$t(&quot;例如：用友、金蝶、SAP&quot;)"></label><label>{{ $t("账套编码") }}<input v-model="draft.book_code" maxlength="40"></label>
+    <label>{{ $t("金额含税口径") }}<select v-model="draft.tax_basis"><option value="">{{ $t("请选择") }}</option><option value="gross">{{ $t("含税金额") }}</option><option value="net">{{ $t("不含税金额") }}</option><option value="not_applicable">{{ $t("不适用，由财务另行确认") }}</option></select></label>
+    <label v-for="(label,key) in accounts" :key="key">{{ $t(label) }}{{ $t("科目编码") }}<input v-model="draft.accounts[key]" maxlength="40"></label>
+   </div><h4>{{ $t("银行简称 → 财务账户编码") }}</h4>
+   <div v-for="(row,index) in banks" :key="index" class="mapping-bank"><label>{{ $t("银行简称") }}<input v-model="row.label" maxlength="100" :placeholder="$t(&quot;与银行流水中的账户简称一致&quot;)"></label><label>{{ $t("财务账户编码") }}<input v-model="row.code" maxlength="40"></label><button type="button" @click="banks.splice(index,1);draft.confirmed=false">{{ $t("移除此映射") }}</button></div>
+   <button type="button" @click="banks.push({label:'',code:''});draft.confirmed=false">{{ $t("增加银行映射") }}</button>
+   <label class="mapping-note">{{ $t("核对依据") }}<textarea v-model="draft.note" maxlength="2000" :placeholder="$t(&quot;科目表版本、客户财务确认依据&quot;)"></textarea></label>
+   <label class="mapping-check"><input v-model="draft.confirmed" type="checkbox">{{ $t("已与客户财务核对法人、金额口径、科目和银行映射") }}</label>
    </fieldset>
-   <div v-if="canConfigure" class="mapping-actions"><button type="submit" :disabled="busy||!dirty">{{ busy?'正在保存…':'保存财务映射' }}</button><button v-if="error" type="button" :disabled="busy" @click="readRevision">读取最新修订并保留填写</button></div>
-   <p v-else>财务映射由具有本楼编辑权限的管理员维护。</p>
-   <p class="mapping-footnote">映射随交接包保存。科目编码需按客户财务制度核定，金额口径仅作登记。</p>
+   <div v-if="canConfigure" class="mapping-actions"><button type="submit" :disabled="busy||!dirty">{{ $t(busy?'正在保存…':'保存财务映射') }}</button><button v-if="error" type="button" :disabled="busy" @click="readRevision">{{ $t("读取最新修订并保留填写") }}</button></div>
+   <p v-else>{{ $t("财务映射由具有本楼编辑权限的管理员维护。") }}</p>
+   <p class="mapping-footnote">{{ $t("映射随交接包保存。科目编码需按客户财务制度核定，金额口径仅作登记。") }}</p>
   </form>
  </section>
 </template>

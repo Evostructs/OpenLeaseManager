@@ -48,7 +48,7 @@ def test_attachment_panel_has_evidence_chain_landmarks() -> None:
     assert "totalAttachments" in source
     assert "coveredCategoryCount" in source
     assert "categoryEntries" in source
-    assert "上传人 {{ item.uploaded_by || '--' }}" in template
+    assert '{{ $t("上传人 ") }}{{ item.uploaded_by || \'--\' }}' in template
     assert "当前缺少" in template
     assert "下一步建议上传" in template
 
@@ -83,7 +83,7 @@ def test_attachment_delete_uses_app_native_modal() -> None:
     assert "window.confirm" not in delete_source
     assert "import BaseModal from './BaseModal.vue'" in source
     assert "<BaseModal" in source
-    assert 'title="删除附件"' in source
+    assert ':title="$t(&quot;删除附件&quot;)"' in source
     assert "const attachmentDeleteConfirm = reactive({ item: null, deleting: false })" in source
     assert "function closeRemoveAttachmentConfirm()" in source
     assert "async function confirmRemoveAttachment()" in source

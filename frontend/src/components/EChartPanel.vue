@@ -1,4 +1,6 @@
 <script setup>
+import { locale } from '../i18n/index.js'
+import { localizeChartOption, restoreChartEvent } from '../i18n/charts.js'
 import { beginReadyTask } from '../lib/operationTelemetry'
 import { nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
 import { cancelChartWork, loadChartRuntime, scheduleChartWork } from '../lib/chartRuntime'
@@ -66,7 +68,7 @@ function disposeEchart() {
 }
 
 function forwardChartClick(payload) {
-  emit('chart-click', payload)
+  emit('chart-click', restoreChartEvent(payload, props.option))
 }
 
 function forwardDataZoom(payload) {
@@ -211,7 +213,8 @@ function updateChart(echarts, target) {
   }
   if (optionDirty) {
     optionDirty = false
-    const option = theme === 'dark' ? remapChartOptionForDark(props.option) : props.option
+    const localized = localizeChartOption(props.option, locale.value)
+    const option = theme === 'dark' ? remapChartOptionForDark(localized) : localized
     chart.setOption(option, true)
   }
   if (resizeDirty && (lastWidth !== target.clientWidth || lastHeight !== target.clientHeight)) {
@@ -311,7 +314,7 @@ onDeactivated(() => {
 })
 
 watch(
-  () => [props.option, props.empty],
+  () => [props.option, props.empty, locale.value],
   () => {
     if (props.empty) {
       cancelPendingUpdate()
@@ -345,14 +348,14 @@ defineExpose({ getDataURL, dispatchAction })
 
 <template>
   <div v-if="empty" class="chart-empty" :style="{ height: `${height}px` }">
-    {{ emptyText }}
+    {{ $t(emptyText) }}
   </div>
   <div
     v-else
     ref="container"
     class="chart-panel"
     role="img"
-    :aria-label="ariaLabel"
+    :aria-label="$t(ariaLabel)"
     :style="{ height: `${height}px` }"
     @pointerdown="beginPointerInteraction"
   />

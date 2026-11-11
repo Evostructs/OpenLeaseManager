@@ -131,93 +131,92 @@ watch(
 </script>
 
 <template>
-  <BaseModal :open="open" :title="title" size="small" @close="emit('close')">
+  <BaseModal :open="open" :title="$t(title)" size="small" @close="emit('close')">
     <div class="detail-list">
       <div v-if="contract" class="form-field">
-        <span class="section-label">当前合同</span>
+        <span class="section-label">{{ $t("当前合同") }}</span>
         <div>{{ contract.contract_no }} · {{ contract.tenant_name || '--' }}</div>
       </div>
 
       <div v-if="isAction && deposit" class="stat-grid">
         <div>
-          <div class="section-label">押金类型</div>
-          <div>{{ deposit.deposit_type || '--' }}</div>
+          <div class="section-label">{{ $t("押金类型") }}</div>
+          <div>{{ $t(deposit.deposit_type || '--') }}</div>
         </div>
         <div>
-          <div class="section-label">可用押金</div>
-          <div>{{ formatCurrencyFixed(availableAmount) }}</div>
+          <div class="section-label">{{ $t("可用押金") }}</div>
+          <div>{{ $t(formatCurrencyFixed(availableAmount)) }}</div>
         </div>
         <div>
-          <div class="section-label">已收</div>
-          <div>{{ formatCurrencyFixed(deposit.received_amount || 0) }}</div>
+          <div class="section-label">{{ $t("已收") }}</div>
+          <div>{{ $t(formatCurrencyFixed(deposit.received_amount || 0)) }}</div>
         </div>
         <div>
-          <div class="section-label">已退 / 已冲抵</div>
-          <div>{{ formatCurrencyFixed(deposit.refunded_amount || 0) }} / {{ formatCurrencyFixed(deposit.offset_amount || 0) }}</div>
+          <div class="section-label">{{ $t("已退 / 已冲抵") }}</div>
+          <div>{{ $t(formatCurrencyFixed(deposit.refunded_amount || 0)) }} / {{ $t(formatCurrencyFixed(deposit.offset_amount || 0)) }}</div>
         </div>
       </div>
 
       <div v-if="isCreate || isEdit" class="form-grid">
         <label class="form-field">
-          <span class="section-label">押金类型</span>
+          <span class="section-label">{{ $t("押金类型") }}</span>
           <select v-model="form.deposit_type" class="select">
-            <option v-for="type in depositTypes" :key="type" :value="type">{{ type }}</option>
+            <option v-for="type in depositTypes" :key="type" :value="type">{{ $t(type) }}</option>
           </select>
         </label>
         <label class="form-field">
-          <span class="section-label">应收押金</span>
+          <span class="section-label">{{ $t("应收押金") }}</span>
           <input v-model.number="form.expected_amount" type="number" min="0" class="input" />
         </label>
         <label class="form-field">
-          <span class="section-label">应收日期</span>
+          <span class="section-label">{{ $t("应收日期") }}</span>
           <DatePickerInput v-model="form.due_date" />
         </label>
         <label v-if="isEdit" class="form-field">
-          <span class="section-label">已收金额</span>
+          <span class="section-label">{{ $t("已收金额") }}</span>
           <input v-model.number="form.received_amount" type="number" min="0" class="input" />
         </label>
         <label v-if="isEdit" class="form-field">
-          <span class="section-label">收取日期</span>
+          <span class="section-label">{{ $t("收取日期") }}</span>
           <DatePickerInput v-model="form.received_date" />
         </label>
         <label v-if="isEdit" class="form-field">
-          <span class="section-label">已退金额</span>
+          <span class="section-label">{{ $t("已退金额") }}</span>
           <input v-model.number="form.refunded_amount" type="number" min="0" class="input" />
         </label>
         <label v-if="isEdit" class="form-field">
-          <span class="section-label">退还日期</span>
+          <span class="section-label">{{ $t("退还日期") }}</span>
           <DatePickerInput v-model="form.refund_date" />
         </label>
         <label v-if="isEdit" class="form-field">
-          <span class="section-label">已冲抵金额</span>
+          <span class="section-label">{{ $t("已冲抵金额") }}</span>
           <input v-model.number="form.offset_amount" type="number" min="0" class="input" />
         </label>
       </div>
 
       <div v-if="isAction" class="form-grid single">
         <label class="form-field">
-          <span class="section-label">{{ actionLabel }}</span>
+          <span class="section-label">{{ $t(actionLabel) }}</span>
           <input v-model.number="form.amount" type="number" min="0" class="input" />
         </label>
         <label class="form-field">
-          <span class="section-label">登记日期</span>
+          <span class="section-label">{{ $t("登记日期") }}</span>
           <DatePickerInput v-model="form.action_date" />
         </label>
       </div>
 
       <label class="form-field">
-        <span class="section-label">备注</span>
+        <span class="section-label">{{ $t("备注") }}</span>
         <textarea v-model="form.notes" class="textarea" rows="3" />
       </label>
-      <div v-if="deposit && (isEdit || isAction)" class="helper-text">
-        当前状态 {{ deposit.status || '--' }}，最近收取 {{ formatDate(deposit.received_date) }}，最近退还 {{ formatDate(deposit.refund_date) }}
+      <div v-if="deposit && (isEdit || isAction)" class="helper-text">{{ $t(" 当前状态 ") }}{{ $t(deposit.status || '--') }}{{ $t("，最近收取 ") }}{{ $t(formatDate(deposit.received_date)) }}{{ $t("，最近退还 ") }}{{ $t(formatDate(deposit.refund_date)) }}
       </div>
-      <div v-if="validationMessage" class="helper-text danger">{{ validationMessage }}</div>
+      <div v-if="validationMessage" class="helper-text danger">{{ $t(validationMessage) }}</div>
     </div>
 
     <template #footer>
-      <button class="btn" @click="emit('close')">取消</button>
-      <button class="btn btn-primary" :disabled="!canSubmit" @click="submit">保存</button>
+      <button class="btn" @click="emit('close')">{{ $t("取消") }}</button>
+      <button class="btn btn-primary" :disabled="!canSubmit" @click="submit">{{ $t("保存") }}</button>
     </template>
   </BaseModal>
 </template>

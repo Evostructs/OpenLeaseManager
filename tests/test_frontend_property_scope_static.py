@@ -246,7 +246,7 @@ def test_presentation_is_a_pure_consumer_of_the_shared_snapshot() -> None:
     source = _source(PRESENTATION)
     assert "snapshot:" in source
     assert "watch(() => props.snapshot, applySnapshot" in source
-    assert "{{ scopeTitle }} 租赁经营总览" in source
+    assert '{{ $t(scopeTitle) }}{{ $t(" 租赁经营总览") }}' in source
     assert "DEMO_A 租赁经营总览" not in source
     assert "同日快照 ${included}/${authorized} 栋" in source
     assert "number > 0 && number <= 1" not in source

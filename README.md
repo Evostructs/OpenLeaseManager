@@ -1,44 +1,52 @@
 # OpenLeaseOps
 
-**简体中文** | [English](README.en.md)
+**English** | [简体中文](README.zh-CN.md)
 
-开源、自托管的多楼宇租赁与资产运营管理系统。适用于租赁台账、月度应收、收款核销、客户跟进和资产组合分析。
+An open-source, self-hosted system for multi-building lease and property operations: lease registers, monthly receivables, payment allocation, customer follow-up and portfolio analysis.
 
-基于 FastAPI、SQLite、Alembic、Vue 3 和 ECharts，采用 MIT 许可证。
+Built with FastAPI, SQLite, Alembic, Vue 3 and ECharts. Released under the MIT License.
 
-## v2.0.0 的主要功能
+## What's included in v2.1.0
 
-- 多楼宇、分区和房间管理，区分明细运营与已发布经营快照。
-- 合同、租金条款、递增、免租期、押金和附件管理。
-- 月度应收、部分收款、收款核销、开票与催收记录。
-- 客户档案、跟进记录、风险提示、经营驾驶舱和租金时间分析。
-- 财务预测、费用计划、版本比较和财务交接；不等同于财务软件自动记账。
-- 按角色、楼宇和能力配置权限，保留操作审计，支持备份恢复。
-- 可选 AI 辅助解释，默认关闭；启用后会向你配置的模型服务发送相应经营数据。
+- Buildings, zones and leasable units, with separate workflows for detailed operations and published operating snapshots.
+- Contracts, rent terms, escalations, rent-free periods, deposits and attachments.
+- Monthly receivables, partial payments, payment allocation, invoice records and collection follow-up.
+- Customer records, follow-ups, risk indicators, an operating dashboard and rent timeline analysis.
+- Financial forecasts, expense plans, version comparisons and finance handoff; this does not provide automatic posting into accounting software.
+- Role-, building- and capability-based access, audit trails, backups and recovery.
+- Optional AI-assisted explanations, disabled by default. Enabling them sends the relevant operating data to the model service you configure.
 
-## 界面预览
+## Language and data
 
-以下截图来自独立演示环境，楼宇、客户、合同和金额均为模拟数据，不含真实业务记录。点击图片可查看大图。
+English is the default interface language. Use **中文 / English** in the header or in an open dialog to switch immediately; your browser remembers the choice. Switching does not reload the page or clear unsaved form entries. Translations are bundled locally, with no online translation service required at runtime.
 
-**经营看板**：集中查看收款、合同到期、客户跟进和资料缺口，优先处理待办事项。
+Excel templates and export headings follow the selected language. Imports accept English and Chinese column labels and supported categorical values; existing Chinese templates remain compatible. Customer names, contacts, notes, identifiers and other user-entered business data retain their original text.
 
-![经营看板：风险分级与优先待办（模拟数据）](docs/screenshots/dashboard.png)
+Amounts remain **CNY**, areas remain **m²**, and the existing rent calculation rules are unchanged. English localization does not add currency conversion, country-specific tax rules or accounting compliance. Configure the application timezone for your deployment. Direct API clients can request English downloads with `?lang=en` or `X-OpenLease-Locale: en`; requests without a language keep the existing Chinese workbook format for compatibility.
 
-**租金时间分析**：按日期和分区查看有效平均日租金、在租面积与合同变化。
+## Screenshots
 
-![租金时间分析：租金与面积趋势（模拟数据）](docs/screenshots/analytics.png)
+These screenshots come from an isolated demo installation. Buildings, customers, contracts and amounts are synthetic; no real business records are included. The UI shown here is in English. Click an image to view it at full size.
 
-**合同管理**：查看合同状态、租期、房源、租金与押金，并进入具体业务操作。
+**Operations dashboard** — Prioritize collections, expiring leases, customer follow-ups and missing documents.
 
-![合同管理：合同台账与状态筛选（模拟数据）](docs/screenshots/contracts.png)
+![Operations dashboard: risk levels and priority actions, using synthetic data](docs/screenshots/dashboard.png)
 
-**房态管理**：对比分区出租率，查看空置集中区域、即将到期及需关注的房源。
+**Rent timeline analysis** — Explore effective daily rent, leased area and contract changes by date and property zone.
 
-![房态管理：分区出租率与空置分布（模拟数据）](docs/screenshots/rooms.png)
+![Rent timeline analysis: rent and leased-area trends, using synthetic data](docs/screenshots/analytics.png)
 
-## 使用 Docker Compose 部署
+**Contract management** — Review lease status, dates, units, rent and deposits, then open the relevant workflow.
 
-需要 Docker Engine / Docker Desktop（含 Compose）及 Python 3。首次部署需联网下载依赖并构建镜像。
+![Contract management: lease register and status filters, using synthetic data](docs/screenshots/contracts.png)
+
+**Unit occupancy** — Compare occupancy by property zone and identify vacancy concentrations, expiring leases and flagged units.
+
+![Unit occupancy: zone occupancy rates and vacancy distribution, using synthetic data](docs/screenshots/rooms.png)
+
+## Deploy with Docker Compose
+
+Requires Docker Engine / Docker Desktop with Compose, plus Python 3. The first build needs network access to download dependencies and build the image.
 
 ```sh
 git clone https://github.com/Evostructs/OpenLeaseOps.git
@@ -47,17 +55,17 @@ python scripts/configure.py
 docker compose up -d --build --wait
 ```
 
-访问 http://127.0.0.1:8080 ，在初始化页面创建自己的管理员。没有默认账号或默认密码。
+Open http://127.0.0.1:8080 and create your administrator on the initialization page. There is no default account or password.
 
-默认只监听本机，完成管理员初始化后再开放外部访问。公网使用应配置 HTTPS 反向代理，并在 `.env` 中设置 `COOKIE_SECURE=true`；需要局域网访问时可调整 `LEASE_BIND_ADDRESS`。不要在尚未创建管理员时将服务直接暴露到公网。
+The default configuration listens only on localhost. Create the administrator before allowing external access. For public access, configure an HTTPS reverse proxy and set `COOKIE_SECURE=true` in `.env`. Adjust `LEASE_BIND_ADDRESS` if LAN access is needed. Do not expose an uninitialized instance to the internet.
 
-数据保存在 Docker 命名卷 `lease-data` 中。停止服务使用 `docker compose down`；**不要使用 `down -v`，这会删除数据卷**。系统备份位于同一数据卷内，应定期通过管理页面下载备份并保存到另一处。`.env`、密钥、数据库和附件不得提交到公开仓库。
+Data is stored in the Docker named volume `lease-data`. Stop the application with `docker compose down`; **do not use `down -v`, which deletes the data volume**. Application backups are stored in the same volume, so regularly download backups through the administration page and keep a separate off-host copy. Never commit `.env`, keys, databases or attachments to a public repository.
 
-首次启动会创建五个通用示例楼宇及必要的权限、指标定义，不会导入真实租户、合同、收款或个人数据。示例楼宇用于展示不同运营结构，可通过管理功能调整。演示脚本会修改数据，仅可在独立演示环境中使用。
+First startup initializes five generic example buildings, permissions and metric definitions. It does not import real tenants, contracts, receipts or personal data. The example buildings illustrate different operating structures and can be adjusted through administration features. Demo scripts modify data and must only be used in an isolated demonstration environment.
 
-## 本地开发
+## Local development
 
-使用 Python 3.12 和 Node.js 22：
+Use Python 3.12 and Node.js 22:
 
 ```sh
 python -m venv .venv
@@ -72,7 +80,7 @@ cd ..
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8080
 ```
 
-## 验证
+## Verification
 
 ```sh
 python -m pip install --require-hashes -r requirements-dev.lock
@@ -84,14 +92,14 @@ cd ..
 python -m pytest -q
 ```
 
-GitHub Actions 另外检查后端、前端、容器构建及全新数据卷启动。浏览器端到端测试需安装 Playwright 浏览器并显式启用 `LEASE_E2E=1`。
+GitHub Actions also checks the backend, frontend, container build and startup with a fresh data volume. Browser end-to-end tests require Playwright browsers and explicit opt-in with `LEASE_E2E=1`.
 
-## 版本与升级边界
+## Versions and upgrade limitations
 
-v2 使用通用示例楼宇标识，面向全新部署。**不要将 v1 或内部部署的数据库直接挂载到 v2**；跨版本业务数据迁移尚未验证，应先备份并在独立环境中设计和验证迁移。旧版发布仍保留在 Releases 中。
+Version 2 uses generic building identifiers and is intended for fresh installations. **Do not attach a v1 or private-deployment database directly to v2.** Cross-version business-data migration has not been verified. Back up the source system, then design and validate a migration in an isolated environment. Earlier releases remain available under Releases.
 
-本仓库不包含内部运行环境、内部部署历史、生产数据库、合同附件、公司标志或私人配置。测试中的固定口令和加密样例仅用于隔离测试，不是部署凭据。
+This repository does not include private runtime environments, internal deployment history, production databases, contract attachments, corporate logos or private configuration. Fixed passwords and encryption examples in tests are isolated test fixtures, not deployment credentials.
 
-## 反馈与贡献
+## Feedback and contributions
 
-欢迎提交 Issue 或 Pull Request。请勿上传包含客户信息、个人信息或访问凭据的截图、日志和数据库。安全问题请勿在公开 Issue 中披露密钥或可识别业务数据。
+Issues and pull requests are welcome. Do not upload screenshots, logs or databases containing customer information, personal data or access credentials. Do not disclose secrets or identifiable business data in public security reports.

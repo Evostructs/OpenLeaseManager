@@ -322,27 +322,27 @@ onMounted(async () => {
       <div class="tool-task-grid" data-testid="tools-task-grid">
         <section class="tool-task-group tool-task-group-materials" data-testid="tool-section-materials">
           <div class="tool-task-group-head">
-            <h3>提醒与备份</h3>
+            <h3>{{ $t("提醒与备份") }}</h3>
             <span class="tools-help-trigger" data-testid="tools-help-trigger">
-              <InfoHint text="常用处理入口按日常任务归在一起。" />
+              <InfoHint :text="$t(&quot;常用处理入口按日常任务归在一起。&quot;)" />
             </span>
           </div>
 
           <article v-if="isAdmin" class="tool-task-row tool-card tool-card-feishu" data-testid="tool-card-feishu">
             <div class="tool-task-main">
-              <h4>到期提醒</h4>
-              <p>维护通知地址，测试提醒发送。</p>
-              <span class="metric-pill info">{{ feishuSignalCopy }}</span>
+              <h4>{{ $t("到期提醒") }}</h4>
+              <p>{{ $t("维护通知地址，测试提醒发送。") }}</p>
+              <span class="metric-pill info">{{ $t(feishuSignalCopy) }}</span>
             </div>
             <div class="tool-task-actions">
-              <button class="btn btn-primary" @click="saveFeishu">保存</button>
-              <button class="btn" data-testid="tool-reminder-test-action" @click="testFeishu">测试通知</button>
-              <button class="btn" @click="triggerFeishuCheck">检查到期</button>
+              <button class="btn btn-primary" @click="saveFeishu">{{ $t("保存") }}</button>
+              <button class="btn" data-testid="tool-reminder-test-action" @click="testFeishu">{{ $t("测试通知") }}</button>
+              <button class="btn" @click="triggerFeishuCheck">{{ $t("检查到期") }}</button>
             </div>
             <div class="tool-task-detail">
-              <div v-if="feishuError" class="inline-status-row danger" data-testid="feishu-load-error">{{ feishuError }}</div>
+              <div v-if="feishuError" class="inline-status-row danger" data-testid="feishu-load-error">{{ $t(feishuError) }}</div>
               <label class="form-field">
-                <span class="section-label">通知地址</span>
+                <span class="section-label">{{ $t("通知地址") }}</span>
                 <textarea v-model="feishu.webhook_url" class="textarea compact-textarea" />
               </label>
             </div>
@@ -350,39 +350,39 @@ onMounted(async () => {
 
           <article class="tool-task-row tool-card tool-card-backup" data-testid="tool-card-backup">
             <div class="tool-task-main">
-              <h4>数据备份</h4>
-              <p>创建、下载或恢复备份。</p>
-              <span class="metric-pill info">{{ backupSignalCopy }}</span>
+              <h4>{{ $t("数据备份") }}</h4>
+              <p>{{ $t("创建、下载或恢复备份。") }}</p>
+              <span class="metric-pill info">{{ $t(backupSignalCopy) }}</span>
             </div>
             <div class="tool-task-actions">
-              <button class="btn btn-primary" data-testid="backup-create-button" @click="createBackup">立即备份</button>
+              <button class="btn btn-primary" data-testid="backup-create-button" @click="createBackup">{{ $t("立即备份") }}</button>
             </div>
 
             <div class="tool-task-detail">
               <div class="backup-list scroll-list scroll-list-backup" data-testid="backup-list">
                 <div v-for="item in backups" :key="item.filename" class="compact-list-item">
                   <div>
-                    <strong>{{ formatBackupPrimary(item) }}</strong>
+                    <strong>{{ $t(formatBackupPrimary(item)) }}</strong>
                     <p>{{ item.filename }}</p>
                   </div>
                   <div class="backup-actions">
-                    <button class="btn" :data-testid="`backup-restore-${item.filename}`" @click="openRestoreBackupConfirm(item)">恢复</button>
-                    <button class="btn" @click="openDownload(`/api/backups/${item.filename}`)">下载</button>
+                    <button class="btn" :data-testid="`backup-restore-${item.filename}`" @click="openRestoreBackupConfirm(item)">{{ $t("恢复") }}</button>
+                    <button class="btn" @click="openDownload(`/api/backups/${item.filename}`)">{{ $t("下载") }}</button>
                   </div>
                 </div>
-                <div v-if="backupsError" class="inline-status-row danger" data-testid="backup-load-error">{{ backupsError }}</div>
-                <div v-else-if="!backups.length" class="inline-status-row">暂无备份文件</div>
+                <div v-if="backupsError" class="inline-status-row danger" data-testid="backup-load-error">{{ $t(backupsError) }}</div>
+                <div v-else-if="!backups.length" class="inline-status-row">{{ $t("暂无备份文件") }}</div>
               </div>
 
-              <BaseModal :open="Boolean(backupRestoreConfirm.item)" title="恢复备份" size="small" @close="closeRestoreBackupConfirm">
+              <BaseModal :open="Boolean(backupRestoreConfirm.item)" :title="$t(&quot;恢复备份&quot;)" size="small" @close="closeRestoreBackupConfirm">
                 <div data-testid="backup-restore-confirm-modal" class="detail-list">
-                  <p>确定恢复备份「{{ formatBackupPrimary(backupRestoreConfirm.item) }}」吗？</p>
-                  <p class="helper-text danger">当前数据会先自动生成一份安全备份；确认后，当前数据库、PDF 与附件会被该备份覆盖。</p>
+                  <p>{{ $t("确定恢复备份「") }}{{ $t(formatBackupPrimary(backupRestoreConfirm.item)) }}{{ $t("」吗？") }}</p>
+                  <p class="helper-text danger">{{ $t("当前数据会先自动生成一份安全备份；确认后，当前数据库、PDF 与附件会被该备份覆盖。") }}</p>
                 </div>
                 <template #footer>
-                  <button class="btn" data-testid="backup-restore-cancel" :disabled="backupRestoreConfirm.restoring" @click="closeRestoreBackupConfirm">取消</button>
+                  <button class="btn" data-testid="backup-restore-cancel" :disabled="backupRestoreConfirm.restoring" @click="closeRestoreBackupConfirm">{{ $t("取消") }}</button>
                   <button class="btn btn-danger" data-testid="backup-restore-confirm" :disabled="backupRestoreConfirm.restoring" @click="confirmRestoreBackup">
-                    {{ backupRestoreConfirm.restoring ? '恢复中' : '确认恢复' }}
+                    {{ $t(backupRestoreConfirm.restoring ? '恢复中' : '确认恢复') }}
                   </button>
                 </template>
               </BaseModal>
@@ -392,39 +392,39 @@ onMounted(async () => {
 
         <section v-if="isAdmin" class="tool-task-group tool-task-group-operating-gates" data-testid="tool-section-operating-gates">
           <div class="tool-task-group-head">
-            <h3>经营大屏与板块合计</h3>
+            <h3>{{ $t("经营大屏与板块合计") }}</h3>
           </div>
 
           <article class="tool-task-row tool-card" data-testid="tool-card-operating-gates">
             <div class="tool-task-main">
-              <h4>逐楼展示与合计</h4>
-              <p>两项可独立调整；所有经营数字当前均为模拟数据。</p>
-              <span class="metric-pill warning">{{ gateSignalCopy }}</span>
+              <h4>{{ $t("逐楼展示与合计") }}</h4>
+              <p>{{ $t("两项可独立调整；所有经营数字当前均为模拟数据。") }}</p>
+              <span class="metric-pill warning">{{ $t(gateSignalCopy) }}</span>
             </div>
 
             <div class="tool-task-detail">
               <div v-if="operatingGatesError" class="inline-status-row danger" data-testid="operating-gates-load-error">
-                {{ operatingGatesError }}
+                {{ $t(operatingGatesError) }}
               </div>
               <div v-else class="user-admin-stack operating-gate-grid" data-testid="operating-gates-list">
                 <details v-for="item in operatingGates" :key="item.building_code" class="admin-subsection operating-gate-item" :data-testid="`operating-gate-${item.building_code}`">
                   <summary class="operating-gate-summary">
-                    <span>{{ item.building_name || item.building_code }} <small>{{ item.building_code }}</small></span>
-                    <span class="badge info">{{ gateStateLabel(item) }}</span>
+                    <span>{{ $t(item.building_name || item.building_code) }} <small>{{ $t(item.building_code) }}</small></span>
+                    <span class="badge info">{{ $t(gateStateLabel(item)) }}</span>
                   </summary>
-                  <p class="helper-text">当前原因：{{ item.reason }}</p>
+                  <p class="helper-text">{{ $t("当前原因：") }}{{ item.reason }}</p>
                   <div class="toolbar stacked-mobile">
                     <label class="form-field">
-                      <span class="section-label">开放经营大屏展示（含单楼与板块卡片）</span>
+                      <span class="section-label">{{ $t("开放经营大屏展示（含单楼与板块卡片）") }}</span>
                       <input v-model="item.draft_presentation_enabled" type="checkbox" />
                     </label>
                     <label class="form-field">
-                      <span class="section-label">计入板块合计</span>
+                      <span class="section-label">{{ $t("计入板块合计") }}</span>
                       <input v-model="item.draft_contribution_enabled" type="checkbox" />
                     </label>
                     <label class="form-field">
-                      <span class="section-label">本次调整原因</span>
-                      <input v-model="item.draft_reason" class="input" maxlength="2000" placeholder="说明为什么调整" />
+                      <span class="section-label">{{ $t("本次调整原因") }}</span>
+                      <input v-model="item.draft_reason" class="input" maxlength="2000" :placeholder="$t(&quot;说明为什么调整&quot;)" />
                     </label>
                     <button
                       class="btn btn-primary"
@@ -432,11 +432,11 @@ onMounted(async () => {
                       :data-testid="`operating-gate-save-${item.building_code}`"
                       @click="saveOperatingGate(item)"
                     >
-                      {{ savingGateCode === item.building_code ? '保存中' : '保存调整' }}
+                      {{ $t(savingGateCode === item.building_code ? '保存中' : '保存调整') }}
                     </button>
                   </div>
                 </details>
-                <div v-if="!operatingGates.length" class="inline-status-row">暂无可管理楼宇</div>
+                <div v-if="!operatingGates.length" class="inline-status-row">{{ $t("暂无可管理楼宇") }}</div>
               </div>
             </div>
           </article>
@@ -444,34 +444,34 @@ onMounted(async () => {
 
         <section v-if="isAdmin" class="tool-task-group tool-task-group-access" data-testid="tool-section-access">
           <div class="tool-task-group-head">
-            <h3>账号维护</h3>
+            <h3>{{ $t("账号维护") }}</h3>
           </div>
 
           <article class="tool-task-row tool-card tool-card-users" data-testid="tool-card-users">
             <div class="tool-task-main">
-              <h4>账号维护</h4>
-              <p>查看账号角色，新建账号或重置密码。</p>
-              <span class="metric-pill info">{{ accountSignalCopy }}</span>
+              <h4>{{ $t("账号维护") }}</h4>
+              <p>{{ $t("查看账号角色，新建账号或重置密码。") }}</p>
+              <span class="metric-pill info">{{ $t(accountSignalCopy) }}</span>
             </div>
 
             <div class="tool-task-detail">
-              <div v-if="usersError" class="inline-status-row danger" data-testid="users-load-error">{{ usersError }}</div>
+              <div v-if="usersError" class="inline-status-row danger" data-testid="users-load-error">{{ $t(usersError) }}</div>
               <div class="user-role-list">
                 <div v-for="userItem in users" :key="userItem.id" class="user-role-item">
                   <div>
                     <strong>{{ userItem.display_name || userItem.username }}</strong>
                     <span>{{ userItem.username }}</span>
                   </div>
-                  <span class="badge info">{{ formatUserRole(userItem.role) }}</span>
+                  <span class="badge info">{{ $t(formatUserRole(userItem.role)) }}</span>
                 </div>
               </div>
 
               <div class="user-admin-stack">
                 <div class="admin-subsection">
-                  <div class="section-label">新建账号</div>
+                  <div class="section-label">{{ $t("新建账号") }}</div>
                   <div class="form-grid">
                     <label class="form-field">
-                      <span class="section-label">用户名</span>
+                      <span class="section-label">{{ $t("用户名") }}</span>
                       <input
                         v-model="userForm.username"
                         class="input"
@@ -482,47 +482,47 @@ onMounted(async () => {
                         autocomplete="off"
                         spellcheck="false"
                       />
-                      <span class="form-field-hint">3—32 位小写字母、数字、点、下划线或短横线，首尾使用字母或数字</span>
+                      <span class="form-field-hint">{{ $t("3—32 位小写字母、数字、点、下划线或短横线，首尾使用字母或数字") }}</span>
                     </label>
                     <label class="form-field">
-                      <span class="section-label">显示名称</span>
+                      <span class="section-label">{{ $t("显示名称") }}</span>
                       <input v-model="userForm.display_name" class="input" maxlength="50" />
                     </label>
                     <label class="form-field">
-                      <span class="section-label">密码</span>
+                      <span class="section-label">{{ $t("密码") }}</span>
                       <input v-model="userForm.password" type="password" class="input" autocomplete="new-password" />
                     </label>
                     <label class="form-field">
-                      <span class="section-label">确认密码</span>
+                      <span class="section-label">{{ $t("确认密码") }}</span>
                       <input ref="userConfirmationInput" v-model="userConfirmPassword" type="password" class="input" autocomplete="new-password"
                         :aria-invalid="!!userConfirmationError" :aria-describedby="userConfirmationError ? 'user-confirmation-error' : undefined" />
-                      <span v-if="userConfirmationError" id="user-confirmation-error" class="form-error" role="alert">{{ userConfirmationError }}</span>
+                      <span v-if="userConfirmationError" id="user-confirmation-error" class="form-error" role="alert">{{ $t(userConfirmationError) }}</span>
                     </label>
                     <label class="form-field">
-                      <span class="section-label">角色</span>
+                      <span class="section-label">{{ $t("角色") }}</span>
                       <select v-model="userForm.role" class="select">
-                        <option value="viewer">查看</option>
-                        <option value="editor">编辑</option>
-                        <option value="admin">管理员</option>
+                        <option value="viewer">{{ $t("查看") }}</option>
+                        <option value="editor">{{ $t("编辑") }}</option>
+                        <option value="admin">{{ $t("管理员") }}</option>
                       </select>
                     </label>
                   </div>
                   <div class="btn-row">
-                    <button class="btn btn-primary" @click="createUser">创建账号</button>
+                    <button class="btn btn-primary" @click="createUser">{{ $t("创建账号") }}</button>
                   </div>
                 </div>
 
                 <div class="admin-subsection">
-                  <div class="section-label">密码重置</div>
+                  <div class="section-label">{{ $t("密码重置") }}</div>
                   <div class="toolbar stacked-mobile">
                     <select v-model="pwdForm.user_id" class="select">
-                      <option :value="null">选择用户</option>
+                      <option :value="null">{{ $t("选择用户") }}</option>
                       <option v-for="userItem in users" :key="userItem.id" :value="userItem.id">
-                        {{ userItem.display_name }}（{{ formatUserRole(userItem.role) }}）
+                        {{ userItem.display_name }}（{{ $t(formatUserRole(userItem.role)) }}）
                       </option>
                     </select>
-                    <input v-model="pwdForm.new_password" type="password" class="input" placeholder="新密码" />
-                    <button class="btn" @click="resetPassword">确认重置</button>
+                    <input v-model="pwdForm.new_password" type="password" class="input" :placeholder="$t(&quot;新密码&quot;)" />
+                    <button class="btn" @click="resetPassword">{{ $t("确认重置") }}</button>
                   </div>
                 </div>
               </div>

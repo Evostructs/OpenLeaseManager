@@ -1,4 +1,6 @@
 <script setup>
+import { locale } from '../i18n/index.js'
+import { localizeChartOption } from '../i18n/charts.js'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { loadChartRuntime } from '../lib/chartRuntime'
 import { formatCurrency } from '../lib/format'
@@ -435,7 +437,7 @@ async function renderTrendChart() {
   if (!trendChartEl.value) return
   if (!echartsRuntime) echartsRuntime = await loadChartRuntime()
   if (!trendChart) trendChart = echartsRuntime.init(trendChartEl.value)
-  trendChart.setOption(trendOption(trendRows.value))
+  trendChart.setOption(localizeChartOption(trendOption(trendRows.value), locale.value))
 }
 
 // 面积构成环图（左列）：已租 vs 待租，字段取自 vacancy.total_area / vacancy.area
@@ -456,7 +458,7 @@ async function renderAreaChart() {
   if (!echartsRuntime) echartsRuntime = await loadChartRuntime()
   if (!areaChart) areaChart = echartsRuntime.init(areaChartEl.value)
   const { available, leased, vacant } = areaBreakdown.value
-  areaChart.setOption({
+  areaChart.setOption(localizeChartOption({
     backgroundColor: 'transparent',
     tooltip: {
       backgroundColor: '#101c36',
@@ -478,7 +480,7 @@ async function renderAreaChart() {
           ]
         : []
     }]
-  })
+  }, locale.value))
 }
 
 // 分区平均单价走势（中列下半，近 6 个月三分区折线）
@@ -489,7 +491,7 @@ async function renderPriceChart() {
   if (!priceChartEl.value) return
   if (!echartsRuntime) echartsRuntime = await loadChartRuntime()
   if (!priceChart) priceChart = echartsRuntime.init(priceChartEl.value)
-  priceChart.setOption({
+  priceChart.setOption(localizeChartOption({
     backgroundColor: 'transparent',
     animationDuration: 800,
     grid: { left: 46, right: 18, top: 38, bottom: 28 },
@@ -530,7 +532,7 @@ async function renderPriceChart() {
       lineStyle: { width: 2.5, color: segment.color },
       itemStyle: { color: segment.color }
     }))
-  })
+  }, locale.value))
 }
 
 function onResize() {
@@ -554,6 +556,7 @@ function disposeCharts() {
   }
 }
 
+watch(locale, () => { renderTrendChart(); renderAreaChart(); renderPriceChart() })
 watch(trendRows, () => { renderTrendChart() })
 watch(areaBreakdown, () => { renderAreaChart() })
 watch(priceTrend, () => { renderPriceChart() })
@@ -621,23 +624,23 @@ onBeforeUnmount(() => {
           class="cockpit-back-overview"
           data-testid="leadership-overview-back"
           @click="emit('back-overview')"
-        >返回板块</button>
-        <strong>{{ scopeTitle }} 租赁经营总览</strong>
-        <span>{{ clock }}</span>
+        >{{ $t("返回板块") }}</button>
+        <strong>{{ $t(scopeTitle) }}{{ $t(" 租赁经营总览") }}</strong>
+        <span>{{ $t(clock) }}</span>
       </div>
       <div class="cockpit-signals">
         <span
           v-if="isSimulatedData"
           class="cockpit-simulation-badge"
           data-testid="presentation-simulated-data"
-        >模拟数据</span>
+        >{{ $t("模拟数据") }}</span>
         <span
           v-for="light in signalLights"
           :key="light.key"
           class="cockpit-signal"
           :class="[light.key, { active: light.active }]"
         >
-          <i></i>{{ light.label }}<b v-if="light.count && light.key !== 'green'">{{ light.count }}</b>
+          <i></i>{{ $t(light.label) }}<b v-if="light.count && light.key !== 'green'">{{ $t(light.count) }}</b>
         </span>
       </div>
     </header>
@@ -656,10 +659,10 @@ onBeforeUnmount(() => {
       <article class="cockpit-panel cockpit-snapshot-facts">
         <div class="cockpit-snapshot-heading">
           <div>
-            <span>{{ snapshotDataModeLabel }}</span>
-            <h3>{{ snapshotScopeTitle }}</h3>
+            <span>{{ $t(snapshotDataModeLabel) }}</span>
+            <h3>{{ $t(snapshotScopeTitle) }}</h3>
           </div>
-          <b>统计日 {{ snapshot.as_of_date || '--' }}</b>
+          <b>{{ $t("统计日 ") }}{{ $t(snapshot.as_of_date || '--') }}</b>
         </div>
         <div class="cockpit-snapshot-grid">
           <div
@@ -668,8 +671,8 @@ onBeforeUnmount(() => {
             class="cockpit-snapshot-fact"
             :class="{ unavailable: !fact.available }"
           >
-            <span>{{ fact.label }}</span>
-            <strong>{{ fact.value }}</strong>
+            <span>{{ $t(fact.label) }}</span>
+            <strong>{{ $t(fact.value) }}</strong>
             <small>{{ fact.available ? snapshotFactScopeLabel : fact.reason }}</small>
           </div>
         </div>
@@ -677,8 +680,8 @@ onBeforeUnmount(() => {
 
       <aside class="cockpit-panel cockpit-snapshot-status">
         <div>
-          <span>运行方式</span>
-          <h3>{{ operationsProfileView.positioning || '整楼快照模式' }}</h3>
+          <span>{{ $t("运行方式") }}</span>
+          <h3>{{ $t(operationsProfileView.positioning || '整楼快照模式') }}</h3>
         </div>
         <div
           v-if="operationsProfileView.configured"
@@ -686,11 +689,11 @@ onBeforeUnmount(() => {
           data-testid="presentation-building-profile"
           :data-structure="operationsProfileView.structureType"
         >
-          <span>{{ operationsProfileView.structureLabel }} · {{ operationsProfileView.granularityLabel }}</span>
-          <p>{{ operationsProfileView.structureDetail }}</p>
+          <span>{{ $t(operationsProfileView.structureLabel) }} · {{ $t(operationsProfileView.granularityLabel) }}</span>
+          <p>{{ $t(operationsProfileView.structureDetail) }}</p>
         </div>
         <div v-if="operationsProfileView.focus.length" class="cockpit-profile-focus">
-          <b v-for="item in operationsProfileView.focus" :key="item">{{ item }}</b>
+          <b v-for="item in operationsProfileView.focus" :key="item">{{ $t(item) }}</b>
         </div>
         <div v-if="operationsProfileView.groups.length" class="cockpit-profile-groups">
           <article
@@ -701,111 +704,111 @@ onBeforeUnmount(() => {
           >
             <div>
               <span>{{ group.name }}</span>
-              <strong>{{ group.statusLabel }}</strong>
+              <strong>{{ $t(group.statusLabel) }}</strong>
             </div>
-            <small>{{ group.zoneLabel }} · {{ group.note }}</small>
+            <small>{{ $t(group.zoneLabel) }} · {{ group.note }}</small>
           </article>
         </div>
         <p
           v-if="operationsProfileView.unavailableGroupSafety"
           class="cockpit-profile-safety"
           data-testid="presentation-profile-safety"
-        >{{ operationsProfileView.unavailableGroupSafety }}</p>
+        >{{ $t(operationsProfileView.unavailableGroupSafety) }}</p>
         <p v-else>
-          {{ isLiveDetailProjection
+          {{ $t(isLiveDetailProjection
             ? '当前只展示明细适配器中可核验的整楼指标；未知值保持“--”。'
-            : '当前只展示已经发布、可追溯的整楼指标，不展示合同、客户、房源、待办或分区明细。' }}
+            : '当前只展示已经发布、可追溯的整楼指标，不展示合同、客户、房源、待办或分区明细。') }}
         </p>
         <div class="cockpit-snapshot-policy">
-          <span>未知指标</span>
-          <strong>{{ snapshotUnavailableCount }} 项</strong>
-          <small>未知保持“--”并说明原因，不按 0 处理。</small>
+          <span>{{ $t("未知指标") }}</span>
+          <strong>{{ $t(snapshotUnavailableCount) }}{{ $t(" 项") }}</strong>
+          <small>{{ $t("未知保持“--”并说明原因，不按 0 处理。") }}</small>
         </div>
       </aside>
     </section>
 
     <section v-else class="cockpit-main">
       <aside class="cockpit-panel cockpit-rooms">
-        <h3>房态概览</h3>
+        <h3>{{ $t("房态概览") }}</h3>
         <div class="cockpit-occupancy">
           <AnimatedNumber :value="roomSummary.occupancyRate === null ? '--' : `${roomSummary.occupancyRate.toFixed(1)}%`" />
-          <span>整体出租率</span>
+          <span>{{ $t("整体出租率") }}</span>
         </div>
         <div ref="areaChartEl" class="cockpit-areachart"></div>
         <div class="cockpit-room-facts">
           <div>
-            <b>{{ roomSummary.vacantCount === null ? '--' : roomSummary.vacantCount }}</b>
-            <span>待租房源</span>
+            <b>{{ $t(roomSummary.vacantCount === null ? '--' : roomSummary.vacantCount) }}</b>
+            <span>{{ $t("待租房源") }}</span>
           </div>
           <div>
-            <b>{{ roomSummary.vacantArea === null ? '--' : roomSummary.vacantArea.toLocaleString('zh-CN', { maximumFractionDigits: 0 }) }}</b>
-            <span>待租面积 ㎡</span>
+            <b>{{ $t(roomSummary.vacantArea === null ? '--' : roomSummary.vacantArea.toLocaleString('zh-CN', { maximumFractionDigits: 0 })) }}</b>
+            <span>{{ $t("待租面积 ㎡") }}</span>
           </div>
         </div>
       </aside>
 
       <div class="cockpit-midcol">
         <div class="cockpit-panel cockpit-trend">
-          <h3>近 6 个月收缴趋势</h3>
+          <h3>{{ $t("近 6 个月收缴趋势") }}</h3>
           <div ref="trendChartEl" class="cockpit-chart"></div>
         </div>
         <div class="cockpit-panel cockpit-prices">
-          <h3>分区平均单价走势</h3>
+          <h3>{{ $t("分区平均单价走势") }}</h3>
           <div ref="priceChartEl" class="cockpit-chart"></div>
         </div>
       </div>
 
       <aside class="cockpit-panel cockpit-actions">
-        <h3>{{ overviewOnly ? '变化说明' : '今日急项' }}</h3>
+        <h3>{{ $t(overviewOnly ? '变化说明' : '今日急项') }}</h3>
         <div v-if="!topActions.length" class="cockpit-empty">
-          {{ overviewOnly ? '当前没有可展示的概况变化说明' : '今日暂无待办事项' }}
+          {{ $t(overviewOnly ? '当前没有可展示的概况变化说明' : '今日暂无待办事项') }}
         </div>
         <div v-for="(action, index) in topActions" :key="index" class="cockpit-action" :class="actionTone(action)">
-          <span class="cockpit-action-rank">{{ index + 1 }}</span>
+          <span class="cockpit-action-rank">{{ $t(index + 1) }}</span>
           <span class="cockpit-action-body">
-            <strong>{{ actionTitle(action) }}</strong>
-            <small>{{ actionMeta(action) }}</small>
+            <strong>{{ $t(actionTitle(action)) }}</strong>
+            <small>{{ $t(actionMeta(action)) }}</small>
           </span>
-          <b class="cockpit-action-amount">{{ actionAmount(action) }}</b>
+          <b class="cockpit-action-amount">{{ $t(actionAmount(action)) }}</b>
         </div>
         <div v-if="!overviewOnly" class="cockpit-datahealth">
           <div v-for="item in dataHealth" :key="item.key">
-            <span>{{ item.label }}</span>
-            <b :class="{ warn: item.value > 0 }">{{ item.value === null ? '--' : `${item.value} ${item.unit}` }}</b>
+            <span>{{ $t(item.label) }}</span>
+            <b :class="{ warn: item.value > 0 }">{{ $t(item.value === null ? '--' : `${item.value} ${item.unit}`) }}</b>
           </div>
         </div>
       </aside>
     </section>
 
     <section v-if="detailListsAvailable" class="cockpit-panel cockpit-towers">
-      <h3>分区经营<small v-if="avgUnitPrice > 0">全场平均单价 {{ avgUnitPrice.toFixed(2) }} 元/㎡·天</small></h3>
+      <h3>{{ $t("分区经营") }}<small v-if="avgUnitPrice > 0">{{ $t("全场平均单价 ") }}{{ $t(avgUnitPrice.toFixed(2)) }}{{ $t(" 元/㎡·天") }}</small></h3>
       <div class="cockpit-tower-rows">
         <div v-for="row in towerRows" :key="row.name" class="cockpit-tower-row">
           <span class="cockpit-tower-name">{{ row.name }}</span>
           <span class="cockpit-tower-track"><i :style="{ width: `${row.rate ?? 0}%` }"></i></span>
-          <b>{{ row.rate === null ? '--' : `${row.rate.toFixed(1)}%` }}</b>
+          <b>{{ $t(row.rate === null ? '--' : `${row.rate.toFixed(1)}%`) }}</b>
           <span class="cockpit-tower-area">
-            {{ row.leased === null ? '--' : Math.round(row.leased).toLocaleString('zh-CN') }}
+            {{ $t(row.leased === null ? '--' : Math.round(row.leased).toLocaleString('zh-CN')) }}
             /
-            {{ row.total === null ? '--' : Math.round(row.total).toLocaleString('zh-CN') }} ㎡
+            {{ $t(row.total === null ? '--' : Math.round(row.total).toLocaleString('zh-CN')) }} ㎡
           </span>
           <span class="cockpit-tower-price">{{ towerPrice(row.name) }}</span>
         </div>
       </div>
       <div class="cockpit-risk-box">
-        <span>风险构成</span>
+        <span>{{ $t("风险构成") }}</span>
         <div class="cockpit-riskbars">
           <div v-for="bar in riskBars" :key="bar.key" class="cockpit-riskbar">
-            <span class="cockpit-riskbar-label">{{ bar.label }}</span>
+            <span class="cockpit-riskbar-label">{{ $t(bar.label) }}</span>
             <span class="cockpit-riskbar-track"><i :style="{ width: `${bar.width}%`, background: bar.color }"></i></span>
-            <b>{{ formatWan(bar.value) }}</b>
+            <b>{{ $t(formatWan(bar.value)) }}</b>
           </div>
         </div>
       </div>
     </section>
 
     <footer class="cockpit-footer">
-      <span v-if="coverageLabel" class="cockpit-coverage">{{ coverageLabel }}</span>
+      <span v-if="coverageLabel" class="cockpit-coverage">{{ $t(coverageLabel) }}</span>
       <span
         v-for="item in contributionRows"
         :key="item.building?.code || item.snapshot_id"
@@ -816,9 +819,9 @@ onBeforeUnmount(() => {
         }"
       >
         {{ item.building?.name || item.building?.code || '未命名楼宇' }} ·
-        {{ contributionStatus(item) }}
+        {{ $t(contributionStatus(item)) }}
       </span>
-      <span v-if="!embedded" class="cockpit-exit">ESC 退出演示</span>
+      <span v-if="!embedded" class="cockpit-exit">{{ $t("ESC 退出演示") }}</span>
     </footer>
   </div>
 </template>

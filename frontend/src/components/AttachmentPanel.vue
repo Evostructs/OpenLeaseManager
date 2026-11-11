@@ -197,43 +197,43 @@ watch(
   <section class="attachment-panel" data-testid="attachment-panel">
     <div class="attachment-status" :class="{ 'is-missing': hasMissingRequired }" data-testid="attachment-status">
       <div class="attachment-status-main">
-        <span class="attachment-status-label">附件证据链</span>
-        <strong>{{ attachmentStatusTitle }}</strong>
-        <p>{{ attachmentStatusText }}</p>
+        <span class="attachment-status-label">{{ $t("附件证据链") }}</span>
+        <strong>{{ $t(attachmentStatusTitle) }}</strong>
+        <p>{{ $t(attachmentStatusText) }}</p>
       </div>
       <div class="attachment-summary-line" data-testid="attachment-summary">
         <span class="attachment-summary-pill">
-          <b>{{ totalAttachments }}</b>
-          <small>文件</small>
+          <b>{{ $t(totalAttachments) }}</b>
+          <small>{{ $t("文件") }}</small>
         </span>
         <span class="attachment-summary-pill">
-          <b>{{ coveredCategoryCount }}</b>
-          <small>类别</small>
+          <b>{{ $t(coveredCategoryCount) }}</b>
+          <small>{{ $t("类别") }}</small>
         </span>
-        <span v-if="hasMissingRequired" class="attachment-summary-gap">待补 {{ missingRequiredText }}</span>
-        <span v-else class="attachment-summary-gap is-complete">覆盖完整</span>
+        <span v-if="hasMissingRequired" class="attachment-summary-gap">{{ $t("待补 ") }}{{ $t(missingRequiredText) }}</span>
+        <span v-else class="attachment-summary-gap is-complete">{{ $t("覆盖完整") }}</span>
       </div>
     </div>
 
     <div v-if="categoryEntries.length" class="attachment-category-strip">
       <span v-for="[category, count] in categoryEntries" :key="category" class="attachment-category-chip">
-        {{ category }} {{ count }}
+        {{ $t(category) }} {{ $t(count) }}
       </span>
     </div>
 
     <div v-if="canEdit" class="attachment-upload-row" data-testid="attachment-upload-row">
       <label class="attachment-upload-field">
-        <span>资料类别</span>
+        <span>{{ $t("资料类别") }}</span>
         <select v-model="uploadForm.category" class="select">
-          <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+          <option v-for="category in categories" :key="category" :value="category">{{ $t(category) }}</option>
         </select>
       </label>
       <label class="attachment-upload-field">
-        <span>证据说明</span>
-        <input v-model="uploadForm.notes" class="input" placeholder="填写这份资料能证明什么" />
+        <span>{{ $t("证据说明") }}</span>
+        <input v-model="uploadForm.notes" class="input" :placeholder="$t(&quot;填写这份资料能证明什么&quot;)" />
       </label>
       <button class="btn btn-primary" :disabled="uploading" type="button" @click="triggerUpload">
-        {{ uploading ? '上传中' : '上传附件' }}
+        {{ $t(uploading ? '上传中' : '上传附件') }}
       </button>
       <input ref="uploadInput" class="visually-hidden" type="file" @change="uploadAttachment" />
     </div>
@@ -249,67 +249,65 @@ watch(
         <template v-if="editingId === item.id">
           <div class="attachment-edit-fields">
             <label class="attachment-upload-field">
-              <span>资料类别</span>
+              <span>{{ $t("资料类别") }}</span>
               <select v-model="editForm.category" class="select">
-                <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+                <option v-for="category in categories" :key="category" :value="category">{{ $t(category) }}</option>
               </select>
             </label>
             <label class="attachment-upload-field">
-              <span>证据说明</span>
-              <input v-model="editForm.notes" class="input" placeholder="填写这份资料能证明什么" />
+              <span>{{ $t("证据说明") }}</span>
+              <input v-model="editForm.notes" class="input" :placeholder="$t(&quot;填写这份资料能证明什么&quot;)" />
             </label>
           </div>
           <div class="attachment-actions">
-            <button class="btn btn-compact btn-primary" type="button" @click="saveEdit(item)">保存</button>
-            <button class="btn btn-compact" type="button" @click="cancelEdit">取消</button>
+            <button class="btn btn-compact btn-primary" type="button" @click="saveEdit(item)">{{ $t("保存") }}</button>
+            <button class="btn btn-compact" type="button" @click="cancelEdit">{{ $t("取消") }}</button>
           </div>
         </template>
         <template v-else>
           <div class="attachment-evidence">
-            <span class="attachment-category">{{ item.category || '其他' }}</span>
+            <span class="attachment-category">{{ $t(item.category || '其他') }}</span>
             <div class="attachment-meta">
               <strong class="attachment-file-name" :title="item.file_name">{{ item.file_name }}</strong>
               <div class="attachment-facts">
-                <span>{{ formatFileSize(item.file_size) }}</span>
-                <span>{{ formatDateTime(item.created_at) }}</span>
-                <span>上传人 {{ item.uploaded_by || '--' }}</span>
+                <span>{{ $t(formatFileSize(item.file_size)) }}</span>
+                <span>{{ $t(formatDateTime(item.created_at)) }}</span>
+                <span>{{ $t("上传人 ") }}{{ item.uploaded_by || '--' }}</span>
               </div>
               <p class="attachment-notes" :class="{ 'is-empty': !item.notes }">
-                <span>备注</span>
+                <span>{{ $t("备注") }}</span>
                 {{ item.notes || '未填写' }}
               </p>
             </div>
           </div>
           <div class="attachment-actions">
-            <button class="btn btn-compact" type="button" @click="openDownload(`/api/attachments/${item.id}/download`)">打开</button>
-            <button v-if="canEdit" class="btn btn-compact" type="button" @click="startEdit(item)">编辑</button>
+            <button class="btn btn-compact" type="button" @click="openDownload(`/api/attachments/${item.id}/download`)">{{ $t("打开") }}</button>
+            <button v-if="canEdit" class="btn btn-compact" type="button" @click="startEdit(item)">{{ $t("编辑") }}</button>
             <button
               v-if="canDelete"
               class="btn btn-compact btn-danger"
               type="button"
               :data-testid="`attachment-delete-action-${item.id}`"
               @click="removeAttachment(item)"
-            >
-              删除
-            </button>
+            >{{ $t(" 删除 ") }}</button>
           </div>
         </template>
       </div>
     </div>
     <div v-else class="attachment-empty compact-empty">
-      <strong>{{ hasMissingRequired ? `当前缺少${missingRequiredText}` : '还没有登记附件' }}</strong>
+      <strong>{{ $t(hasMissingRequired ? `当前缺少${missingRequiredText}` : '还没有登记附件') }}</strong>
       <p>
         {{
-          hasMissingRequired
+          $t(hasMissingRequired
             ? `下一步建议上传${nextUploadCategory}，补齐这条业务记录的关键凭证。`
-            : `下一步建议上传${nextUploadCategory}，先建立可追溯资料。`
+            : `下一步建议上传${nextUploadCategory}，先建立可追溯资料。`)
         }}
       </p>
     </div>
-    <BaseModal :open="Boolean(attachmentDeleteConfirm.item)" title="删除附件" size="small" @close="closeRemoveAttachmentConfirm">
+    <BaseModal :open="Boolean(attachmentDeleteConfirm.item)" :title="$t(&quot;删除附件&quot;)" size="small" @close="closeRemoveAttachmentConfirm">
       <div data-testid="attachment-delete-confirm-modal" class="detail-list">
-        <p>确定删除附件 {{ attachmentDeleteConfirm.item?.file_name || '--' }} 吗？</p>
-        <p class="helper-text">删除后该附件将从当前业务记录中移除，无法直接恢复。</p>
+        <p>{{ $t("确定删除附件 ") }}{{ attachmentDeleteConfirm.item?.file_name || '--' }}{{ $t(" 吗？") }}</p>
+        <p class="helper-text">{{ $t("删除后该附件将从当前业务记录中移除，无法直接恢复。") }}</p>
       </div>
       <template #footer>
         <button
@@ -318,9 +316,7 @@ watch(
           type="button"
           :disabled="attachmentDeleteConfirm.deleting"
           @click="closeRemoveAttachmentConfirm"
-        >
-          取消
-        </button>
+        >{{ $t(" 取消 ") }}</button>
         <button
           class="btn btn-danger"
           data-testid="attachment-delete-confirm"
@@ -328,7 +324,7 @@ watch(
           :disabled="attachmentDeleteConfirm.deleting"
           @click="confirmRemoveAttachment"
         >
-          {{ attachmentDeleteConfirm.deleting ? '删除中' : '确认删除' }}
+          {{ $t(attachmentDeleteConfirm.deleting ? '删除中' : '确认删除') }}
         </button>
       </template>
     </BaseModal>

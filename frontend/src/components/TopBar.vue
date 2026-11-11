@@ -1,4 +1,5 @@
 <script setup>
+import LanguageSwitch from '../components/LanguageSwitch.vue'
 import { computed } from 'vue'
 import { formatRole } from '../lib/format'
 
@@ -68,7 +69,7 @@ const currentScopeLabel = computed(() => {
 <template>
   <header class="topbar">
     <div class="topbar-heading">
-      <button class="icon-btn mobile-nav-toggle" aria-label="切换导航" @click="$emit('toggleSidebar')">
+      <button class="icon-btn mobile-nav-toggle" :aria-label="$t(&quot;切换导航&quot;)" @click="$emit('toggleSidebar')">
         <span class="menu-lines" aria-hidden="true">
           <span />
           <span />
@@ -76,7 +77,7 @@ const currentScopeLabel = computed(() => {
         </span>
       </button>
       <div class="topbar-title">
-        <h2>{{ title }}</h2>
+        <h2>{{ $t(title) }}</h2>
       </div>
     </div>
 
@@ -86,7 +87,7 @@ const currentScopeLabel = computed(() => {
           v-if="workspaceOptions.length > 1"
           class="topbar-workspace-switch"
           role="group"
-          aria-label="切换工作区"
+          :aria-label="$t(&quot;切换工作区&quot;)"
         >
           <button
             v-for="option in workspaceOptions"
@@ -96,10 +97,10 @@ const currentScopeLabel = computed(() => {
             :class="{ active: workspaceValue === option.value }"
             :aria-pressed="workspaceValue === option.value"
             :data-testid="`workspace-switch-${option.value}`"
-            :title="option.description || option.label"
+            :title="$t(option.description || option.label)"
             @click="$emit('changeWorkspace', option.value)"
           >
-            {{ option.label }}
+            {{ $t(option.label) }}
           </button>
         </div>
 
@@ -107,39 +108,40 @@ const currentScopeLabel = computed(() => {
           v-else-if="workspaceOptions.length === 1"
           class="topbar-current-workspace"
           data-testid="current-workspace"
-          :title="workspaceOptions[0].description || workspaceOptions[0].label"
+          :title="$t(workspaceOptions[0].description || workspaceOptions[0].label)"
         >
-          <span>工作区</span>
-          <strong>{{ workspaceOptions[0].label }}</strong>
+          <span>{{ $t("工作区") }}</span>
+          <strong>{{ $t(workspaceOptions[0].label) }}</strong>
         </div>
 
         <div class="topbar-current-scope" data-testid="current-scope">
-          <span>当前范围</span>
-          <strong>{{ currentScopeLabel }}</strong>
+          <span>{{ $t("当前范围") }}</span>
+          <strong>{{ $t(currentScopeLabel) }}</strong>
         </div>
 
         <label v-if="scopeOptions.length > 1" class="topbar-scope">
-          <span class="sr-only">切换当前楼宇</span>
+          <span class="sr-only">{{ $t("切换当前楼宇") }}</span>
           <select
             :value="scopeValue"
-            aria-label="切换当前楼宇"
+            :aria-label="$t(&quot;切换当前楼宇&quot;)"
             data-testid="property-scope-selector"
             @change="$emit('changeScope', $event.target.value)"
           >
             <option v-for="option in scopeOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
+              {{ $t(option.label) }}
             </option>
           </select>
         </label>
       </div>
 
       <div class="topbar-actions">
-        <button v-if="showSearch" class="btn" aria-label="查找合同、客户或房号" @click="$emit('openSearch')">查找</button>
+        <LanguageSwitch />
+        <button v-if="showSearch" class="btn" :aria-label="$t(&quot;查找合同、客户或房号&quot;)" @click="$emit('openSearch')">{{ $t("查找") }}</button>
         <button
           class="icon-btn topbar-help-button topbar-theme-button"
           type="button"
-          :title="theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'"
-          :aria-label="theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'"
+          :title="$t(theme === 'dark' ? '切换到浅色模式' : '切换到深色模式')"
+          :aria-label="$t(theme === 'dark' ? '切换到浅色模式' : '切换到深色模式')"
           data-testid="topbar-theme-toggle"
           @click="$emit('toggleTheme')"
         >
@@ -155,8 +157,8 @@ const currentScopeLabel = computed(() => {
           v-if="showPresentation"
           class="topbar-presentation-button"
           type="button"
-          :title="presentationLabel"
-          :aria-label="presentationLabel"
+          :title="$t(presentationLabel)"
+          :aria-label="$t(presentationLabel)"
           data-testid="topbar-presentation-toggle"
           @click="$emit('presentation')"
         >
@@ -165,26 +167,26 @@ const currentScopeLabel = computed(() => {
             <line x1="8" y1="21" x2="16" y2="21" />
             <line x1="12" y1="17" x2="12" y2="21" />
           </svg>
-          <span>{{ presentationLabel }}</span>
+          <span>{{ $t(presentationLabel) }}</span>
         </button>
         <button
           class="icon-btn topbar-help-button"
           type="button"
-          title="打开帮助"
-          aria-label="打开帮助"
+          :title="$t(&quot;打开帮助&quot;)"
+          :aria-label="$t(&quot;打开帮助&quot;)"
           data-testid="topbar-help-toggle"
           @click="$emit('openHelp')"
         >
           ?
         </button>
-        <button class="topbar-user-profile" type="button" title="修改密码" @click="$emit('changePassword')">
-          <span class="badge info">{{ formatRole(user?.role) }}</span>
+        <button class="topbar-user-profile" type="button" :title="$t(&quot;修改密码&quot;)" @click="$emit('changePassword')">
+          <span class="badge info">{{ $t(formatRole(user?.role)) }}</span>
           <span class="topbar-user-copy">
             <strong>{{ user?.display_name || user?.username }}</strong>
             <span>{{ user?.username }}</span>
           </span>
         </button>
-        <button class="btn" @click="$emit('logout')">退出</button>
+        <button class="btn" @click="$emit('logout')">{{ $t("退出") }}</button>
       </div>
     </div>
   </header>

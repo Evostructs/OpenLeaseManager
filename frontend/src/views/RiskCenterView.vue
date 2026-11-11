@@ -624,12 +624,12 @@ onMounted(() => {
     <article class="card risk-center-card risk-overview-card">
       <div class="card-header compact">
         <div>
-          <div class="section-label">风险中心</div>
-          <h3 class="card-title">风险分诊台</h3>
+          <div class="section-label">{{ $t("风险中心") }}</div>
+          <h3 class="card-title">{{ $t("风险分诊台") }}</h3>
         </div>
         <div class="pill-group risk-command-actions">
-          <span v-if="riskRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
-          <span v-else class="metric-pill info">{{ activeFilterText }}</span>
+          <span v-if="riskRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
+          <span v-else class="metric-pill info">{{ $t(activeFilterText) }}</span>
         </div>
       </div>
 
@@ -637,15 +637,15 @@ onMounted(() => {
         <section class="risk-matrix-overview" data-testid="risk-matrix-overview">
           <div class="risk-triage-summary">
             <div class="risk-triage-total">
-              <span>当前风险</span>
-              <strong>{{ formatNumber(visibleRisks.length) }}</strong>
-              <small>{{ activeFilterText }}</small>
+              <span>{{ $t("当前风险") }}</span>
+              <strong>{{ $t(formatNumber(visibleRisks.length)) }}</strong>
+              <small>{{ $t(activeFilterText) }}</small>
             </div>
             <div class="risk-triage-pills">
-              <span class="metric-pill danger">高风险 {{ formatNumber(visibleSeverity.high || 0) }}</span>
-              <span class="metric-pill warning">中风险 {{ formatNumber(visibleSeverity.medium || 0) }}</span>
-              <span class="metric-pill danger">逾期 {{ formatNumber(overdueRiskCount || 0) }}</span>
-              <span class="metric-pill success">资料待补 {{ formatNumber(attachmentTasks.total || 0) }}</span>
+              <span class="metric-pill danger">{{ $t("高风险 ") }}{{ $t(formatNumber(visibleSeverity.high || 0)) }}</span>
+              <span class="metric-pill warning">{{ $t("中风险 ") }}{{ $t(formatNumber(visibleSeverity.medium || 0)) }}</span>
+              <span class="metric-pill danger">{{ $t("逾期 ") }}{{ $t(formatNumber(overdueRiskCount || 0)) }}</span>
+              <span class="metric-pill success">{{ $t("资料待补 ") }}{{ $t(formatNumber(attachmentTasks.total || 0)) }}</span>
             </div>
           </div>
 
@@ -653,20 +653,20 @@ onMounted(() => {
           <div v-else class="risk-matrix" data-testid="risk-matrix">
             <div class="risk-matrix-title">
               <div>
-                <div class="section-label">类型 × 等级</div>
-                <strong>风险分布</strong>
+                <div class="section-label">{{ $t("类型 × 等级") }}</div>
+                <strong>{{ $t("风险分布") }}</strong>
               </div>
-              <span class="metric-pill info">点击筛选</span>
+              <span class="metric-pill info">{{ $t("点击筛选") }}</span>
             </div>
             <div class="risk-matrix-head">
-              <span>类型</span>
-              <span>级别分布</span>
-              <span>合计</span>
+              <span>{{ $t("类型") }}</span>
+              <span>{{ $t("级别分布") }}</span>
+              <span>{{ $t("合计") }}</span>
             </div>
             <div v-for="row in riskMatrixRows" :key="`matrix-${row.key}`" class="risk-matrix-row">
               <button type="button" class="risk-matrix-label" :class="row.dominantSeverity" @click="selectRiskType(row.key)">
-                <strong>{{ row.label }}</strong>
-                <small>{{ row.helper }}</small>
+                <strong>{{ $t(row.label) }}</strong>
+                <small>{{ $t(row.helper) }}</small>
               </button>
               <div class="risk-matrix-bars">
                 <button
@@ -683,13 +683,13 @@ onMounted(() => {
                   :data-risk-severity="severity"
                   @click="selectRiskSegment(row.key, severity)"
                 >
-                  <span>{{ severityMeta[severity].shortLabel }}</span>
-                  <strong>{{ formatNumber(row.counts[severity]) }}</strong>
+                  <span>{{ $t(severityMeta[severity].shortLabel) }}</span>
+                  <strong>{{ $t(formatNumber(row.counts[severity])) }}</strong>
                 </button>
               </div>
               <div class="risk-matrix-total">
-                <strong>{{ formatNumber(row.total) }}</strong>
-                <small>{{ row.active ? '筛选中' : '条风险' }}</small>
+                <strong>{{ $t(formatNumber(row.total)) }}</strong>
+                <small>{{ $t(row.active ? '筛选中' : '条风险') }}</small>
               </div>
             </div>
           </div>
@@ -698,13 +698,13 @@ onMounted(() => {
         <section class="urgent-risk-queue" data-testid="urgent-risk-queue">
           <div class="urgent-risk-head">
             <div>
-              <div class="section-label">今日优先</div>
-              <strong>最急 3 项</strong>
+              <div class="section-label">{{ $t("今日优先") }}</div>
+              <strong>{{ $t("最急 3 项") }}</strong>
             </div>
-            <span class="metric-pill info">{{ formatNumber(urgentRisks.length) }} 项</span>
+            <span class="metric-pill info">{{ $t(formatNumber(urgentRisks.length)) }}{{ $t(" 项") }}</span>
           </div>
 
-          <div v-if="riskInitialLoading" class="compact-empty compact-empty-tight">读取中...</div>
+          <div v-if="riskInitialLoading" class="compact-empty compact-empty-tight">{{ $t("读取中...") }}</div>
           <div v-else-if="urgentRisks.length" class="urgent-risk-list">
             <article
               v-for="(risk, index) in urgentRisks"
@@ -714,31 +714,31 @@ onMounted(() => {
               data-testid="urgent-risk-item"
               @click="selectRisk(risk)"
             >
-              <span class="urgent-risk-rank">{{ index + 1 }}</span>
+              <span class="urgent-risk-rank">{{ $t(index + 1) }}</span>
               <div class="urgent-risk-main">
                 <div class="urgent-risk-title">
-                  <strong>{{ risk.title }}</strong>
+                  <strong>{{ $t(risk.title) }}</strong>
                   <span class="badge compact" :class="riskTone(risk.severity)">
-                    {{ riskSeverityLabel(risk.severity) }}
+                    {{ $t(riskSeverityLabel(risk.severity)) }}
                   </span>
                 </div>
-                <small>{{ riskTypeLabel(risk.risk_type) }} / {{ urgentRiskObject(risk) }}</small>
+                <small>{{ $t(riskTypeLabel(risk.risk_type)) }} / {{ $t(urgentRiskObject(risk)) }}</small>
                 <div v-if="urgentRiskSignals(risk).length" class="urgent-risk-signals">
                   <span
                     v-for="signal in urgentRiskSignals(risk)"
                     :key="`${riskKey(risk)}-${signal.label}-${signal.value}`"
                     :class="signal.tone"
                   >
-                    {{ signal.label }} {{ signal.value }}
+                    {{ $t(signal.label) }} {{ $t(signal.value) }}
                   </span>
                 </div>
               </div>
               <button type="button" class="btn btn-compact" @click.stop="openRiskItem(risk)">
-                {{ riskTargetActionLabel(risk) }}
+                {{ $t(riskTargetActionLabel(risk)) }}
               </button>
             </article>
           </div>
-          <div v-else class="compact-empty compact-empty-tight">暂无今日急项</div>
+          <div v-else class="compact-empty compact-empty-tight">{{ $t("暂无今日急项") }}</div>
         </section>
       </div>
     </article>
@@ -746,21 +746,21 @@ onMounted(() => {
     <div class="risk-center-workspace">
       <details class="demo-secondary-details risk-list-details" data-testid="risk-list-details">
         <summary>
-          <span>明细列表</span>
-          <strong>{{ formatNumber(visibleRisks.length) }} 项 / 筛选与导出</strong>
+          <span>{{ $t("明细列表") }}</span>
+          <strong>{{ $t(formatNumber(visibleRisks.length)) }}{{ $t(" 项 / 筛选与导出") }}</strong>
         </summary>
       <article class="card risk-center-card risk-list-card">
         <div class="card-header compact risk-list-header">
           <div>
-            <div class="section-label">筛选与处置</div>
-            <h3 class="card-title">风险项列表</h3>
+            <div class="section-label">{{ $t("筛选与处置") }}</div>
+            <h3 class="card-title">{{ $t("风险项列表") }}</h3>
           </div>
           <div class="risk-filter-row risk-filter-bar" data-testid="risk-filter-bar">
             <input
               v-model.trim="riskFilters.query"
               class="input"
               data-testid="risk-search-input"
-              placeholder="搜索合同 / 客户 / 房间"
+              :placeholder="$t(&quot;搜索合同 / 客户 / 房间&quot;)"
             >
             <select
               v-model="riskFilters.risk_type"
@@ -769,7 +769,7 @@ onMounted(() => {
               aria-hidden="true"
               tabindex="-1"
             >
-              <option v-for="item in riskTypeOptions" :key="item.value" :value="item.value">{{ item.label }}</option>
+              <option v-for="item in riskTypeOptions" :key="item.value" :value="item.value">{{ $t(item.label) }}</option>
             </select>
             <select
               v-model="riskFilters.severity"
@@ -778,10 +778,10 @@ onMounted(() => {
               aria-hidden="true"
               tabindex="-1"
             >
-              <option v-for="item in riskSeverityOptions" :key="item.value" :value="item.value">{{ item.label }}</option>
+              <option v-for="item in riskSeverityOptions" :key="item.value" :value="item.value">{{ $t(item.label) }}</option>
             </select>
-            <span class="metric-pill info">{{ activeFilterText }}</span>
-            <div class="risk-severity-chips" aria-label="风险级别筛选">
+            <span class="metric-pill info">{{ $t(activeFilterText) }}</span>
+            <div class="risk-severity-chips" :aria-label="$t(&quot;风险级别筛选&quot;)">
               <button
                 v-for="item in severityFilterChips"
                 :key="`severity-${item.key || 'all'}`"
@@ -790,8 +790,8 @@ onMounted(() => {
                 :class="[item.tone, { active: riskFilters.severity === item.key }]"
                 @click="selectRiskSeverity(item.key)"
               >
-                <span>{{ item.label }}</span>
-                <strong>{{ formatNumber(item.count) }}</strong>
+                <span>{{ $t(item.label) }}</span>
+                <strong>{{ $t(formatNumber(item.count)) }}</strong>
               </button>
             </div>
             <button
@@ -799,9 +799,7 @@ onMounted(() => {
               type="button"
               class="btn btn-compact"
               @click="clearRiskFilters"
-            >
-              清空筛选
-            </button>
+            >{{ $t(" 清空筛选 ") }}</button>
             <div class="risk-more-actions" data-testid="risk-more-actions">
               <button
                 type="button"
@@ -810,9 +808,7 @@ onMounted(() => {
                 aria-controls="risk-more-panel"
                 :aria-expanded="String(riskMoreOpen)"
                 @click="riskMoreOpen = !riskMoreOpen"
-              >
-                更多
-              </button>
+              >{{ $t(" 更多 ") }}</button>
               <div
                 v-if="riskMoreOpen"
                 id="risk-more-panel"
@@ -820,20 +816,16 @@ onMounted(() => {
                 data-testid="risk-more-panel"
               >
                 <section class="risk-more-section">
-                  <span>数据</span>
+                  <span>{{ $t("数据") }}</span>
                   <div class="risk-more-buttons">
-                    <button type="button" class="btn btn-compact" :disabled="riskLoading" @click="refreshRiskFlags">
-                      刷新风险
-                    </button>
+                    <button type="button" class="btn btn-compact" :disabled="riskLoading" @click="refreshRiskFlags">{{ $t(" 刷新风险 ") }}</button>
                     <button
                       v-if="canExportRisks"
                       type="button"
                       class="btn btn-compact"
                       data-testid="risk-export-button"
                       @click="exportRiskFlags"
-                    >
-                      导出风险
-                    </button>
+                    >{{ $t(" 导出风险 ") }}</button>
                   </div>
                 </section>
               </div>
@@ -851,25 +843,24 @@ onMounted(() => {
             @click="selectRiskType(item.key)"
           >
             <span class="risk-type-chip-head">
-              <span>{{ item.label }}</span>
-              <strong>{{ formatNumber(item.count) }}</strong>
+              <span>{{ $t(item.label) }}</span>
+              <strong>{{ $t(formatNumber(item.count)) }}</strong>
             </span>
-            <small>{{ item.helper }}</small>
-            <em v-if="item.highCount || item.overdueCount">
-              高 {{ formatNumber(item.highCount) }} / 逾期 {{ formatNumber(item.overdueCount) }}
+            <small>{{ $t(item.helper) }}</small>
+            <em v-if="item.highCount || item.overdueCount">{{ $t(" 高 ") }}{{ $t(formatNumber(item.highCount)) }}{{ $t(" / 逾期 ") }}{{ $t(formatNumber(item.overdueCount)) }}
             </em>
           </button>
         </div>
 
         <div class="risk-treatment-strip">
-          <span class="helper-text">当前列表 {{ formatNumber(visibleRisks.length) }} 项</span>
+          <span class="helper-text">{{ $t("当前列表 ") }}{{ $t(formatNumber(visibleRisks.length)) }}{{ $t(" 项") }}</span>
           <span
             v-for="item in riskTreatmentStats"
             :key="item.key"
             class="metric-pill"
             :class="item.tone"
           >
-            {{ item.label }} {{ formatNumber(item.value) }}
+            {{ $t(item.label) }} {{ $t(formatNumber(item.value)) }}
           </span>
         </div>
 
@@ -878,7 +869,7 @@ onMounted(() => {
           v-else
           :risks="visibleRisks"
           :loading="riskLoading"
-          empty-text="当前筛选下暂无风险项"
+          :empty-text="$t(&quot;当前筛选下暂无风险项&quot;)"
           :row-clickable="false"
           selectable
           :selected-key="selectedRiskKey"
@@ -889,35 +880,35 @@ onMounted(() => {
         />
 
         <div v-if="!riskLoading && !visibleRisks.length" class="risk-empty-actions">
-          <button type="button" class="btn btn-compact" @click="clearRiskFilters">清空筛选</button>
-          <button type="button" class="btn btn-compact" @click="emit('select-tab', 'operations')">查看待办队列</button>
+          <button type="button" class="btn btn-compact" @click="clearRiskFilters">{{ $t("清空筛选") }}</button>
+          <button type="button" class="btn btn-compact" @click="emit('select-tab', 'operations')">{{ $t("查看待办队列") }}</button>
         </div>
       </article>
       </details>
 
       <details class="demo-secondary-details risk-side-details">
         <summary>
-          <span>处置详情</span>
-          <strong>选中风险 / 资料待补</strong>
+          <span>{{ $t("处置详情") }}</span>
+          <strong>{{ $t("选中风险 / 资料待补") }}</strong>
         </summary>
       <aside class="risk-side-workspace">
         <article class="card risk-center-card risk-selected-card" data-testid="risk-selected-inspector">
           <div class="card-header compact">
             <div>
-              <div class="section-label">选中风险</div>
-              <h3 class="card-title">处置指令板</h3>
+              <div class="section-label">{{ $t("选中风险") }}</div>
+              <h3 class="card-title">{{ $t("处置指令板") }}</h3>
             </div>
             <span v-if="selectedRisk" class="badge compact" :class="selectedRiskTone">
-              {{ riskSeverityLabel(selectedRisk.severity) }}
+              {{ $t(riskSeverityLabel(selectedRisk.severity)) }}
             </span>
           </div>
 
           <template v-if="selectedRisk">
             <div class="risk-selected-title">
-              <strong>{{ selectedRisk.title }}</strong>
+              <strong>{{ $t(selectedRisk.title) }}</strong>
               <div class="risk-selected-badges">
-                <span class="badge compact muted">{{ riskTypeLabel(selectedRisk.risk_type) }}</span>
-                <span class="badge compact" :class="selectedRiskStatus.tone">{{ selectedRiskStatus.label }}</span>
+                <span class="badge compact muted">{{ $t(riskTypeLabel(selectedRisk.risk_type)) }}</span>
+                <span class="badge compact" :class="selectedRiskStatus.tone">{{ $t(selectedRiskStatus.label) }}</span>
               </div>
             </div>
 
@@ -928,19 +919,19 @@ onMounted(() => {
                 class="risk-selected-fact"
                 :class="fact.tone"
               >
-                <small>{{ fact.label }}</small>
-                <b>{{ fact.value }}</b>
+                <small>{{ $t(fact.label) }}</small>
+                <b>{{ $t(fact.value) }}</b>
               </span>
             </div>
 
             <div class="risk-selected-reason">
-              <span>简要原因</span>
-              <p>{{ selectedRisk.description || '暂无补充说明' }}</p>
+              <span>{{ $t("简要原因") }}</span>
+              <p>{{ $t(selectedRisk.description || '暂无补充说明') }}</p>
             </div>
 
             <div class="risk-selected-next">
-              <span>下一步</span>
-              <strong>{{ riskActionLabel(selectedRisk) }}</strong>
+              <span>{{ $t("下一步") }}</span>
+              <strong>{{ $t(riskActionLabel(selectedRisk)) }}</strong>
               <div class="risk-selected-actions">
                 <button
                   type="button"
@@ -949,67 +940,65 @@ onMounted(() => {
                   :disabled="!hasRiskTarget(selectedRisk)"
                   @click="openRiskItem(selectedRisk)"
                 >
-                  {{ riskTargetActionLabel(selectedRisk) }}
+                  {{ $t(riskTargetActionLabel(selectedRisk)) }}
                 </button>
-                <button type="button" class="btn btn-compact" @click="explainRisk(selectedRisk)">
-                  解释风险
-                </button>
+                <button type="button" class="btn btn-compact" @click="explainRisk(selectedRisk)">{{ $t(" 解释风险 ") }}</button>
               </div>
             </div>
           </template>
-          <div v-else class="compact-empty compact-empty-tight">请选择一条风险</div>
+          <div v-else class="compact-empty compact-empty-tight">{{ $t("请选择一条风险") }}</div>
         </article>
 
         <article class="card risk-center-card risk-attachment-card" data-testid="attachment-completeness-card">
         <div class="card-header compact">
           <div>
-            <div class="section-label">附件完整性</div>
-            <h3 class="card-title">资料待补 {{ attachmentTasks.total || 0 }}</h3>
+            <div class="section-label">{{ $t("附件完整性") }}</div>
+            <h3 class="card-title">{{ $t("资料待补 ") }}{{ $t(attachmentTasks.total || 0) }}</h3>
           </div>
           <div class="pill-group">
-            <button class="btn btn-compact" :disabled="attachmentTaskLoading" @click="refreshAttachmentTasks">刷新</button>
+            <button class="btn btn-compact" :disabled="attachmentTaskLoading" @click="refreshAttachmentTasks">{{ $t("刷新") }}</button>
           </div>
         </div>
 
         <div class="attachment-summary-strip">
-          <span class="metric-pill warning">合同 {{ attachmentTaskSummary.by_target_type?.contract || 0 }}</span>
-          <span class="metric-pill info">客户 {{ attachmentTaskSummary.by_target_type?.customer || 0 }}</span>
-          <span class="metric-pill warning">中风险 {{ attachmentTaskSummary.by_severity?.medium || 0 }}</span>
+          <span class="metric-pill warning">{{ $t("合同 ") }}{{ $t(attachmentTaskSummary.by_target_type?.contract || 0) }}</span>
+          <span class="metric-pill info">{{ $t("客户 ") }}{{ $t(attachmentTaskSummary.by_target_type?.customer || 0) }}</span>
+          <span class="metric-pill warning">{{ $t("中风险 ") }}{{ $t(attachmentTaskSummary.by_severity?.medium || 0) }}</span>
         </div>
 
-        <div v-if="attachmentTaskLoading" class="compact-empty compact-empty-tight">读取中...</div>
+        <div v-if="attachmentTaskLoading" class="compact-empty compact-empty-tight">{{ $t("读取中...") }}</div>
         <div v-else-if="attachmentTasks.items?.length" class="attachment-task-list">
           <div v-for="task in attachmentTasks.items.slice(0, 8)" :key="task.id" class="attachment-task-row">
-            <span class="badge" :class="task.severity === 'high' ? 'error' : 'warning'">{{ task.priority === 'high' ? '高' : '中' }}</span>
+            <span class="badge" :class="task.severity === 'high' ? 'error' : 'warning'">{{ $t(task.priority === 'high' ? '高' : '中') }}</span>
             <div class="attachment-task-main">
               <div class="attachment-task-title">
-                <strong>{{ task.title }}</strong>
+                <strong>{{ $t(task.title) }}</strong>
                 <span>{{ task.contract_no || task.customer_name || task.target_id }}</span>
               </div>
               <small>{{ [task.customer_name, task.room_no, task.missing_category].filter(Boolean).join(' / ') }}</small>
               <p>{{ task.reason }}</p>
             </div>
-            <button type="button" class="btn btn-compact" @click="openAttachmentTask(task)">补资料</button>
+            <button type="button" class="btn btn-compact" @click="openAttachmentTask(task)">{{ $t("补资料") }}</button>
           </div>
         </div>
-        <div v-else class="compact-empty compact-empty-tight">暂无待补附件</div>
+        <div v-else class="compact-empty compact-empty-tight">{{ $t("暂无待补附件") }}</div>
         </article>
       </aside>
       </details>
     </div>
   </section>
 
-  <BaseModal :open="riskTargetOpen" title="风险目标" size="small" @close="closeRiskTargetContext">
+  <BaseModal :open="riskTargetOpen" :title="$t(&quot;风险目标&quot;)" size="small" @close="closeRiskTargetContext">
     <div v-if="riskTarget" class="risk-target-context" data-testid="risk-target-context-modal">
       <div class="risk-target-summary">
         <div class="risk-selected-badges">
           <span class="badge compact" :class="riskTone(riskTarget.severity)">
-            {{ riskSeverityLabel(riskTarget.severity) }}
+            {{ $t(riskSeverityLabel(riskTarget.severity)) }}
           </span>
-          <span class="badge compact muted">{{ riskTypeLabel(riskTarget.risk_type) }}</span>
+          <span class="badge compact muted">{{ $t(riskTypeLabel(riskTarget.risk_type)) }}</span>
         </div>
-        <strong>{{ riskTargetTitle }}</strong>
-        <p>{{ riskTarget.description || '暂无补充说明' }}</p>
+        <strong>{{ $t(riskTargetTitle) }}</strong>
+        <p>{{ $t(riskTarget.description || '暂无补充说明') }}</p>
       </div>
 
       <div v-if="riskTargetFacts.length" class="risk-selected-facts">
@@ -1019,14 +1008,14 @@ onMounted(() => {
           class="risk-selected-fact"
           :class="fact.tone"
         >
-          <small>{{ fact.label }}</small>
-          <b>{{ fact.value }}</b>
+          <small>{{ $t(fact.label) }}</small>
+          <b>{{ $t(fact.value) }}</b>
         </span>
       </div>
 
       <div class="risk-selected-next">
-        <span>下一步</span>
-        <strong>{{ riskTargetActionText }}</strong>
+        <span>{{ $t("下一步") }}</span>
+        <strong>{{ $t(riskTargetActionText) }}</strong>
         <div class="risk-target-actions">
           <button
             v-if="riskTargetContractId"
@@ -1035,7 +1024,7 @@ onMounted(() => {
             data-testid="risk-target-contract-button"
             @click="openRiskTargetContract"
           >
-            {{ riskTargetMode === 'receivable' && props.user.role !== 'viewer' ? '查看应收' : '查看合同' }}
+            {{ $t(riskTargetMode === 'receivable' && props.user.role !== 'viewer' ? '查看应收' : '查看合同') }}
           </button>
           <button
             v-if="riskTargetCustomerId"
@@ -1043,18 +1032,14 @@ onMounted(() => {
             class="btn btn-compact"
             data-testid="risk-target-customer-button"
             @click="openRiskTargetCustomer"
-          >
-            查看客户
-          </button>
+          >{{ $t(" 查看客户 ") }}</button>
           <button
             v-if="riskTargetMode === 'room'"
             type="button"
             class="btn btn-compact"
             data-testid="risk-target-room-tab-button"
             @click="goRiskTargetRoom"
-          >
-            前往房间管理
-          </button>
+          >{{ $t(" 前往房间管理 ") }}</button>
           <button
             v-if="riskTargetMode === 'receivable' && !riskTargetContractId"
             type="button"
@@ -1062,49 +1047,47 @@ onMounted(() => {
             data-testid="risk-target-receivables-tab-button"
             @click="goRiskTargetReceivables"
           >
-            {{ props.user.role === 'viewer' ? '前往合同管理' : '前往月度应收' }}
+            {{ $t(props.user.role === 'viewer' ? '前往合同管理' : '前往月度应收') }}
           </button>
         </div>
       </div>
     </div>
 
     <template #footer>
-      <button class="btn" @click="closeRiskTargetContext">关闭</button>
+      <button class="btn" @click="closeRiskTargetContext">{{ $t("关闭") }}</button>
     </template>
   </BaseModal>
 
-  <BaseModal :open="riskAiOpen" title="解释风险" size="small" @close="riskAiOpen = false">
+  <BaseModal :open="riskAiOpen" :title="$t(&quot;解释风险&quot;)" size="small" @close="riskAiOpen = false">
     <div class="ai-assist-modal" data-testid="risk-ai-modal">
       <div v-if="riskAiTarget" class="risk-ai-target">
-        <span class="badge" :class="riskAiTarget.severity === 'high' ? 'error' : 'warning'">{{ riskSeverityLabel(riskAiTarget.severity) }}</span>
-        <strong>{{ riskAiTarget.title || riskTypeLabel(riskAiTarget.risk_type) }}</strong>
-        <p>{{ riskAiTarget.description || '' }}</p>
+        <span class="badge" :class="riskAiTarget.severity === 'high' ? 'error' : 'warning'">{{ $t(riskSeverityLabel(riskAiTarget.severity)) }}</span>
+        <strong>{{ $t(riskAiTarget.title || riskTypeLabel(riskAiTarget.risk_type)) }}</strong>
+        <p>{{ $t(riskAiTarget.description || '') }}</p>
       </div>
-      <div v-if="riskAiLoading" class="compact-empty compact-empty-tight">正在分析风险原因...</div>
-      <p v-if="riskAiError" class="form-error" data-testid="risk-ai-error">{{ riskAiError }}</p>
+      <div v-if="riskAiLoading" class="compact-empty compact-empty-tight">{{ $t("正在分析风险原因...") }}</div>
+      <p v-if="riskAiError" class="form-error" data-testid="risk-ai-error">{{ $t(riskAiError) }}</p>
       <div v-if="riskAiResult" class="ai-result-block" data-testid="risk-ai-result">
-        <strong>风险原因、影响和处理方向</strong>
-        <p>{{ riskAiExplanationText || '暂未生成有效解释，请稍后重试或补充风险上下文。' }}</p>
+        <strong>{{ $t("风险原因、影响和处理方向") }}</strong>
+        <p>{{ $t(riskAiExplanationText || '暂未生成有效解释，请稍后重试或补充风险上下文。') }}</p>
         <div v-if="riskAiHighlights.length" class="ai-chip-row">
-          <span v-for="item in riskAiHighlights" :key="item" class="badge info">{{ item }}</span>
+          <span v-for="item in riskAiHighlights" :key="item" class="badge info">{{ $t(item) }}</span>
         </div>
         <ul v-if="riskAiSuggestedActions.length" class="ai-action-list">
-          <li v-for="item in riskAiSuggestedActions" :key="item">{{ item }}</li>
+          <li v-for="item in riskAiSuggestedActions" :key="item">{{ $t(item) }}</li>
         </ul>
         <div v-if="hasAiResultText(riskAiResult, 'explanation')" class="ai-result-actions">
           <button
             class="btn btn-compact"
             data-testid="risk-ai-copy"
             @click="copyRiskAiResult"
-          >
-            复制解释
-          </button>
+          >{{ $t(" 复制解释 ") }}</button>
         </div>
       </div>
     </div>
 
     <template #footer>
-      <button class="btn" @click="riskAiOpen = false">关闭</button>
+      <button class="btn" @click="riskAiOpen = false">{{ $t("关闭") }}</button>
     </template>
   </BaseModal>
 </template>

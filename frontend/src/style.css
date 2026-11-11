@@ -27,3 +27,11 @@
 @import './styles/base-widescreen.css';
 @import './styles/print.css';
 @import './styles/presentation.css';
+
+/* English labels are longer; retain the existing layout and allow wrapping. */
+html[lang="en"] .nav-group-title { white-space: normal; line-height: 1.4; }
+html[lang="en"] .sidebar-workspace-label { white-space: normal; }
+html[lang="en"] .topbar-context { flex-wrap: wrap; }
+html[lang="en"] .topbar-workspace-button { white-space: normal; }
+html[lang="en"] .section-label + strong { margin-left: 5px; }
+html[lang="en"] .data-table th { white-space: normal; }

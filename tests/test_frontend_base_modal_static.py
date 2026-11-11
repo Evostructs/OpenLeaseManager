@@ -28,7 +28,7 @@ def test_base_modal_uses_accessible_dialog_title_and_close_button() -> None:
     assert 'aria-modal="true"' in template
     assert ':aria-labelledby="modalTitleId"' in template
     assert ':id="modalTitleId"' in template
-    assert 'aria-label="关闭"' in template
+    assert ':aria-label="$t(&quot;关闭&quot;)"' in template
     assert 'data-testid="base-modal-backdrop"' in template
     assert 'data-testid="base-modal-panel"' in template
     assert 'data-testid="base-modal-close"' in template

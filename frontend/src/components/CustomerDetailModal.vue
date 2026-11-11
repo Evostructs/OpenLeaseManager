@@ -538,30 +538,30 @@ watch(
 </script>
 
 <template>
-  <BaseModal :open="open" title="客户详情" :layer-index="layerIndex" @close="emit('close')">
-    <div v-if="detailLoading" class="compact-empty">正在读取客户详情...</div>
+  <BaseModal :open="open" :title="$t(&quot;客户详情&quot;)" :layer-index="layerIndex" @close="emit('close')">
+    <div v-if="detailLoading" class="compact-empty">{{ $t("正在读取客户详情...") }}</div>
     <div v-else-if="detail" class="detail-list customer-detail" data-testid="customer-detail-modal">
       <div class="btn-row">
-        <button v-if="canEdit" class="btn btn-primary" @click="openCreateFollowUp">登记跟进</button>
-        <a class="btn" :href="buildViewLink(windowOrigin, 'customers', propertyScope, {}, {type:'customer',id:detail.id})" target="_blank" rel="noopener">打开此详情链接</a>
-        <button class="btn" @click="attachmentSection?.scrollIntoView({ block: 'start', behavior: 'smooth' })">查看附件</button>
+        <button v-if="canEdit" class="btn btn-primary" @click="openCreateFollowUp">{{ $t("登记跟进") }}</button>
+        <a class="btn" :href="buildViewLink(windowOrigin, 'customers', propertyScope, {}, {type:'customer',id:detail.id})" target="_blank" rel="noopener">{{ $t("打开此详情链接") }}</a>
+        <button class="btn" @click="attachmentSection?.scrollIntoView({ block: 'start', behavior: 'smooth' })">{{ $t("查看附件") }}</button>
       </div>
       <section class="customer-detail-operating-panel" data-testid="customer-detail-operating-panel">
         <div class="customer-detail-hero">
           <div>
-            <div class="section-label">客户运营面板</div>
+            <div class="section-label">{{ $t("客户运营面板") }}</div>
             <h3 class="card-title">{{ detail.name }}</h3>
             <div class="customer-identity-meta">
-              <span>{{ customerSubtitle }}</span>
-              <span>{{ customerContactLine }}</span>
+              <span>{{ $t(customerSubtitle) }}</span>
+              <span>{{ $t(customerContactLine) }}</span>
             </div>
           </div>
-          <span class="badge" :class="detail.status === 'inactive' ? 'warning' : 'success'">{{ statusLabel(detail.status) }}</span>
+          <span class="badge" :class="detail.status === 'inactive' ? 'warning' : 'success'">{{ $t(statusLabel(detail.status)) }}</span>
         </div>
 
         <div v-if="actionCues.length" class="customer-cue-row">
           <span v-for="cue in actionCues" :key="`${cue.type}-${cue.text}`" class="badge" :class="cueClass(cue.level)">
-            {{ cue.text }}
+            {{ $t(cue.text) }}
           </span>
         </div>
 
@@ -569,51 +569,51 @@ watch(
           <div class="customer-detail-main-stack">
             <div class="customer-detail-signal-band" data-testid="customer-detail-signal-band">
               <div v-for="signal in operatingSignals" :key="signal.key" class="customer-detail-signal" :class="signal.tone">
-                <span>{{ signal.label }}</span>
-                <strong>{{ signal.value }}</strong>
-                <small>{{ signal.helper }}</small>
+                <span>{{ $t(signal.label) }}</span>
+                <strong>{{ $t(signal.value) }}</strong>
+                <small>{{ $t(signal.helper) }}</small>
               </div>
             </div>
 
             <div class="customer-summary-grid">
               <div v-for="card in summaryCards" :key="card.key" class="customer-summary-card">
-                <span>{{ card.label }}</span>
-                <strong>{{ card.value }}</strong>
-                <small>{{ card.helper }}</small>
+                <span>{{ $t(card.label) }}</span>
+                <strong>{{ $t(card.value) }}</strong>
+                <small>{{ $t(card.helper) }}</small>
               </div>
             </div>
           </div>
 
           <aside class="customer-detail-next-actions" data-testid="customer-detail-next-actions">
-            <div class="section-label">下一步</div>
+            <div class="section-label">{{ $t("下一步") }}</div>
             <div v-for="action in nextActions" :key="action.key" class="customer-next-action-row" :class="action.tone">
-              <strong>{{ action.title }}</strong>
-              <span>{{ action.meta }}</span>
+              <strong>{{ $t(action.title) }}</strong>
+              <span>{{ $t(action.meta) }}</span>
             </div>
           </aside>
         </div>
       </section>
 
       <div v-if="(detail.risks || []).length" class="detail-section customer-detail-risk-section">
-        <div class="section-label">相关风险</div>
+        <div class="section-label">{{ $t("相关风险") }}</div>
         <RiskFlagList :risks="detail.risks || []" compact @open-risk="openRisk" />
       </div>
 
       <div class="detail-section ai-assist-panel" data-testid="customer-ai-assist">
         <div class="section-title-row">
           <div>
-            <div class="section-label">经营摘要</div>
-            <h4>客户摘要</h4>
+            <div class="section-label">{{ $t("经营摘要") }}</div>
+            <h4>{{ $t("客户摘要") }}</h4>
           </div>
           <div class="btn-row">
-            <InfoHint text="生成后可复制或带入跟进。" />
+            <InfoHint :text="$t(&quot;生成后可复制或带入跟进。&quot;)" />
             <button
               class="btn btn-compact"
               data-testid="customer-ai-summary-button"
               :disabled="aiBusy"
               @click="runCustomerAi('summary')"
             >
-              {{ aiState.loading === 'summary' ? '生成中...' : '生成经营摘要' }}
+              {{ $t(aiState.loading === 'summary' ? '生成中...' : '生成经营摘要') }}
             </button>
             <button
               class="btn btn-compact"
@@ -621,58 +621,52 @@ watch(
               :disabled="aiBusy"
               @click="runCustomerAi('suggestion')"
             >
-              {{ aiState.loading === 'suggestion' ? '生成中...' : '生成跟进建议' }}
+              {{ $t(aiState.loading === 'suggestion' ? '生成中...' : '生成跟进建议') }}
             </button>
           </div>
         </div>
-        <p v-if="aiState.error" class="form-error" data-testid="customer-ai-error">{{ aiState.error }}</p>
+        <p v-if="aiState.error" class="form-error" data-testid="customer-ai-error">{{ $t(aiState.error) }}</p>
         <div v-if="aiState.loading" class="compact-empty compact-empty-tight">
-          {{ aiState.loading === 'summary' ? '正在整理客户摘要...' : '正在生成跟进建议...' }}
+          {{ $t(aiState.loading === 'summary' ? '正在整理客户摘要...' : '正在生成跟进建议...') }}
         </div>
         <div v-if="aiState.summary" class="ai-result-block" data-testid="customer-ai-summary-result">
-          <strong>客户经营摘要</strong>
-          <p>{{ aiResultText(aiState.summary, 'summary') || '暂未生成有效摘要，请稍后重试或补充客户资料。' }}</p>
+          <strong>{{ $t("客户经营摘要") }}</strong>
+          <p>{{ $t(aiResultText(aiState.summary, 'summary') || '暂未生成有效摘要，请稍后重试或补充客户资料。') }}</p>
           <div v-if="aiHighlights(aiState.summary, 'summary').length" class="ai-chip-row">
-            <span v-for="item in aiHighlights(aiState.summary, 'summary')" :key="item" class="badge info">{{ item }}</span>
+            <span v-for="item in aiHighlights(aiState.summary, 'summary')" :key="item" class="badge info">{{ $t(item) }}</span>
           </div>
           <ul v-if="aiSuggestedActions(aiState.summary, 'summary').length" class="ai-action-list">
-            <li v-for="item in aiSuggestedActions(aiState.summary, 'summary')" :key="item">{{ item }}</li>
+            <li v-for="item in aiSuggestedActions(aiState.summary, 'summary')" :key="item">{{ $t(item) }}</li>
           </ul>
           <div v-if="hasAiResultText(aiState.summary, 'summary')" class="ai-result-actions">
             <button
               class="btn btn-compact"
               data-testid="customer-ai-summary-copy"
               @click="copyAiResult(aiState.summary, 'summary', '客户经营摘要')"
-            >
-              复制摘要
-            </button>
+            >{{ $t(" 复制摘要 ") }}</button>
           </div>
         </div>
         <div v-if="aiState.suggestion" class="ai-result-block" data-testid="customer-ai-suggestion-result">
-          <strong>跟进建议</strong>
-          <p>{{ aiResultText(aiState.suggestion, 'suggestion') || '暂未生成有效建议，请稍后重试或补充客户资料。' }}</p>
+          <strong>{{ $t("跟进建议") }}</strong>
+          <p>{{ $t(aiResultText(aiState.suggestion, 'suggestion') || '暂未生成有效建议，请稍后重试或补充客户资料。') }}</p>
           <div v-if="aiHighlights(aiState.suggestion, 'suggestion').length" class="ai-chip-row">
-            <span v-for="item in aiHighlights(aiState.suggestion, 'suggestion')" :key="item" class="badge info">{{ item }}</span>
+            <span v-for="item in aiHighlights(aiState.suggestion, 'suggestion')" :key="item" class="badge info">{{ $t(item) }}</span>
           </div>
           <ul v-if="aiSuggestedActions(aiState.suggestion, 'suggestion').length" class="ai-action-list">
-            <li v-for="item in aiSuggestedActions(aiState.suggestion, 'suggestion')" :key="item">{{ item }}</li>
+            <li v-for="item in aiSuggestedActions(aiState.suggestion, 'suggestion')" :key="item">{{ $t(item) }}</li>
           </ul>
           <div v-if="hasAiResultText(aiState.suggestion, 'suggestion')" class="ai-result-actions">
             <button
               class="btn btn-compact"
               data-testid="customer-ai-suggestion-copy"
               @click="copyAiResult(aiState.suggestion, 'suggestion', '跟进建议')"
-            >
-              复制建议
-            </button>
+            >{{ $t(" 复制建议 ") }}</button>
             <button
               v-if="canEdit"
               class="btn btn-compact"
               data-testid="customer-ai-suggestion-to-follow-up"
               @click="bringSuggestionToFollowUp"
-            >
-              带入跟进
-            </button>
+            >{{ $t(" 带入跟进 ") }}</button>
           </div>
         </div>
       </div>
@@ -680,33 +674,33 @@ watch(
       <div class="detail-section">
         <div class="detail-section-header">
           <div>
-            <div class="section-label">各楼宇共用资料</div>
-            <h4>各楼宇共用资料</h4>
+            <div class="section-label">{{ $t("各楼宇共用资料") }}</div>
+            <h4>{{ $t("各楼宇共用资料") }}</h4>
           </div>
         </div>
         <div class="stat-grid detail-field-grid">
           <div class="detail-field">
-            <div class="section-label">简称</div>
-            <div>{{ detail.short_name || '--' }}</div>
+            <div class="section-label">{{ $t("简称") }}</div>
+            <div>{{ $t(detail.short_name || '--') }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">信用代码</div>
-            <div>{{ detail.credit_code || '--' }}</div>
+            <div class="section-label">{{ $t("信用代码") }}</div>
+            <div>{{ $t(detail.credit_code || '--') }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">类型 / 行业</div>
-            <div>{{ detail.customer_type || '--' }} / {{ detail.industry || '--' }}</div>
+            <div class="section-label">{{ $t("类型 / 行业") }}</div>
+            <div>{{ $t(detail.customer_type || '--') }} / {{ $t(detail.industry || '--') }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">共享联系人</div>
+            <div class="section-label">{{ $t("共享联系人") }}</div>
             <div>{{ detail.contact_name || '--' }} {{ detail.contact_phone || '' }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">邮箱</div>
+            <div class="section-label">{{ $t("邮箱") }}</div>
             <div>{{ detail.contact_email || '--' }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">地址</div>
+            <div class="section-label">{{ $t("地址") }}</div>
             <div>{{ detail.address || '--' }}</div>
           </div>
         </div>
@@ -715,28 +709,28 @@ watch(
       <div class="detail-section">
         <div class="detail-section-header">
           <div>
-            <div class="section-label">当前楼宇资料</div>
-            <h4>{{ detail.building_profile?.building_code || '当前楼宇' }}</h4>
+            <div class="section-label">{{ $t("当前楼宇资料") }}</div>
+            <h4>{{ $t(detail.building_profile?.building_code || '当前楼宇') }}</h4>
           </div>
         </div>
         <div class="stat-grid detail-field-grid">
           <div class="detail-field">
-            <div class="section-label">楼宇联系人</div>
-            <div>{{ detail.local_contact || '--' }}</div>
+            <div class="section-label">{{ $t("楼宇联系人") }}</div>
+            <div>{{ $t(detail.local_contact || '--') }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">楼宇负责人</div>
-            <div>{{ detail.owner || '--' }}</div>
+            <div class="section-label">{{ $t("楼宇负责人") }}</div>
+            <div>{{ $t(detail.owner || '--') }}</div>
           </div>
           <div class="detail-field">
-            <div class="section-label">楼宇备注</div>
-            <div>{{ detail.local_notes || '--' }}</div>
+            <div class="section-label">{{ $t("楼宇备注") }}</div>
+            <div>{{ $t(detail.local_notes || '--') }}</div>
           </div>
         </div>
       </div>
 
       <div class="detail-section detail-note-section">
-        <div class="section-label">共享备注</div>
+        <div class="section-label">{{ $t("共享备注") }}</div>
         <p>{{ detail.notes || '暂无备注' }}</p>
       </div>
 
@@ -757,59 +751,59 @@ watch(
       <div class="detail-section">
         <div class="section-title-row">
           <div>
-            <div class="section-label">跟进时间线</div>
-            <h4>客户互动</h4>
+            <div class="section-label">{{ $t("跟进时间线") }}</div>
+            <h4>{{ $t("客户互动") }}</h4>
           </div>
           <div class="btn-row">
-            <button class="btn btn-compact" @click="exportDetailFollowUps">导出跟进</button>
-            <button v-if="canEdit" class="btn btn-compact" @click="openCreateFollowUp">新增跟进</button>
+            <button class="btn btn-compact" @click="exportDetailFollowUps">{{ $t("导出跟进") }}</button>
+            <button v-if="canEdit" class="btn btn-compact" @click="openCreateFollowUp">{{ $t("新增跟进") }}</button>
           </div>
         </div>
         <div v-if="(detail.follow_ups || []).length" class="follow-up-timeline">
           <div v-for="followUp in detail.follow_ups" :key="followUp.id" class="follow-up-item">
             <div class="follow-up-head">
               <div>
-                <span class="badge info">{{ followUp.follow_up_type || '其他' }}</span>
-                <strong>{{ formatDateTime(followUp.occurred_at) }}</strong>
+                <span class="badge info">{{ $t(followUp.follow_up_type || '其他') }}</span>
+                <strong>{{ $t(formatDateTime(followUp.occurred_at)) }}</strong>
               </div>
-              <span class="badge" :class="followUpStatusClass(followUp.status)">{{ followUpStatusLabel(followUp.status) }}</span>
+              <span class="badge" :class="followUpStatusClass(followUp.status)">{{ $t(followUpStatusLabel(followUp.status)) }}</span>
             </div>
             <p>{{ followUp.content }}</p>
             <div class="follow-up-meta">
-              <span>下一步：{{ followUp.next_action || '--' }}</span>
-              <span>下次：{{ formatDate(followUp.next_follow_up_date) }}</span>
-              <span>负责人：{{ followUp.owner || '--' }}</span>
-              <span v-if="followUp.contract_no">合同：{{ followUp.contract_no }}</span>
+              <span>{{ $t("下一步：") }}{{ $t(followUp.next_action || '--') }}</span>
+              <span>{{ $t("下次：") }}{{ $t(formatDate(followUp.next_follow_up_date)) }}</span>
+              <span>{{ $t("负责人：") }}{{ $t(followUp.owner || '--') }}</span>
+              <span v-if="followUp.contract_no">{{ $t("合同：") }}{{ followUp.contract_no }}</span>
             </div>
             <div v-if="canEdit" class="follow-up-actions">
-              <button class="btn btn-compact" @click="openEditFollowUp(followUp)">编辑</button>
-              <button v-if="followUp.status !== 'done'" class="btn btn-compact" @click="completeFollowUp(followUp)">完成</button>
-              <button class="btn btn-compact btn-danger" @click="requestDeleteFollowUp(followUp)">删除</button>
+              <button class="btn btn-compact" @click="openEditFollowUp(followUp)">{{ $t("编辑") }}</button>
+              <button v-if="followUp.status !== 'done'" class="btn btn-compact" @click="completeFollowUp(followUp)">{{ $t("完成") }}</button>
+              <button class="btn btn-compact btn-danger" @click="requestDeleteFollowUp(followUp)">{{ $t("删除") }}</button>
             </div>
           </div>
         </div>
-        <div v-else class="compact-empty">暂无跟进记录</div>
+        <div v-else class="compact-empty">{{ $t("暂无跟进记录") }}</div>
       </div>
 
       <div class="detail-section">
         <div class="detail-section-header">
           <div>
-            <div class="section-label">关联合同</div>
-            <h4>租赁关系</h4>
+            <div class="section-label">{{ $t("关联合同") }}</div>
+            <h4>{{ $t("租赁关系") }}</h4>
           </div>
         </div>
         <div class="table-wrapper" style="margin-top:12px">
           <table class="data-table" style="min-width:900px">
             <thead>
               <tr>
-                <th>合同编号</th>
-                <th>房源</th>
-                <th>签约类型</th>
-                <th>租期</th>
-                <th class="right">面积</th>
-                <th class="right">月租金</th>
-                <th class="right">押金未收</th>
-                <th>状态</th>
+                <th>{{ $t("合同编号") }}</th>
+                <th>{{ $t("房源") }}</th>
+                <th>{{ $t("签约类型") }}</th>
+                <th>{{ $t("租期") }}</th>
+                <th class="right">{{ $t("面积") }}</th>
+                <th class="right">{{ $t("月租金") }}</th>
+                <th class="right">{{ $t("押金未收") }}</th>
+                <th>{{ $t("状态") }}</th>
               </tr>
             </thead>
             <tbody>
@@ -818,15 +812,15 @@ watch(
                   <button class="link-button" type="button" @click="emit('open-contract', contract.id)">{{ contract.contract_no }}</button>
                 </td>
                 <td>{{ contract.room_no || '--' }}</td>
-                <td>{{ contract.lease_type || '--' }}</td>
-                <td>{{ formatDate(contract.start_date) }} - {{ formatDate(contract.end_date) }}</td>
-                <td class="right">{{ formatArea(contract.area) }}㎡</td>
-                <td class="right">{{ formatCurrencyFixed(contract.monthly_rent) }}</td>
-                <td class="right">{{ formatCurrencyFixed(contract.deposit_summary?.unpaid_amount || 0) }}</td>
+                <td>{{ $t(contract.lease_type || '--') }}</td>
+                <td>{{ $t(formatDate(contract.start_date)) }} - {{ $t(formatDate(contract.end_date)) }}</td>
+                <td class="right">{{ $t(formatArea(contract.area)) }}㎡</td>
+                <td class="right">{{ $t(formatCurrencyFixed(contract.monthly_rent)) }}</td>
+                <td class="right">{{ $t(formatCurrencyFixed(contract.deposit_summary?.unpaid_amount || 0)) }}</td>
                 <td><StatusBadge :status="contract.status" /></td>
               </tr>
               <tr v-if="!(detail.contracts || []).length">
-                <td colspan="8" class="list-empty">暂无关联合同</td>
+                <td colspan="8" class="list-empty">{{ $t("暂无关联合同") }}</td>
               </tr>
             </tbody>
           </table>
@@ -835,70 +829,68 @@ watch(
     </div>
 
     <template #footer>
-      <button class="btn" @click="emit('close')">{{ closeLabel }}</button>
-      <button v-if="showEditAction && canEdit && detail" class="btn btn-primary" @click="emit('edit-customer', detail)">编辑</button>
+      <button class="btn" @click="emit('close')">{{ $t(closeLabel) }}</button>
+      <button v-if="showEditAction && canEdit && detail" class="btn btn-primary" @click="emit('edit-customer', detail)">{{ $t("编辑") }}</button>
     </template>
   </BaseModal>
 
-  <BaseModal :layer-index="layerIndex + 1" :open="followUpFormOpen" :title="followUpEditingId ? '编辑跟进' : '新增跟进'" @close="followUpFormOpen = false">
+  <BaseModal :layer-index="layerIndex + 1" :open="followUpFormOpen" :title="$t(followUpEditingId ? '编辑跟进' : '新增跟进')" @close="followUpFormOpen = false">
     <div class="form-grid">
       <label class="form-field">
-        <span class="section-label">跟进类型</span>
+        <span class="section-label">{{ $t("跟进类型") }}</span>
         <select v-model="followUpForm.follow_up_type" class="select">
-          <option v-for="type in followUpTypes" :key="type" :value="type">{{ type }}</option>
+          <option v-for="type in followUpTypes" :key="type" :value="type">{{ $t(type) }}</option>
         </select>
       </label>
       <label class="form-field">
-        <span class="section-label">状态</span>
+        <span class="section-label">{{ $t("状态") }}</span>
         <select v-model="followUpForm.status" class="select">
-          <option v-for="item in followUpStatuses" :key="item.value" :value="item.value">{{ item.label }}</option>
+          <option v-for="item in followUpStatuses" :key="item.value" :value="item.value">{{ $t(item.label) }}</option>
         </select>
       </label>
       <label class="form-field">
-        <span class="section-label">跟进时间</span>
+        <span class="section-label">{{ $t("跟进时间") }}</span>
         <input v-model="followUpForm.occurred_at" class="input" type="datetime-local" />
       </label>
       <label class="form-field">
-        <span class="section-label">负责人</span>
+        <span class="section-label">{{ $t("负责人") }}</span>
         <input v-model="followUpForm.owner" class="input" />
       </label>
       <label class="form-field">
-        <span class="section-label">关联合同</span>
+        <span class="section-label">{{ $t("关联合同") }}</span>
         <select v-model="followUpForm.contract_id" class="select">
-          <option value="">不关联合同</option>
+          <option value="">{{ $t("不关联合同") }}</option>
           <option v-for="contract in detail?.contracts || []" :key="contract.id" :value="contract.id">
             {{ contract.contract_no }} / {{ contract.room_no || '--' }}
           </option>
         </select>
       </label>
       <label class="form-field">
-        <span class="section-label">下次跟进日期</span>
+        <span class="section-label">{{ $t("下次跟进日期") }}</span>
         <input v-model="followUpForm.next_follow_up_date" class="input" type="date" />
       </label>
       <label class="form-field full">
-        <span class="section-label">跟进内容</span>
+        <span class="section-label">{{ $t("跟进内容") }}</span>
         <textarea v-model="followUpForm.content" class="textarea" data-testid="follow-up-content-input" />
       </label>
       <label class="form-field full">
-        <span class="section-label">下一步动作</span>
+        <span class="section-label">{{ $t("下一步动作") }}</span>
         <textarea v-model="followUpForm.next_action" class="textarea customer-next-action-input" data-testid="follow-up-next-action-input" />
       </label>
     </div>
 
     <template #footer>
-      <button class="btn" @click="followUpFormOpen = false">取消</button>
-      <button class="btn btn-primary" :disabled="followUpSaving || !followUpForm.content.trim()" @click="saveFollowUp">保存</button>
+      <button class="btn" @click="followUpFormOpen = false">{{ $t("取消") }}</button>
+      <button class="btn btn-primary" :disabled="followUpSaving || !followUpForm.content.trim()" @click="saveFollowUp">{{ $t("保存") }}</button>
     </template>
   </BaseModal>
 
-  <BaseModal :layer-index="layerIndex + 1" :open="Boolean(followUpDeleteTarget)" title="删除跟进记录" size="small" @close="closeFollowUpDeleteConfirm">
-    <div class="compact-empty">
-      确定删除这条跟进记录吗？删除后无法恢复。
-    </div>
+  <BaseModal :layer-index="layerIndex + 1" :open="Boolean(followUpDeleteTarget)" :title="$t(&quot;删除跟进记录&quot;)" size="small" @close="closeFollowUpDeleteConfirm">
+    <div class="compact-empty">{{ $t(" 确定删除这条跟进记录吗？删除后无法恢复。 ") }}</div>
 
     <template #footer>
-      <button class="btn" :disabled="followUpDeleting" @click="closeFollowUpDeleteConfirm">取消</button>
-      <button class="btn btn-danger" :disabled="followUpDeleting" @click="confirmDeleteFollowUp">确认删除</button>
+      <button class="btn" :disabled="followUpDeleting" @click="closeFollowUpDeleteConfirm">{{ $t("取消") }}</button>
+      <button class="btn btn-danger" :disabled="followUpDeleting" @click="confirmDeleteFollowUp">{{ $t("确认删除") }}</button>
     </template>
   </BaseModal>
 </template>

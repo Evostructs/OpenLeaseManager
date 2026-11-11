@@ -1126,28 +1126,28 @@ onMounted(async () => {
     <article class="card customer-workspace-panel" data-testid="customer-workspace-summary">
       <div class="customer-workspace-head">
         <div>
-          <div class="section-label">客户工作台</div>
-          <h3 class="card-title">客户运营重点</h3>
+          <div class="section-label">{{ $t("客户工作台") }}</div>
+          <h3 class="card-title">{{ $t("客户运营重点") }}</h3>
         </div>
         <div class="btn-row">
           <button class="btn btn-compact" :disabled="state.dueLoading || state.signalLoading" @click="refreshCustomerWorkspace">
-            {{ state.signalLoading || state.dueLoading ? '刷新中...' : '刷新信号' }}
+            {{ $t(state.signalLoading || state.dueLoading ? '刷新中...' : '刷新信号') }}
           </button>
-          <button v-if="canCreateCustomer" class="btn btn-primary btn-compact" @click="openCreate">新增客户</button>
+          <button v-if="canCreateCustomer" class="btn btn-primary btn-compact" @click="openCreate">{{ $t("新增客户") }}</button>
         </div>
       </div>
       <div class="customer-kpi-grid">
         <div v-for="card in customerOverviewCards" :key="card.key" class="customer-kpi-card metric-tile" :class="card.tone">
-          <span>{{ card.label }}</span>
-          <strong>{{ card.value }}</strong>
-          <small>{{ card.helper }}</small>
+          <span>{{ $t(card.label) }}</span>
+          <strong>{{ $t(card.value) }}</strong>
+          <small>{{ $t(card.helper) }}</small>
         </div>
       </div>
       <div class="customer-account-grid" data-testid="customer-signal-band">
         <section class="customer-value-board">
           <div class="customer-board-head">
-            <span>租金贡献</span>
-            <small>Top 5 在租客户</small>
+            <span>{{ $t("租金贡献") }}</span>
+            <small>{{ $t("Top 5 在租客户") }}</small>
           </div>
           <div class="customer-value-list">
             <button
@@ -1157,24 +1157,24 @@ onMounted(async () => {
               class="customer-value-row"
               @click="openCustomerSignal(row)"
             >
-              <span class="customer-rank-index">{{ index + 1 }}</span>
+              <span class="customer-rank-index">{{ $t(index + 1) }}</span>
               <span class="customer-value-main">
-                <strong class="customer-name-ellipsis" :title="rowCustomerName(row)">{{ rowCustomerName(row) }}</strong>
-                <small>{{ roomsText(row) }} · {{ row.count || 0 }} 份合同</small>
+                <strong class="customer-name-ellipsis" :title="$t(rowCustomerName(row))">{{ $t(rowCustomerName(row)) }}</strong>
+                <small>{{ $t(roomsText(row)) }} · {{ $t(row.count || 0) }}{{ $t(" 份合同") }}</small>
               </span>
               <span class="customer-value-metrics">
-                <strong>{{ compactCurrency(row.rent) }}</strong>
-                <small>{{ formatArea(row.area || 0) }} ㎡</small>
+                <strong>{{ $t(compactCurrency(row.rent)) }}</strong>
+                <small>{{ $t(formatArea(row.area || 0)) }} ㎡</small>
               </span>
             </button>
-            <div v-if="!topValueCustomers.length" class="compact-empty compact-empty-tight">暂无在租客户</div>
+            <div v-if="!topValueCustomers.length" class="compact-empty compact-empty-tight">{{ $t("暂无在租客户") }}</div>
           </div>
         </section>
 
         <section class="customer-next-board">
           <div class="customer-board-head">
-            <span>下一动作</span>
-            <small>跟进 / 资料 / 关系</small>
+            <span>{{ $t("下一动作") }}</span>
+            <small>{{ $t("跟进 / 资料 / 关系") }}</small>
           </div>
           <div class="customer-attention-strip">
             <button
@@ -1185,14 +1185,14 @@ onMounted(async () => {
               :class="row.tone"
               @click="openCustomerSignal(row)"
             >
-              <span class="badge" :class="row.tone">{{ row.label }}</span>
+              <span class="badge" :class="row.tone">{{ $t(row.label) }}</span>
               <div>
-                <strong class="customer-name-ellipsis" :title="row.title">{{ row.title }}</strong>
-                <span>{{ row.detail }}</span>
+                <strong class="customer-name-ellipsis" :title="$t(row.title)">{{ $t(row.title) }}</strong>
+                <span>{{ $t(row.detail) }}</span>
               </div>
-              <small>{{ row.meta }}</small>
+              <small>{{ $t(row.meta) }}</small>
             </button>
-            <div v-if="!attentionRows.length" class="compact-empty compact-empty-tight">暂无客户动作</div>
+            <div v-if="!attentionRows.length" class="compact-empty compact-empty-tight">{{ $t("暂无客户动作") }}</div>
           </div>
         </section>
       </div>
@@ -1200,13 +1200,13 @@ onMounted(async () => {
 
     <details class="demo-secondary-details customer-finance-details">
       <summary>
-        <span>历史逾期客户</span>
-        <strong>{{ overdueCustomerRows.length }} 个客户</strong>
+        <span>{{ $t("历史逾期客户") }}</span>
+        <strong>{{ $t(overdueCustomerRows.length) }}{{ $t(" 个客户") }}</strong>
       </summary>
       <section class="customer-exposure-board">
         <div class="customer-board-head">
-          <span>历史逾期</span>
-          <small>{{ overdueCustomerRows.length }} 个客户</small>
+          <span>{{ $t("历史逾期") }}</span>
+          <small>{{ $t(overdueCustomerRows.length) }}{{ $t(" 个客户") }}</small>
         </div>
         <div class="customer-exposure-list">
           <button
@@ -1218,30 +1218,30 @@ onMounted(async () => {
           >
             <span>
               <strong class="customer-name-ellipsis" :title="row.name">{{ row.name }}</strong>
-              <small>{{ row.contractCount }} 份合同 · {{ roomsText(row, 2) }}</small>
+              <small>{{ $t(row.contractCount) }}{{ $t(" 份合同 · ") }}{{ $t(roomsText(row, 2)) }}</small>
             </span>
             <span>
-              <strong>{{ compactCurrency(row.overdueBalance) }}</strong>
-              <small>{{ row.maxAgingDays || 0 }} 天</small>
+              <strong>{{ $t(compactCurrency(row.overdueBalance)) }}</strong>
+              <small>{{ $t(row.maxAgingDays || 0) }}{{ $t(" 天") }}</small>
             </span>
           </button>
-          <div v-if="!overdueCustomerRows.length" class="compact-empty compact-empty-tight">暂无历史逾期客户</div>
+          <div v-if="!overdueCustomerRows.length" class="compact-empty compact-empty-tight">{{ $t("暂无历史逾期客户") }}</div>
         </div>
       </section>
     </details>
 
     <details class="demo-secondary-details customer-visual-details">
       <summary>
-        <span>客户结构图</span>
-        <strong>集中度 / 待办分布</strong>
+        <span>{{ $t("客户结构图") }}</span>
+        <strong>{{ $t("集中度 / 待办分布") }}</strong>
       </summary>
     <section class="customer-visual-grid" data-testid="customer-value-risk-view">
       <ChartCard
-        title="当前合同租金集中度"
-        subtitle="按当前在租合同月租汇总"
+        :title="$t(&quot;当前合同租金集中度&quot;)"
+        :subtitle="$t(&quot;按当前在租合同月租汇总&quot;)"
         :option="customerConcentrationOption"
         :empty="!customerConcentrationRows.length"
-        empty-text="暂无在租客户数据"
+        :empty-text="$t(&quot;暂无在租客户数据&quot;)"
         :height="260"
         :insight="customerConcentrationInsight"
         tone="info"
@@ -1255,14 +1255,14 @@ onMounted(async () => {
             class="customer-concentration-row"
             @click="openCustomerSignal(row)"
           >
-            <span class="customer-rank-index">{{ index + 1 }}</span>
+            <span class="customer-rank-index">{{ $t(index + 1) }}</span>
             <span class="customer-concentration-main">
               <strong class="customer-name-ellipsis" :title="row.name">{{ row.name }}</strong>
-              <small>{{ row.contractCount }} 份合同 · {{ roomsText(row, 2) }}</small>
+              <small>{{ $t(row.contractCount) }}{{ $t(" 份合同 · ") }}{{ $t(roomsText(row, 2)) }}</small>
             </span>
             <span class="customer-concentration-metrics">
-              <strong>{{ compactCurrency(row.rent) }}</strong>
-              <small>租金 {{ row.rentShare }}% · 面积 {{ row.areaShare }}%</small>
+              <strong>{{ $t(compactCurrency(row.rent)) }}</strong>
+              <small>{{ $t("租金 ") }}{{ $t(row.rentShare) }}{{ $t("% · 面积 ") }}{{ $t(row.areaShare) }}%</small>
             </span>
           </button>
         </div>
@@ -1271,27 +1271,27 @@ onMounted(async () => {
       <article class="chart-card customer-risk-card tone-warning" data-testid="customer-risk-matrix">
         <header class="chart-card-header">
           <div class="chart-card-copy">
-            <span class="section-label">重点观察</span>
-            <h3>客户待办分布</h3>
-            <p>租金贡献 × 待办类型</p>
+            <span class="section-label">{{ $t("重点观察") }}</span>
+            <h3>{{ $t("客户待办分布") }}</h3>
+            <p>{{ $t("租金贡献 × 待办类型") }}</p>
           </div>
           <div class="chart-card-actions">
-            <span class="metric-pill warning">关注 {{ customerRiskRows.filter((row) => row.riskTier !== 'low').length }}</span>
+            <span class="metric-pill warning">{{ $t("关注 ") }}{{ customerRiskRows.filter((row) => row.riskTier !== 'low').length }}</span>
           </div>
         </header>
 
         <div v-if="customerRiskRows.length" class="customer-risk-matrix-grid">
           <div class="customer-risk-matrix-head">
-            <span>状态 / 租金</span>
+            <span>{{ $t("状态 / 租金") }}</span>
             <span v-for="column in customerRiskValueColumns" :key="column.key">
-              {{ column.label }}
-              <small>{{ column.helper }}</small>
+              {{ $t(column.label) }}
+              <small>{{ $t(column.helper) }}</small>
             </span>
           </div>
           <div v-for="tier in customerRiskMatrixRows" :key="tier.key" class="customer-risk-matrix-row">
             <div class="customer-risk-tier" :class="tier.tone">
-              <strong>{{ tier.label }}</strong>
-              <small>{{ tier.helper }}</small>
+              <strong>{{ $t(tier.label) }}</strong>
+              <small>{{ $t(tier.helper) }}</small>
             </div>
             <button
               v-for="cell in tier.cells"
@@ -1302,12 +1302,12 @@ onMounted(async () => {
               :disabled="!cell.leader"
               @click="openCustomerSignal(cell.leader)"
             >
-              <strong>{{ cell.count }}</strong>
-              <small>{{ compactCurrency(cell.rent) }}</small>
+              <strong>{{ $t(cell.count) }}</strong>
+              <small>{{ $t(compactCurrency(cell.rent)) }}</small>
             </button>
           </div>
         </div>
-        <div v-else class="chart-empty customer-risk-empty">暂无客户分布数据</div>
+        <div v-else class="chart-empty customer-risk-empty">{{ $t("暂无客户分布数据") }}</div>
 
         <div v-if="customerRiskRows.length" class="customer-risk-rank">
           <button
@@ -1318,14 +1318,14 @@ onMounted(async () => {
             :class="row.riskTone"
             @click="openCustomerSignal(row)"
           >
-            <span class="customer-risk-score">{{ row.riskScore }}</span>
+            <span class="customer-risk-score">{{ $t(row.riskScore) }}</span>
             <span class="customer-risk-main">
               <strong class="customer-name-ellipsis" :title="row.name">{{ row.name }}</strong>
-              <small>{{ row.riskSignals.join(' · ') }}</small>
+              <small>{{ $t(row.riskSignals.join(' · ')) }}</small>
             </span>
             <span class="customer-risk-value">
-              <strong>{{ compactCurrency(row.rent) }}</strong>
-              <small>租金 {{ row.rentShare }}% · 面积 {{ row.areaShare }}%</small>
+              <strong>{{ $t(compactCurrency(row.rent)) }}</strong>
+              <small>{{ $t("租金 ") }}{{ $t(row.rentShare) }}{{ $t("% · 面积 ") }}{{ $t(row.areaShare) }}%</small>
             </span>
           </button>
         </div>
@@ -1337,19 +1337,19 @@ onMounted(async () => {
       <div class="contract-toolbar-shell customer-toolbar-shell">
         <div class="customer-search-stack">
           <div class="filter-cluster customer-filter-cluster">
-            <input v-model="state.keyword" class="input" placeholder="客户名称 / 简称 / 信用代码" @keyup.enter="fetchFromFirstPage" />
-            <button class="btn contract-search-btn" :disabled="state.loading" @click="fetchFromFirstPage">搜索</button>
+            <input v-model="state.keyword" class="input" :placeholder="$t(&quot;客户名称 / 简称 / 信用代码&quot;)" @keyup.enter="fetchFromFirstPage" />
+            <button class="btn contract-search-btn" :disabled="state.loading" @click="fetchFromFirstPage">{{ $t("搜索") }}</button>
           </div>
           <div class="customer-filter-chips" data-testid="customer-status-chips">
-            <button type="button" :class="{ active: state.status === '' }" @click="setStatusFilter('')">全部</button>
-            <button type="button" :class="{ active: state.status === 'active' }" @click="setStatusFilter('active')">在用</button>
-            <button type="button" :class="{ active: state.status === 'inactive' }" @click="setStatusFilter('inactive')">停用</button>
+            <button type="button" :class="{ active: state.status === '' }" @click="setStatusFilter('')">{{ $t("全部") }}</button>
+            <button type="button" :class="{ active: state.status === 'active' }" @click="setStatusFilter('active')">{{ $t("在用") }}</button>
+            <button type="button" :class="{ active: state.status === 'inactive' }" @click="setStatusFilter('inactive')">{{ $t("停用") }}</button>
           </div>
         </div>
         <div class="action-cluster customer-action-cluster">
-          <span v-if="customersRefreshing" class="metric-pill info refreshing-indicator">同步中</span>
+          <span v-if="customersRefreshing" class="metric-pill info refreshing-indicator">{{ $t("同步中") }}</span>
           <div v-if="canExport" class="customer-action-group customer-action-group-primary">
-            <button v-if="canCreateCustomer" class="btn btn-primary" @click="openCreate">新增客户</button>
+            <button v-if="canCreateCustomer" class="btn btn-primary" @click="openCreate">{{ $t("新增客户") }}</button>
             <div
               class="customer-batch-actions"
               data-testid="customer-batch-actions"
@@ -1362,9 +1362,7 @@ onMounted(async () => {
                 aria-controls="customer-batch-panel"
                 :aria-expanded="String(batchActionsOpen)"
                 @click="toggleCustomerBatchActions"
-              >
-                批量处理
-              </button>
+              >{{ $t(" 批量处理 ") }}</button>
               <div
                 v-if="batchActionsOpen"
                 id="customer-batch-panel"
@@ -1372,31 +1370,31 @@ onMounted(async () => {
                 data-testid="customer-batch-panel"
               >
                 <div class="customer-batch-head">
-                  <strong>批量处理</strong>
-                  <button type="button" class="icon-btn" title="关闭" @click="closeCustomerBatchActions">×</button>
+                  <strong>{{ $t("批量处理") }}</strong>
+                  <button type="button" class="icon-btn" :title="$t(&quot;关闭&quot;)" @click="closeCustomerBatchActions">×</button>
                 </div>
                 <div class="customer-batch-grid">
                   <section v-if="isAdmin && canManageCustomerMaster" class="customer-batch-section">
-                    <span>客户资料</span>
+                    <span>{{ $t("客户资料") }}</span>
                     <div class="customer-batch-buttons">
-                      <button class="btn" @click="downloadCustomerTemplate">模板</button>
-                      <button class="btn" data-testid="customer-preview-button" @click="triggerCustomerPreviewFromBatch">校验</button>
-                      <button class="btn" @click="triggerCustomerImportFromBatch">导入</button>
+                      <button class="btn" @click="downloadCustomerTemplate">{{ $t("模板") }}</button>
+                      <button class="btn" data-testid="customer-preview-button" @click="triggerCustomerPreviewFromBatch">{{ $t("校验") }}</button>
+                      <button class="btn" @click="triggerCustomerImportFromBatch">{{ $t("导入") }}</button>
                     </div>
                   </section>
                   <section v-if="isAdmin" class="customer-batch-section">
-                    <span>跟进记录</span>
+                    <span>{{ $t("跟进记录") }}</span>
                     <div class="customer-batch-buttons">
-                      <button class="btn" @click="downloadFollowUpTemplate">模板</button>
-                      <button class="btn" data-testid="follow-up-preview-button" @click="triggerFollowUpPreviewFromBatch">校验</button>
-                      <button class="btn" @click="triggerFollowUpImportFromBatch">导入</button>
+                      <button class="btn" @click="downloadFollowUpTemplate">{{ $t("模板") }}</button>
+                      <button class="btn" data-testid="follow-up-preview-button" @click="triggerFollowUpPreviewFromBatch">{{ $t("校验") }}</button>
+                      <button class="btn" @click="triggerFollowUpImportFromBatch">{{ $t("导入") }}</button>
                     </div>
                   </section>
                   <section class="customer-batch-section">
-                    <span>导出</span>
+                    <span>{{ $t("导出") }}</span>
                     <div class="customer-batch-buttons">
-                      <button class="btn" @click="exportCustomersFromBatch">客户</button>
-                      <button class="btn" @click="exportFollowUpsFromBatch">跟进</button>
+                      <button class="btn" @click="exportCustomersFromBatch">{{ $t("客户") }}</button>
+                      <button class="btn" @click="exportFollowUpsFromBatch">{{ $t("跟进") }}</button>
                     </div>
                   </section>
                 </div>
@@ -1412,23 +1410,23 @@ onMounted(async () => {
 
       <div v-if="importResult" class="import-result-panel" :class="importResult.type" data-testid="customer-import-preview-result">
         <div class="import-result-header">
-          <strong>{{ importResult.title }}</strong>
-          <button class="icon-btn" title="关闭导入结果" @click="importResult = null">×</button>
+          <strong>{{ $t(importResult.title) }}</strong>
+          <button class="icon-btn" :title="$t(&quot;关闭导入结果&quot;)" @click="importResult = null">×</button>
         </div>
         <div v-if="importResult.stats?.length" class="import-preview-stats">
           <div v-for="stat in importResult.stats" :key="stat.label" class="import-preview-stat">
-            <span>{{ stat.label }}</span>
-            <strong>{{ stat.value }}</strong>
+            <span>{{ $t(stat.label) }}</span>
+            <strong>{{ $t(stat.value) }}</strong>
           </div>
         </div>
-        <div v-if="importResult.ready" class="helper-text">校验通过，可导入。</div>
+        <div v-if="importResult.ready" class="helper-text">{{ $t("校验通过，可导入。") }}</div>
         <ul v-if="importResult.issues.length" class="import-result-list">
-          <li v-for="issue in importResult.issues" :key="issue">{{ issue }}</li>
+          <li v-for="issue in importResult.issues" :key="issue">{{ $t(issue) }}</li>
         </ul>
         <ul v-if="importResult.warnings?.length" class="import-result-list warning-list">
-          <li v-for="warning in importResult.warnings" :key="warning">{{ warning }}</li>
+          <li v-for="warning in importResult.warnings" :key="warning">{{ $t(warning) }}</li>
         </ul>
-        <div v-if="importResult.extraCount" class="helper-text">另有 {{ importResult.extraCount }} 条未显示</div>
+        <div v-if="importResult.extraCount" class="helper-text">{{ $t("另有 ") }}{{ $t(importResult.extraCount) }}{{ $t(" 条未显示") }}</div>
       </div>
 
       <div class="customer-worklist" data-testid="customers-table">
@@ -1445,56 +1443,56 @@ onMounted(async () => {
             <div class="customer-work-main">
               <div class="customer-name-line">
                 <strong :title="customer.name">{{ customer.name }}</strong>
-                <span class="badge" :class="customer.status === 'inactive' ? 'warning' : 'success'">{{ statusLabel(customer.status) }}</span>
-                <span v-if="customer.short_name" :title="customer.short_name">{{ customer.short_name }}</span>
+                <span class="badge" :class="customer.status === 'inactive' ? 'warning' : 'success'">{{ $t(statusLabel(customer.status)) }}</span>
+                <span v-if="customer.short_name" :title="$t(customer.short_name)">{{ $t(customer.short_name) }}</span>
               </div>
-              <p>{{ customerNextAction(customer) }}</p>
+              <p>{{ $t(customerNextAction(customer)) }}</p>
               <div class="customer-compact-facts">
-                <span>{{ customerContractRoomLine(customer) }}</span>
-                <span>{{ customerValueRankLine(customer) }}</span>
+                <span>{{ $t(customerContractRoomLine(customer)) }}</span>
+                <span>{{ $t(customerValueRankLine(customer)) }}</span>
               </div>
             </div>
             <div class="customer-work-meta">
               <div class="customer-compact-metric">
-                <span>月租 / 面积</span>
-                <strong>{{ customerValueLine(customer) }} · {{ customerAreaLine(customer) }}</strong>
+                <span>{{ $t("月租 / 面积") }}</span>
+                <strong>{{ $t(customerValueLine(customer)) }} · {{ $t(customerAreaLine(customer)) }}</strong>
                 <span class="customer-mini-track" aria-hidden="true">
                   <span class="customer-value-bar" :style="customerValueBarStyle(customer)"></span>
                 </span>
               </div>
               <div class="customer-compact-metric">
-                <span>应收状态</span>
-                <strong>{{ customerDebtLine(customer) }}</strong>
-                <span class="customer-mini-track" data-testid="customer-risk-bar" :aria-label="customerRiskLabel(customer)">
+                <span>{{ $t("应收状态") }}</span>
+                <strong>{{ $t(customerDebtLine(customer)) }}</strong>
+                <span class="customer-mini-track" data-testid="customer-risk-bar" :aria-label="$t(customerRiskLabel(customer))">
                   <span class="customer-risk-bar" :style="customerRiskBarStyle(customer)"></span>
                 </span>
               </div>
               <div class="customer-compact-metric">
-                <span>运营提示</span>
-                <strong>{{ customerRiskLabel(customer) }}</strong>
-                <small>{{ customerRiskRow(customer).riskSignals.join(' · ') }}</small>
+                <span>{{ $t("运营提示") }}</span>
+                <strong>{{ $t(customerRiskLabel(customer)) }}</strong>
+                <small>{{ $t(customerRiskRow(customer).riskSignals.join(' · ')) }}</small>
               </div>
               <div class="customer-compact-metric">
-                <span>下一步</span>
-                <strong>{{ customerPrimaryActionLabel(customer) }}</strong>
-                <small>{{ customerOperatingCue(customer) }}</small>
+                <span>{{ $t("下一步") }}</span>
+                <strong>{{ $t(customerPrimaryActionLabel(customer)) }}</strong>
+                <small>{{ $t(customerOperatingCue(customer)) }}</small>
               </div>
             </div>
             <div class="customer-row-actions customer-row-action-strip" data-testid="customer-row-action-strip">
               <div class="customer-row-primary-action" data-testid="customer-row-primary-action">
                 <button class="btn btn-primary btn-compact" data-testid="customer-view-button" @click="openDetail(customer)">
-                  {{ customerPrimaryActionLabel(customer) }}
+                  {{ $t(customerPrimaryActionLabel(customer)) }}
                 </button>
               </div>
             </div>
           </article>
-          <div v-if="!state.list.length" class="list-empty">暂无客户资料</div>
+          <div v-if="!state.list.length" class="list-empty">{{ $t("暂无客户资料") }}</div>
         </template>
       </div>
 
       <div class="table-footer">
         <div class="page-size-control">
-          <span class="helper-text">每页显示</span>
+          <span class="helper-text">{{ $t("每页显示") }}</span>
           <div class="page-size-switch" data-testid="customers-page-size">
             <button
               v-for="option in pageSizeOptions"
@@ -1503,99 +1501,99 @@ onMounted(async () => {
               :class="{ active: state.pageSize === option.value }"
               @click="changePageSize(option.value)"
             >
-              {{ option.label }}
+              {{ $t(option.label) }}
             </button>
           </div>
         </div>
-        <span class="helper-text">共 {{ state.total }} 条 · {{ showingText }}</span>
+        <span class="helper-text">{{ $t("共 ") }}{{ $t(state.total) }}{{ $t(" 条 · ") }}{{ $t(showingText) }}</span>
         <span class="spacer"></span>
-        <button v-if="hasPagination" class="btn btn-compact" :disabled="state.page <= 1" @click="changePage(-1)">上一页</button>
-        <span v-if="hasPagination" class="helper-text">{{ pageLabel }}</span>
-        <button v-if="hasPagination" class="btn btn-compact" :disabled="state.page >= totalPages" @click="changePage(1)">下一页</button>
+        <button v-if="hasPagination" class="btn btn-compact" :disabled="state.page <= 1" @click="changePage(-1)">{{ $t("上一页") }}</button>
+        <span v-if="hasPagination" class="helper-text">{{ $t(pageLabel) }}</span>
+        <button v-if="hasPagination" class="btn btn-compact" :disabled="state.page >= totalPages" @click="changePage(1)">{{ $t("下一页") }}</button>
       </div>
     </article>
   </section>
 
-  <BaseModal :open="formOpen" :title="editingId ? '编辑客户' : '新增客户'" @close="formOpen = false">
+  <BaseModal :open="formOpen" :title="$t(editingId ? '编辑客户' : '新增客户')" @close="formOpen = false">
     <div class="form-grid">
       <div class="form-field full">
-        <span class="section-label">各楼宇共用资料</span>
-        <span class="helper-text">各楼宇共用的客户资料</span>
+        <span class="section-label">{{ $t("各楼宇共用资料") }}</span>
+        <span class="helper-text">{{ $t("各楼宇共用的客户资料") }}</span>
       </div>
       <label class="form-field">
-        <span class="section-label">客户名称</span>
+        <span class="section-label">{{ $t("客户名称") }}</span>
         <input v-model="form.name" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field">
-        <span class="section-label">客户简称</span>
+        <span class="section-label">{{ $t("客户简称") }}</span>
         <input v-model="form.short_name" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field">
-        <span class="section-label">统一社会信用代码</span>
+        <span class="section-label">{{ $t("统一社会信用代码") }}</span>
         <input v-model="form.credit_code" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field">
-        <span class="section-label">状态</span>
+        <span class="section-label">{{ $t("状态") }}</span>
         <select v-model="form.status" class="select" :disabled="!canManageCustomerMaster">
-          <option value="active">在用</option>
-          <option value="inactive">停用</option>
+          <option value="active">{{ $t("在用") }}</option>
+          <option value="inactive">{{ $t("停用") }}</option>
         </select>
       </label>
       <label class="form-field">
-        <span class="section-label">客户类型</span>
+        <span class="section-label">{{ $t("客户类型") }}</span>
         <input v-model="form.customer_type" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field">
-        <span class="section-label">行业</span>
+        <span class="section-label">{{ $t("行业") }}</span>
         <input v-model="form.industry" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field">
-        <span class="section-label">共享联系人</span>
+        <span class="section-label">{{ $t("共享联系人") }}</span>
         <input v-model="form.contact_name" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field">
-        <span class="section-label">共享联系电话</span>
+        <span class="section-label">{{ $t("共享联系电话") }}</span>
         <input v-model="form.contact_phone" type="tel" maxlength="30" class="input" :disabled="!canManageCustomerMaster" @blur="checkContactPhone" @input="contactPhoneWarn = ''" />
-        <span v-if="contactPhoneWarn" class="form-field-warn">{{ contactPhoneWarn }}</span>
+        <span v-if="contactPhoneWarn" class="form-field-warn">{{ $t(contactPhoneWarn) }}</span>
       </label>
       <label class="form-field">
-        <span class="section-label">共享邮箱</span>
+        <span class="section-label">{{ $t("共享邮箱") }}</span>
         <input v-model="form.contact_email" type="email" maxlength="100" class="input" :disabled="!canManageCustomerMaster" @blur="checkContactEmail" @input="contactEmailWarn = ''" />
-        <span v-if="contactEmailWarn" class="form-field-warn">{{ contactEmailWarn }}</span>
+        <span v-if="contactEmailWarn" class="form-field-warn">{{ $t(contactEmailWarn) }}</span>
       </label>
       <label class="form-field">
-        <span class="section-label">地址</span>
+        <span class="section-label">{{ $t("地址") }}</span>
         <input v-model="form.address" class="input" :disabled="!canManageCustomerMaster" />
       </label>
       <label class="form-field full">
-        <span class="section-label">共享备注</span>
+        <span class="section-label">{{ $t("共享备注") }}</span>
         <textarea v-model="form.notes" class="textarea" :disabled="!canManageCustomerMaster" />
       </label>
       <div class="form-field full">
-        <span class="section-label">当前楼宇资料</span>
-        <span class="helper-text">当前楼宇的客户资料</span>
+        <span class="section-label">{{ $t("当前楼宇资料") }}</span>
+        <span class="helper-text">{{ $t("当前楼宇的客户资料") }}</span>
       </div>
       <label class="form-field">
-        <span class="section-label">楼宇联系人</span>
+        <span class="section-label">{{ $t("楼宇联系人") }}</span>
         <input v-model="form.local_contact" class="input" />
       </label>
       <label class="form-field">
-        <span class="section-label">楼宇负责人</span>
+        <span class="section-label">{{ $t("楼宇负责人") }}</span>
         <input v-model="form.owner" class="input" />
       </label>
       <label class="form-field full">
-        <span class="section-label">楼宇备注</span>
+        <span class="section-label">{{ $t("楼宇备注") }}</span>
         <textarea v-model="form.local_notes" class="textarea" />
       </label>
     </div>
 
     <template #footer>
-      <button class="btn" @click="formOpen = false">取消</button>
+      <button class="btn" @click="formOpen = false">{{ $t("取消") }}</button>
       <button
         class="btn btn-primary"
         :disabled="saving || !form.name.trim() || (!editingId && !canManageCustomerMaster)"
         @click="saveCustomer"
-      >保存</button>
+      >{{ $t("保存") }}</button>
     </template>
   </BaseModal>
 

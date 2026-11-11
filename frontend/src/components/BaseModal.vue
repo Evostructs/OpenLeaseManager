@@ -1,4 +1,5 @@
 <script setup>
+import LanguageSwitch from './LanguageSwitch.vue'
 import { computed, inject, provide, nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { activateModalFocus } from '../lib/modalFocus.js'
 
@@ -166,9 +167,10 @@ onBeforeUnmount(() => { focusSession?.release(); unlockBodyScroll() })
       >
         <header class="modal-header">
           <div>
-            <h3 :id="modalTitleId" class="card-title">{{ title }}</h3>
+            <h3 :id="modalTitleId" class="card-title">{{ $t(title) }}</h3>
           </div>
-          <button type="button" class="icon-btn" aria-label="关闭" data-testid="base-modal-close" @click="closeModal">×</button>
+          <LanguageSwitch style="margin-left: auto; margin-right: 8px" />
+          <button type="button" class="icon-btn" :aria-label="$t(&quot;关闭&quot;)" data-testid="base-modal-close" @click="closeModal">×</button>
         </header>
         <div class="modal-body">
           <slot />

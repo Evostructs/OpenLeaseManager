@@ -13,8 +13,10 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 import openpyxl
 
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_localization import localize_workbook
 from app.core.time import today_in_timezone
-from app.models import Contract, ContractRoom
+from app.core.localization import bilingual_aliases, import_value, import_demo_tower
+from app.models import Building, Contract, ContractRoom
 from app.services.contract_rent import calculate_broker_fee, calculate_monthly_rent
 from app.services.common import (
     contract_effective_net_rent,
@@ -138,6 +140,9 @@ for field, aliases in _ALIAS_LIST:
         FIELD_MAP[alias] = field
 
 
+FIELD_MAP = bilingual_aliases(FIELD_MAP)
+
+
 def _normalize_header(value) -> str:
     if not value:
         return ""
@@ -180,6 +185,7 @@ def import_contracts_excel(
     *,
     building_id: int,
 ) -> dict:
+    selected_building = db.get(Building, building_id)
     wb = openpyxl.load_workbook(io.BytesIO(content))
     ws = wb.active
 
@@ -230,7 +236,7 @@ def import_contracts_excel(
         row_data = {}
         for cell in row:
             if cell.column in headers:
-                row_data[headers[cell.column]] = cell.value
+                row_data[headers[cell.column]] = import_value(headers[cell.column], cell.value)
 
         contract_no = str(row_data.get("contract_no") or "").strip()
         if not contract_no:
@@ -259,7 +265,7 @@ def import_contracts_excel(
             data = {
                 "contract_no": contract_no,
                 "building_id": building_id,
-                "tower": dependencies.normalize_tower(row_data.get("tower")),
+                "tower": dependencies.normalize_tower(import_demo_tower(row_data.get("tower"), selected_building.code)),
                 "room_no": str(row_data.get("room_no") or ""),
                 "tenant_name": str(row_data.get("tenant_name") or ""),
                 "area": float(row_data.get("area") or 0),
@@ -491,6 +497,8 @@ def export_contracts_excel(
     for idx, width in enumerate([15, 16, 10, 12, 12, 12, 14, 13, 13, 24], 1):
         detail_ws.column_dimensions[openpyxl.utils.get_column_letter(idx)].width = width
 
+    localize_workbook(wb)
+
     sanitize_workbook(wb)
     buffer = io.BytesIO()
     wb.save(buffer)
@@ -539,6 +547,8 @@ def _export_ledger_excel(title: str, sheet_name: str, headers: list[tuple[str, s
 
     for col_idx, (_field, label) in enumerate(headers, 1):
         ws.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = max(10, min(24, len(label) + 8))
+
+    localize_workbook(wb)
 
     sanitize_workbook(wb)
     buffer = io.BytesIO()
@@ -652,6 +662,7 @@ def export_contract_template(*, building_code: str = "DEMO_A") -> StreamingRespo
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "导入模板"
+    wb._demo_tower_values = building_code.casefold() == "demo_a"
     headers = ["合同编号", "楼塔", "室号", "客户名称", "出租面积", "租金单价", "签约类型", "免租期", "月租金", "中介佣金", "起租日", "终止日", "房源起租日", "房源终止日", "客户方对接人", "联系电话", "我方对接人", "我方飞书ID", "备注"]
     header_comments = {
         "楼塔": "室号匹配房源清单时，导入以房源清单塔楼为准；未匹配的单房源才使用本列。",
@@ -733,6 +744,7 @@ def export_contract_template(*, building_code: str = "DEMO_A") -> StreamingRespo
         note_ws.append(row)
     note_ws.column_dimensions["A"].width = 14
     note_ws.column_dimensions["B"].width = 86
+    localize_workbook(wb)
     sanitize_workbook(wb)
     buffer = io.BytesIO()
     wb.save(buffer)

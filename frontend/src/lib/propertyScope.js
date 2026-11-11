@@ -1,3 +1,4 @@
+import { locale } from '../i18n/index.js'
 const DEFAULT_SCOPE_CONTEXT = Object.freeze({
   userId: '',
   authorizationVersion: '',
@@ -260,5 +261,8 @@ export function buildScopedApiUrl(path, options = {}) {
 }
 
 export function buildScopedDownloadUrl(path, options = {}) {
-  return buildScopedApiUrl(path, options)
+  const scoped = buildScopedApiUrl(path, options)
+  const url = new URL(scoped, 'http://localhost')
+  url.searchParams.set('lang', locale.value)
+  return url.pathname + url.search + url.hash
 }

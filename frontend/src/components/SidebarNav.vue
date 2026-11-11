@@ -69,17 +69,17 @@ watch(
         <img
           v-if="brand.logo_url"
           :src="brand.logo_url"
-          :alt="brand.short_name || '租赁管理系统'"
+          :alt="$t(brand.short_name || '租赁管理系统')"
         />
         <span v-else class="sidebar-brand-monogram" data-testid="sidebar-brand-monogram">
-          {{ brand.short_name || '楼宇' }}
+          {{ $t(brand.short_name || '楼宇') }}
         </span>
       </div>
       <div class="sidebar-brand-copy">
-        <h1>租赁管理系统</h1>
-        <p class="sidebar-workspace-label" data-testid="sidebar-workspace-label">{{ workspaceLabel }}</p>
+        <h1>{{ $t("租赁管理系统") }}</h1>
+        <p class="sidebar-workspace-label" data-testid="sidebar-workspace-label">{{ $t(workspaceLabel) }}</p>
         <p v-if="scopeLabel" class="sidebar-scope-label" data-testid="sidebar-scope-label">
-          {{ scopeLabel }}
+          {{ $t(scopeLabel) }}
         </p>
       </div>
     </div>
@@ -99,9 +99,9 @@ watch(
           :data-testid="`nav-group-${group.key}`"
           @click="toggleGroup(group)"
         >
-          <span class="nav-group-title">{{ group.label }}</span>
+          <span class="nav-group-title">{{ $t(group.label) }}</span>
           <span v-if="groupContainsCurrent(group)" class="nav-group-active-dot" aria-hidden="true"></span>
-          <span class="nav-group-chevron" aria-hidden="true">{{ isExpanded(group) ? '−' : '+' }}</span>
+          <span class="nav-group-chevron" aria-hidden="true">{{ $t(isExpanded(group) ? '−' : '+') }}</span>
         </button>
         <div v-if="isExpanded(group)" class="nav-group-items">
           <button
@@ -116,7 +116,7 @@ watch(
             @focus="$emit('preload', item.key)"
             @click="$emit('select', item.key)"
           >
-            <span class="nav-button-label">{{ item.label }}</span>
+            <span class="nav-button-label">{{ $t(item.label) }}</span>
           </button>
         </div>
       </section>

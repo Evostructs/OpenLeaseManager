@@ -134,10 +134,10 @@ onBeforeUnmount(() => {
   >
     <header class="portfolio-header">
       <div class="portfolio-brand">
-        <span class="portfolio-brand-mark">楼宇资产组合 · PORTFOLIO</span>
+        <span class="portfolio-brand-mark">{{ $t("楼宇资产组合 · PORTFOLIO") }}</span>
         <div>
-          <strong>{{ scopeTitle }}</strong>
-          <small>写字楼经营总览</small>
+          <strong>{{ $t(scopeTitle) }}</strong>
+          <small>{{ $t("写字楼经营总览") }}</small>
         </div>
       </div>
       <div class="portfolio-header-status">
@@ -145,10 +145,10 @@ onBeforeUnmount(() => {
           v-if="health.simulated"
           class="portfolio-simulation-badge"
           data-testid="portfolio-simulated-data"
-        >模拟数据</span>
-        <span v-if="gateNotice" class="portfolio-gate-status">{{ gateNotice }}</span>
-        <span class="portfolio-asof"><i></i>统计日 {{ health.asOfDate }}</span>
-        <span class="portfolio-clock">{{ clock }}</span>
+        >{{ $t("模拟数据") }}</span>
+        <span v-if="gateNotice" class="portfolio-gate-status">{{ $t(gateNotice) }}</span>
+        <span class="portfolio-asof"><i></i>{{ $t("统计日 ") }}{{ $t(health.asOfDate) }}</span>
+        <span class="portfolio-clock">{{ $t(clock) }}</span>
       </div>
     </header>
 
@@ -167,22 +167,22 @@ onBeforeUnmount(() => {
       @navigate="emit('navigate', $event)"
     />
 
-    <section class="portfolio-bottom" aria-label="趋势、风险与数据质量">
+    <section class="portfolio-bottom" :aria-label="$t(&quot;趋势、风险与数据质量&quot;)">
       <article class="portfolio-bottom-card portfolio-trend-card">
-        <header><span>02</span><h2>板块趋势</h2></header>
+        <header><span>02</span><h2>{{ $t("板块趋势") }}</h2></header>
         <div class="portfolio-trend-state">
-          <strong>{{ trendRows.length }}</strong>
+          <strong>{{ $t(trendRows.length) }}</strong>
           <div>
-            <b>个可比期间</b>
-            <span v-if="trendRows.length < 2">至少需要两期数据才能显示趋势</span>
-            <span v-else>历期变化</span>
+            <b>{{ $t("个可比期间") }}</b>
+            <span v-if="trendRows.length < 2">{{ $t("至少需要两期数据才能显示趋势") }}</span>
+            <span v-else>{{ $t("历期变化") }}</span>
           </div>
         </div>
-        <footer>最新来源观测：{{ displayTimestamp(health.sourceObservedAt) }}</footer>
+        <footer>{{ $t("最新来源观测：") }}{{ $t(displayTimestamp(health.sourceObservedAt)) }}</footer>
       </article>
 
       <article class="portfolio-bottom-card portfolio-risk-card">
-        <header><span>03</span><h2>风险信号</h2></header>
+        <header><span>03</span><h2>{{ $t("风险信号") }}</h2></header>
         <button
           v-for="signal in riskSignals"
           :key="signal.key"
@@ -190,10 +190,10 @@ onBeforeUnmount(() => {
           :disabled="overviewOnly || !signal.target"
           @click="!overviewOnly && emit('navigate', { tab: signal.target, metric: signal.key })"
         >
-          <span>{{ signal.label }}</span>
-          <b :class="signal.tone">{{ signal.value }}</b>
+          <span>{{ $t(signal.label) }}</span>
+          <b :class="signal.tone">{{ $t(signal.value) }}</b>
         </button>
-        <footer>缺失或过期数据不按零处理</footer>
+        <footer>{{ $t("缺失或过期数据不按零处理") }}</footer>
       </article>
 
       <article
@@ -201,20 +201,19 @@ onBeforeUnmount(() => {
         class="portfolio-bottom-card portfolio-quality-card"
         data-testid="portfolio-data-quality-summary"
       >
-        <header><span>04</span><h2>数据质量</h2></header>
+        <header><span>04</span><h2>{{ $t("数据质量") }}</h2></header>
         <div class="portfolio-quality-summary">
-          <strong>{{ health.sameDaySnapshots }}/{{ health.authorized }}</strong>
-          <span>栋同日有快照</span>
+          <strong>{{ $t(health.sameDaySnapshots) }}/{{ $t(health.authorized) }}</strong>
+          <span>{{ $t("栋同日有快照") }}</span>
           <i><b :style="{ width: `${qualityPercent}%` }"></b></i>
         </div>
         <div class="portfolio-quality-meta">
-          <span>{{ health.complete }} 栋五项核心指标齐备</span>
-          <span v-if="missingBuildings.length" class="warn">
-            缺失：{{ missingBuildings.map((item) => item.name).join('、') }}
+          <span>{{ $t(health.complete) }}{{ $t(" 栋五项核心指标齐备") }}</span>
+          <span v-if="missingBuildings.length" class="warn">{{ $t(" 缺失：") }}{{ missingBuildings.map((item) => item.name).join('、') }}
           </span>
-          <span v-else>当前授权范围无整栋缺失</span>
+          <span v-else>{{ $t("当前授权范围无整栋缺失") }}</span>
         </div>
-        <footer>缺失、过期和异常状态均按服务端概况投影展示</footer>
+        <footer>{{ $t("缺失、过期和异常状态均按服务端概况投影展示") }}</footer>
       </article>
 
       <button
@@ -224,29 +223,27 @@ onBeforeUnmount(() => {
         data-testid="portfolio-data-quality-evidence"
         @click="openEvidence"
       >
-        <header><span>04</span><h2>数据质量</h2></header>
+        <header><span>04</span><h2>{{ $t("数据质量") }}</h2></header>
         <div class="portfolio-quality-summary">
-          <strong>{{ health.sameDaySnapshots }}/{{ health.authorized }}</strong>
-          <span>栋同日有快照</span>
+          <strong>{{ $t(health.sameDaySnapshots) }}/{{ $t(health.authorized) }}</strong>
+          <span>{{ $t("栋同日有快照") }}</span>
           <i><b :style="{ width: `${qualityPercent}%` }"></b></i>
         </div>
         <div class="portfolio-quality-meta">
-          <span>{{ health.complete }} 栋五项核心指标齐备</span>
-          <span v-if="missingBuildings.length" class="warn">
-            缺失：{{ missingBuildings.map((item) => item.name).join('、') }}
+          <span>{{ $t(health.complete) }}{{ $t(" 栋五项核心指标齐备") }}</span>
+          <span v-if="missingBuildings.length" class="warn">{{ $t(" 缺失：") }}{{ missingBuildings.map((item) => item.name).join('、') }}
           </span>
-          <span v-else>当前授权范围无整栋缺失</span>
+          <span v-else>{{ $t("当前授权范围无整栋缺失") }}</span>
         </div>
-        <footer>点击查看计算方式与数据来源</footer>
+        <footer>{{ $t("点击查看计算方式与数据来源") }}</footer>
       </button>
     </section>
 
     <footer class="portfolio-footer">
       <span>
-        {{ health.simulated ? '当前均为模拟数据 · ' : '' }}所有合计均按原始分子、分母重算
-      </span>
-      <span>{{ overviewOnly ? '点击楼名查看同一安全投影内的单楼概况' : '点击楼名切换单楼大屏 · 点击指标进入对应业务页面' }}</span>
-      <span v-if="!embedded" class="portfolio-exit">ESC 退出演示</span>
+        {{ $t(health.simulated ? '当前均为模拟数据 · ' : '') }}{{ $t("所有合计均按原始分子、分母重算 ") }}</span>
+      <span>{{ $t(overviewOnly ? '点击楼名查看同一安全投影内的单楼概况' : '点击楼名切换单楼大屏 · 点击指标进入对应业务页面') }}</span>
+      <span v-if="!embedded" class="portfolio-exit">{{ $t("ESC 退出演示") }}</span>
     </footer>
   </div>
 </template>

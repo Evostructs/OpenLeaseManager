@@ -41,8 +41,8 @@ def test_topbar_exposes_explicit_workspace_scope_and_presentation_actions() -> N
     assert 'data-testid="current-scope"' in source
     assert ':data-testid="`workspace-switch-${option.value}`"' in source
     assert 'v-if="scopeOptions.length > 1"' in source
-    assert ':aria-label="presentationLabel"' in source
-    assert "{{ presentationLabel }}" in source
+    assert ':aria-label="$t(presentationLabel)"' in source
+    assert '{{ $t(presentationLabel) }}' in source
     assert '@change-workspace="changeWorkspace"' in app_source
     assert ':presentation-label="presentationActionLabel"' in app_source
     assert "max-width: 220px" in source

@@ -25,7 +25,7 @@ function openCard(card) {
 </script>
 
 <template>
-  <section class="cockpit-kpis" :class="`is-${props.layout}`" aria-label="核心经营指标">
+  <section class="cockpit-kpis" :class="`is-${props.layout}`" :aria-label="$t(&quot;核心经营指标&quot;)">
     <button
       v-for="card in cards"
       :key="card.key"
@@ -36,9 +36,9 @@ function openCard(card) {
       :data-testid="`presentation-kpi-${card.key}`"
       @click="openCard(card)"
     >
-      <span class="cockpit-kpi-label">{{ card.label }}</span>
+      <span class="cockpit-kpi-label">{{ $t(card.label) }}</span>
       <AnimatedNumber :value="card.value" />
-      <span v-if="card.hint" class="cockpit-kpi-hint">{{ card.hint }}</span>
+      <span v-if="card.hint" class="cockpit-kpi-hint">{{ $t(card.hint) }}</span>
     </button>
   </section>
 </template>

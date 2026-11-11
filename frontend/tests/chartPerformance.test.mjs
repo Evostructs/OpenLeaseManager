@@ -1,3 +1,5 @@
+import * as i18n from '../src/i18n/index.js'
+import * as chartI18n from '../src/i18n/charts.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
@@ -17,7 +19,7 @@ function componentSetup(filename, imports) {
       return `const ${name} = imports[${JSON.stringify(path)}];`
     })
     .replace('export default', 'return')
-  return new Function('imports', compiled)({ vue, '../lib/operationTelemetry': { beginReadyTask: () => () => {} }, ...imports })
+  return new Function('imports', compiled)({ vue, '../i18n/index.js': i18n, '../i18n/charts.js': chartI18n, '../lib/operationTelemetry': { beginReadyTask: () => () => {} }, ...imports })
 }
 
 function browserHarness(t) {

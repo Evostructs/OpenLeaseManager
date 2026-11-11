@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from html import escape
+from app.core.localization import display, request_locale, localize_static_html
 from urllib.parse import quote
 from collections.abc import Sequence
 
@@ -90,7 +91,7 @@ def _todo_meta(item: dict) -> str:
         return _join_meta([meta.get("contract_no"), meta.get("deposit_type") or "押金", f"应收 {meta.get('due_date') or item.get('due_date') or '--'}"])
     if item_type == "missing_contract_body":
         return _join_meta([meta.get("contract_no"), meta.get("room_no"), f"缺 {meta.get('missing_category') or '合同正文'}"])
-    return _text(item.get("label"))
+    return _text(display(item.get("label")))
 
 
 def _todo_value(item: dict) -> str:
@@ -125,7 +126,7 @@ def _queue_item_summary(item: dict, queue_key: str) -> tuple[str, str, str]:
         meta = _join_meta([item.get("contract_no"), item.get("room_no"), item.get("missing_category")])
         value = "缺附件"
     else:
-        meta = _text(item.get("label"))
+        meta = _text(display(item.get("label")))
         value = ""
     return _text(title), meta, value
 
@@ -133,9 +134,9 @@ def _queue_item_summary(item: dict, queue_key: str) -> tuple[str, str, str]:
 def _metric_card(label: str, value: str, helper: str, tone: str = "") -> str:
     return f"""
       <div class="metric {tone}">
-        <span>{escape(label)}</span>
+        <span>{escape(display(label))}</span>
         <strong>{value}</strong>
-        <small>{escape(helper)}</small>
+        <small>{escape(display(helper))}</small>
       </div>
     """
 
@@ -169,9 +170,9 @@ def _render_focus(data: dict) -> str:
     return "".join(
         f"""
         <li>
-          <b>{escape(label)}</b>
+          <b>{escape(display(label))}</b>
           <strong>{escape(value)}</strong>
-          <span>{escape(helper)}</span>
+          <span>{escape(display(helper))}</span>
         </li>
         """
         for label, value, helper in rows
@@ -181,7 +182,7 @@ def _render_focus(data: dict) -> str:
 def _render_todos(data: dict) -> str:
     todos = data.get("todos") or []
     if not todos:
-        return '<p class="empty">今日暂无需要优先处理的经营动作。</p>'
+        return localize_static_html('<p class="empty">今日暂无需要优先处理的经营动作。</p>')
     rows = []
     for item in todos[:8]:
         value = _todo_value(item)
@@ -220,8 +221,8 @@ def _render_queue(data: dict, key: str, title: str, helper: str) -> str:
       <section class="panel">
         <div class="panel-head">
           <div>
-            <h2>{escape(title)}</h2>
-            <p>{escape(helper)}</p>
+            <h2>{escape(display(title))}</h2>
+            <p>{escape(display(helper))}</p>
           </div>
           <strong>{_number(counts.get(key))}</strong>
         </div>
@@ -236,7 +237,7 @@ def _render_risks(data: dict) -> str:
     by_severity = summary.get("by_severity") or {}
     high_items = [item for item in (risk_data.get("top") or []) if item.get("severity") == "high"]
     if not high_items:
-        body = '<p class="empty">暂无高风险项。</p>'
+        body = localize_static_html('<p class="empty">暂无高风险项。</p>')
     else:
         rows = []
         for item in high_items[:8]:
@@ -246,7 +247,7 @@ def _render_risks(data: dict) -> str:
                 f"""
                 <li class="queue-row high">
                   <span><strong>{_text(item.get("title"))}</strong><small>{meta}</small></span>
-                  <b>{_text(item.get("action_label") or "处理")}</b>
+                  <b>{_text(display(item.get("action_label") or "处理"))}</b>
                 </li>
                 """
             )
@@ -255,8 +256,8 @@ def _render_risks(data: dict) -> str:
       <section class="panel risk-panel">
         <div class="panel-head">
           <div>
-            <h2>高风险项摘要</h2>
-            <p>风险中心按严重程度、到期日和金额排序后的高风险项。</p>
+            <h2>{escape(display('高风险项摘要'))}</h2>
+            <p>{escape(display('风险中心按严重程度、到期日和金额排序后的高风险项。'))}</p>
           </div>
           <strong>{_number(by_severity.get("high"))}</strong>
         </div>
@@ -286,12 +287,12 @@ def _render_trend(data: dict) -> str:
       <section class="panel trend-panel">
         <div class="panel-head">
           <div>
-            <h2>近 6 个月回款趋势</h2>
-            <p>轻量趋势用于判断回款节奏，不替代经营分析页面。</p>
+            <h2>{escape(display('近 6 个月回款趋势'))}</h2>
+            <p>{escape(display('轻量趋势用于判断回款节奏，不替代经营分析页面。'))}</p>
           </div>
         </div>
         <table>
-          <thead><tr><th>月份</th><th class="right">应收</th><th class="right">已收</th><th class="right">未收</th><th>回款率</th></tr></thead>
+          <thead><tr><th>{escape(display('月份'))}</th><th class="right">{escape(display('应收'))}</th><th class="right">{escape(display('已收'))}</th><th class="right">{escape(display('未收'))}</th><th>{escape(display('回款率'))}</th></tr></thead>
           <tbody>{"".join(rows)}</tbody>
         </table>
       </section>
@@ -366,12 +367,12 @@ def build_operations_daily_report_html(
     filename = quote(f"operations-daily-{report_date or month}.html")
 
     return f"""<!doctype html>
-<html lang="zh-CN">
+<html lang="{request_locale.get()}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="download-filename" content="{filename}">
-  <title>经营日报 {escape(report_date)}</title>
+  <title>{escape(display('经营日报'))}{escape(report_date)}</title>
   <style>
     :root {{ color: #172033; background: #f5f7fb; font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif; font-size: 13px; }}
     * {{ box-sizing: border-box; }}
@@ -477,31 +478,31 @@ def build_operations_daily_report_html(
 <body>
   <main class="page">
     <div class="screen-toolbar">
-      <button type="button" onclick="window.print()">打印 / 转 PDF</button>
+      <button type="button" onclick="window.print()">{escape(display('打印 / 转 PDF'))}</button>
     </div>
     <header>
       <div>
-        <p>租赁管理系统</p>
-        <h1>经营日报</h1>
-        <p>今日要处理什么、哪里影响回款、哪里影响出租、哪里有风险。</p>
+        <p>{escape(display('租赁管理系统'))}</p>
+        <h1>{escape(display('经营日报'))}</h1>
+        <p>{escape(display('今日要处理什么、哪里影响回款、哪里影响出租、哪里有风险。'))}</p>
       </div>
       <div class="stamp">
-        <div>报告日期：{_text(report_date)}</div>
-        <div>当前月份：{_text(month)}</div>
-        <div>生成时间：{_text(generated_at)} Asia/Shanghai</div>
-        <div>版本：{_text(version)}</div>
+        <div>{escape(display('报告日期：'))}{_text(report_date)}</div>
+        <div>{escape(display('当前月份：'))}{_text(month)}</div>
+        <div>{escape(display('生成时间：'))}{_text(generated_at)} Asia/Shanghai</div>
+        <div>{escape(display('版本：'))}{_text(version)}</div>
       </div>
     </header>
     <section class="focus-section">
-      <h2>今日重点</h2>
+      <h2>{escape(display('今日重点'))}</h2>
       <ul class="summary-strip">{_render_focus(data)}</ul>
     </section>
     <section class="metrics">{metric_html}</section>
     <section class="panel">
       <div class="panel-head">
         <div>
-          <h2>今日经营动作摘要</h2>
-          <p>来自今日看板待办队列，按回款、到期、跟进、押金和附件优先级汇总。</p>
+          <h2>{escape(display('今日经营动作摘要'))}</h2>
+          <p>{escape(display('来自今日看板待办队列，按回款、到期、跟进、押金和附件优先级汇总。'))}</p>
         </div>
         <strong>{_number(len(data.get("todos") or []))}</strong>
       </div>
@@ -511,9 +512,9 @@ def build_operations_daily_report_html(
       <div>{queue_html}</div>
       <div>{_render_risks(data)}{_render_trend(data)}</div>
     </div>
-    <p class="report-note">口径提示：本月未收包含未到期未收，不等同于本月逾期；到期日按合同付款日（每月固定日）计算，未约定付款日的合同以月末为到期日，超过到期日仍未收才计入本月逾期。</p>
-    <footer>金额、队列和风险沿用系统当前经营看板口径。</footer>
-    <div class="print-footer">经营日报 · {escape(report_date)} · </div>
+    <p class="report-note">{escape(display('口径提示：本月未收包含未到期未收，不等同于本月逾期；到期日按合同付款日（每月固定日）计算，未约定付款日的合同以月末为到期日，超过到期日仍未收才计入本月逾期。'))}</p>
+    <footer>{escape(display('金额、队列和风险沿用系统当前经营看板口径。'))}</footer>
+    <div class="print-footer">{escape(display('经营日报 ·'))}{escape(report_date)} · </div>
   </main>
 </body>
 </html>"""

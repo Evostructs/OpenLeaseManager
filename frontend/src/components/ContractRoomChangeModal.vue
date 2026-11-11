@@ -171,60 +171,60 @@ watch(
 </script>
 
 <template>
-  <BaseModal :open="open" :title="title" size="small" @close="emit('close')">
+  <BaseModal :open="open" :title="$t(title)" size="small" @close="emit('close')">
     <div class="form-grid single">
       <div v-if="roomItem" class="form-field">
-        <span class="section-label">当前房源</span>
-        <div>{{ roomItem.room_no || '--' }} · {{ roomItem.start_date || contract?.start_date || '--' }} - {{ roomItem.end_date || contract?.end_date || '--' }}</div>
+        <span class="section-label">{{ $t("当前房源") }}</span>
+        <div>{{ roomItem.room_no || '--' }} · {{ $t(roomItem.start_date || contract?.start_date || '--') }} - {{ $t(roomItem.end_date || contract?.end_date || '--') }}</div>
       </div>
 
       <div v-if="!isReduce" class="form-field">
-        <span class="section-label">新房源</span>
+        <span class="section-label">{{ $t("新房源") }}</span>
         <input v-model="form.room_no" class="input" list="room-change-room-options" @change="applySelectedRoom" />
-        <small v-if="roomsLoading" class="helper-text">房态读取中</small>
-        <small v-else-if="roomError" class="helper-text danger">{{ roomError }}</small>
-        <small v-else-if="selectedRoom?.occupied" class="helper-text danger">该期间已占用</small>
-        <small v-else-if="selectedRoom" class="helper-text success">{{ selectedRoom.tower || '--' }} · {{ selectedRoom.area || 0 }}㎡ · 可租</small>
+        <small v-if="roomsLoading" class="helper-text">{{ $t("房态读取中") }}</small>
+        <small v-else-if="roomError" class="helper-text danger">{{ $t(roomError) }}</small>
+        <small v-else-if="selectedRoom?.occupied" class="helper-text danger">{{ $t("该期间已占用") }}</small>
+        <small v-else-if="selectedRoom" class="helper-text success">{{ $t(selectedRoom.tower || '--') }} · {{ $t(selectedRoom.area || 0) }}{{ $t("㎡ · 可租") }}</small>
         <datalist id="room-change-room-options">
-          <option v-for="room in roomOptions" :key="room.id" :value="room.room_no" :label="`${room.tower || '--'} · ${room.area || 0}㎡${room.occupied ? ' · 已占用' : ' · 可租'}`" />
+          <option v-for="room in roomOptions" :key="room.id" :value="room.room_no" :label="$t(`${room.tower || '--'} · ${room.area || 0}㎡${room.occupied ? ' · 已占用' : ' · 可租'}`)" />
         </datalist>
       </div>
 
       <div v-if="!isReduce" class="form-field">
-        <span class="section-label">塔楼</span>
+        <span class="section-label">{{ $t("塔楼") }}</span>
         <input v-model="form.tower" class="input" />
       </div>
       <label v-if="!isReduce" class="form-field">
-        <span class="section-label">面积</span>
+        <span class="section-label">{{ $t("面积") }}</span>
         <input v-model.number="form.area" type="number" class="input" />
       </label>
       <label v-if="!isReduce" class="form-field">
-        <span class="section-label">日租单价</span>
+        <span class="section-label">{{ $t("日租单价") }}</span>
         <input v-model.number="form.unit_price" type="number" class="input" />
       </label>
 
       <div v-if="isReduce || isSwap" class="form-field">
-        <span class="section-label">{{ isSwap ? '旧房源截止日' : '房源截止日' }}</span>
+        <span class="section-label">{{ $t(isSwap ? '旧房源截止日' : '房源截止日') }}</span>
         <DatePickerInput v-model="form.cutoff_date" />
       </div>
       <div v-if="!isReduce" class="form-field">
-        <span class="section-label">新房源起租日</span>
+        <span class="section-label">{{ $t("新房源起租日") }}</span>
         <DatePickerInput v-model="form.start_date" />
       </div>
       <div v-if="!isReduce" class="form-field">
-        <span class="section-label">新房源终止日</span>
+        <span class="section-label">{{ $t("新房源终止日") }}</span>
         <DatePickerInput v-model="form.end_date" />
       </div>
       <label class="form-field">
-        <span class="section-label">备注</span>
+        <span class="section-label">{{ $t("备注") }}</span>
         <textarea v-model="form.notes" class="textarea" rows="3" />
       </label>
-      <div v-if="formError" class="helper-text danger">{{ formError }}</div>
+      <div v-if="formError" class="helper-text danger">{{ $t(formError) }}</div>
     </div>
 
     <template #footer>
-      <button class="btn" @click="emit('close')">取消</button>
-      <button class="btn btn-primary" :disabled="!canSubmit" @click="submit">保存</button>
+      <button class="btn" @click="emit('close')">{{ $t("取消") }}</button>
+      <button class="btn btn-primary" :disabled="!canSubmit" @click="submit">{{ $t("保存") }}</button>
     </template>
   </BaseModal>
 </template>

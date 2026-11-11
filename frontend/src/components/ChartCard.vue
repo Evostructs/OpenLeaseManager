@@ -42,10 +42,10 @@ defineProps({
     <header class="chart-card-header">
       <div class="chart-card-copy">
         <slot name="label">
-          <span class="section-label">重点观察</span>
+          <span class="section-label">{{ $t("重点观察") }}</span>
         </slot>
-        <h3>{{ title }}</h3>
-        <p v-if="subtitle">{{ subtitle }}</p>
+        <h3>{{ $t(title) }}</h3>
+        <p v-if="subtitle">{{ $t(subtitle) }}</p>
       </div>
       <div v-if="$slots.action" class="chart-card-actions">
         <slot name="action" />
@@ -56,10 +56,10 @@ defineProps({
       :option="option"
       :height="height"
       :empty="empty"
-      :empty-text="emptyText"
+      :empty-text="$t(emptyText)"
     />
 
-    <p v-if="insight" class="chart-card-insight">{{ insight }}</p>
+    <p v-if="insight" class="chart-card-insight">{{ $t(insight) }}</p>
     <slot />
   </article>
 </template>

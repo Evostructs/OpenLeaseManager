@@ -130,7 +130,7 @@ def test_operations_analytics_lead_facts_do_not_truncate_numbers() -> None:
 
     assert "compactMoney(collectionSummary.value.received)" in source
     assert "formatSignedShortPoints(portfolioTrendSummary.value.occupancyMom)" in source
-    assert ':title="fact.fullValue || fact.value"' in source
+    assert ':title="$t(fact.fullValue || fact.value)"' in source
 
     lead_fact_block = re.search(r"\.analytics-lead-facts strong \{([^}]+)\}", stylesheet)
     assert lead_fact_block is not None
