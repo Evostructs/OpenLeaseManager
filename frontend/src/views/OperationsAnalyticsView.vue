@@ -666,7 +666,7 @@ const analyticsLeadFacts = computed(() => [
     key: 'trend',
     label: '趋势',
     value: formatSignedPercent(portfolioTrendSummary.value.rentMom),
-    helper: `出租 ${formatSignedShortPoints(portfolioTrendSummary.value.occupancyMom)}`,
+    helper: `出租 ${t(formatSignedShortPoints(portfolioTrendSummary.value.occupancyMom))}`,
     tone: portfolioTrendSummary.value.tone
   }
 ])

@@ -24,6 +24,7 @@ test('presentation strings translate without modifying values or unknown busines
   assert.equal(translate(null), null)
   assert.equal(translate('房号 张氏贸易有限公司 存在 2 份有效合同').includes('张氏贸易有限公司'), true)
   assert.equal(translate('4间 · 4租'), '4 units · 4 leased')
+  assert.equal(translate(`出租 ${translate('-1.1点')}`), 'Occupancy -1.1 pp')
 })
 
 test('chart localization leaves data, getters and event identities intact', () => {
