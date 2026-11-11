@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 from html import escape
+from app.core.presentation_units import view_amount, conversion_note
 from app.core.localization import display, request_locale, localize_static_html
 from app.core.currency_unit import request_currency
 import re
@@ -28,7 +29,7 @@ DEFAULT_PAYMENT_INSTRUCTION = "请按合同约定或双方确认的付款账户�
 
 
 def _money(value: float | int | None) -> str:
-    return f"{float(value or 0):,.2f}"
+    return f"{view_amount(value):,.2f}"
 
 
 def _display(value: object) -> str:
@@ -267,6 +268,7 @@ def _render_html(
     </div>
     <div class="print-note">{escape(display('本文件由租赁管理系统生成，可直接打印或另存为 PDF。'))}</div>
   </main>
+<p style="font-size:10px;color:#667085">{escape(conversion_note())}</p>
 </body>
 </html>"""
 

@@ -316,6 +316,8 @@ def submit_operating_snapshot(
     actor: User,
     payload: dict,
 ) -> dict:
+    from app.core.presentation_units import require_snapshot_book_currency
+    require_snapshot_book_currency(db)
     building_id = require_single_selected_building(scope)
     source = _source_in_building(
         db,

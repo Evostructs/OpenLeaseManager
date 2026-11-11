@@ -1,7 +1,7 @@
 name: openleaseops
 services:
   web:
-    image: openleaseops:2.2.0
+    image: openleaseops:2.3.0
     build:
       context: .
       target: runtime

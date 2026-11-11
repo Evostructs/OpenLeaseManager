@@ -26,3 +26,13 @@ def currency_label(value, code=None):
     value = value.replace("¥", code + " ").replace("￥", code + " ")
     value = value.replace("人民币", code).replace("万元", "万 " + code).replace("亿元", "亿 " + code)
     return re.sub(r"(?<![\u3400-\u9fff])元(?![\u3400-\u9fff])", code, value)
+
+
+def book_currency_locked(db):
+    from app.models import Contract, FinancialExpense, FinancialPlanVersion, BuildingOperatingSnapshot, BuildingMetricFact, ExecutionAction
+    from app.finance_models import FinanceCash, FinanceBankLine
+    # Include archived/deleted financial records; deleting a row must not unlock a ledger.
+    from app.models import SystemConfig
+    if db.query(SystemConfig.id).filter(SystemConfig.key == "book_currency_locked", SystemConfig.value == "true").first():
+        return True
+    return any(db.query(model.id).first() is not None for model in (Contract, FinancialExpense, FinancialPlanVersion, BuildingOperatingSnapshot, BuildingMetricFact, FinanceCash, FinanceBankLine, ExecutionAction))

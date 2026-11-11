@@ -5,6 +5,7 @@ from contextvars import ContextVar
 from functools import lru_cache
 import json
 from pathlib import Path
+from app.core.presentation_units import area_label
 from app.core.currency_unit import currency_label, CURRENCY_CODES
 import re
 
@@ -37,7 +38,7 @@ def english(text: str) -> str:
 
 def display(value):
     translated = english(value) if request_locale.get() == "en" and isinstance(value, str) else value
-    return currency_label(translated)
+    return area_label(currency_label(translated))
 
 
 def header_key(value) -> str:

@@ -15,20 +15,18 @@ from app.services.documents import _render_html
 from test_financial_planning_api import admin, year, _seed_contract
 
 
-def test_unit_setting_changes_labels_not_persisted_amounts(admin, year):
+def test_book_currency_is_fixed_once_financial_records_exist(admin, year):
+    assert admin.put('/api/settings/currency', json={'code': 'USD'}).status_code == 200
     cid = _seed_contract(year)
     with SessionLocal() as db:
         before = db.get(Contract, cid).monthly_rent
-    assert admin.get('/api/settings/currency').json()['code'] == 'CNY'
-    for code in ['USD', 'EUR', 'CNY']:
-        result = admin.put('/api/settings/currency', json={'code': code})
-        assert result.status_code == 200
-        assert result.json()['code'] == code
-        with SessionLocal() as db:
-            assert db.get(Contract, cid).monthly_rent == before
-        assert admin.get('/api/auth/status').headers['X-OpenLease-Currency'] == code
+    assert admin.get('/api/settings/currency').json()['locked'] is True
+    assert admin.put('/api/settings/currency', json={'code': 'EUR'}).status_code == 409
+    assert admin.put('/api/settings/currency', json={'code': 'USD'}).status_code == 200
+    with SessionLocal() as db:
+        assert db.get(Contract, cid).monthly_rent == before
+    assert admin.get('/api/auth/status').json()['presentation']['base'] == 'USD'
     assert admin.put('/api/settings/currency', json={'code': 'BAD'}).status_code == 422
-    assert admin.get('/api/settings/currency').json()['code'] == 'CNY'
 
 
 def test_unit_setting_requires_administrator(admin):

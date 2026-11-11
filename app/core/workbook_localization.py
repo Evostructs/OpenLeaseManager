@@ -7,6 +7,8 @@ from openpyxl.utils import get_column_letter
 
 from app.core.localization import display, request_locale
 from app.core.currency_unit import request_currency
+from app.core.presentation_units import request_area, request_fx, request_fx_date
+from app.core.workbook_units import convert_workbook_cells, add_workbook_units, presentation_header
 
 ENUM_HEADERS = {
     "签约类型", "租赁类型", "合同类型", "类型", "房间类型", "物业类型", "用途", "出租状态",
@@ -23,7 +25,7 @@ NOTE_SHEETS = {"导入说明", "填写说明", "使用说明", "说明", "导出
 
 
 def localize_workbook(workbook):
-    if request_locale.get() != "en" and request_currency.get() == "CNY":
+    if request_locale.get() != "en" and request_currency.get() == "CNY" and request_area.get() == "m2" and request_fx.get() == 1:
         return workbook
     for ws in workbook.worksheets:
         original_title = ws.title
@@ -39,6 +41,7 @@ def localize_workbook(workbook):
                 header_row = row[0].row
                 headers = {cell.column: str(cell.value) for cell in filled}
                 break
+        convert_workbook_cells(ws, headers, header_row)
         for row in ws.iter_rows():
             for cell in row:
                 if isinstance(cell, MergedCell):
@@ -58,6 +61,8 @@ def localize_workbook(workbook):
                 elif is_template and label not in {"楼塔", "塔楼", "分区名称", "分区代码", "合同编号", "合同号", "室号", "房号"}:
                     # Template examples are synthetic. Live export rows never use this branch.
                     cell.value = display(value)
+                if cell.row == header_row and cell.column in headers:
+                    cell.value = presentation_header(headers[cell.column], cell.value)
                 if cell.row <= header_row or is_note:
                     alignment = copy(cell.alignment)
                     alignment.wrap_text = True
@@ -76,10 +81,12 @@ def localize_workbook(workbook):
         title = re.sub(r'[\\/*?:\[\]]', '-', display(original_title))[:31]
         if title and title != original_title:
             ws.title = title
-    if request_currency.get() != "CNY":
+    if request_currency.get() != "CNY" and not request_fx_date.get():
         unit_sheet = workbook.create_sheet("Currency unit" if request_locale.get() == "en" else "货币单位")
         unit_sheet.append(["Currency unit" if request_locale.get() == "en" else "货币单位", request_currency.get()])
         unit_sheet.append(["Note" if request_locale.get() == "en" else "说明", "Amounts use the selected unit. No exchange-rate conversion is applied." if request_locale.get() == "en" else "金额按所选货币单位标示，不进行汇率换算。"])
         unit_sheet.column_dimensions["A"].width = 24
         unit_sheet.column_dimensions["B"].width = 80
+    if request_area.get() != "m2" or request_fx_date.get():
+        add_workbook_units(workbook, request_locale.get())
     return workbook

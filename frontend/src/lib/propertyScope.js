@@ -1,4 +1,5 @@
-import { locale } from '../i18n/index.js'
+import { canonicalAreaQuery } from '../i18n/units.js'
+import { locale, areaUnit, currencyUnit, bookCurrency } from '../i18n/index.js'
 const DEFAULT_SCOPE_CONTEXT = Object.freeze({
   userId: '',
   authorizationVersion: '',
@@ -264,5 +265,8 @@ export function buildScopedDownloadUrl(path, options = {}) {
   const scoped = buildScopedApiUrl(path, options)
   const url = new URL(scoped, 'http://localhost')
   url.searchParams.set('lang', locale.value)
-  return url.pathname + url.search + url.hash
+  url.searchParams.set('area_unit', areaUnit.value)
+  url.searchParams.set('view_currency', /template/.test(url.pathname) ? bookCurrency.value : currencyUnit.value)
+  url.searchParams.set('unit_export', '1')
+  return canonicalAreaQuery(url.pathname + url.search + url.hash, areaUnit.value)
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { currencyUnit } from '../../i18n/index.js'
+import { currencyUnit, areaUnit, fxDate } from '../../i18n/index.js'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import {
   buildLeadershipOverviewBuildingCards,
@@ -142,7 +142,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div class="portfolio-header-status">
-        <span class="badge">{{ currencyUnit }}</span>
+        <span class="badge">{{ currencyUnit, areaUnit, fxDate }}</span>
         <span
           v-if="health.simulated"
           class="portfolio-simulation-badge"

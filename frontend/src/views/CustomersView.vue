@@ -1164,7 +1164,7 @@ onMounted(async () => {
               </span>
               <span class="customer-value-metrics">
                 <strong>{{ $t(compactCurrency(row.rent)) }}</strong>
-                <small>{{ $t(formatArea(row.area || 0)) }} ㎡</small>
+                <small>{{ $t(formatArea(row.area || 0)) }} {{ $t("㎡") }}</small>
               </span>
             </button>
             <div v-if="!topValueCustomers.length" class="compact-empty compact-empty-tight">{{ $t("暂无在租客户") }}</div>
@@ -1444,7 +1444,7 @@ onMounted(async () => {
               <div class="customer-name-line">
                 <strong :title="customer.name">{{ customer.name }}</strong>
                 <span class="badge" :class="customer.status === 'inactive' ? 'warning' : 'success'">{{ $t(statusLabel(customer.status)) }}</span>
-                <span v-if="customer.short_name" :title="$t(customer.short_name)">{{ $t(customer.short_name) }}</span>
+                <span v-if="customer.short_name" :title="customer.short_name">{{ customer.short_name }}</span>
               </div>
               <p>{{ $t(customerNextAction(customer)) }}</p>
               <div class="customer-compact-facts">

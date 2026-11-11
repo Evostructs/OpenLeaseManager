@@ -1,4 +1,5 @@
 <script setup>
+import { currencyUnit, areaUnit, fxDate } from '../i18n/index.js'
 import LanguageSwitch from './LanguageSwitch.vue'
 import { computed, inject, provide, nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { activateModalFocus } from '../lib/modalFocus.js'
@@ -168,6 +169,7 @@ onBeforeUnmount(() => { focusSession?.release(); unlockBodyScroll() })
         <header class="modal-header">
           <div>
             <h3 :id="modalTitleId" class="card-title">{{ $t(title) }}</h3>
+            <small class="helper-text">{{ currencyUnit }} · {{ areaUnit === 'ft2' ? 'ft²' : 'm²' }}<template v-if="fxDate"> · {{ $t('只读折算') }}</template></small>
           </div>
           <LanguageSwitch style="margin-left: auto; margin-right: 8px" />
           <button type="button" class="icon-btn" :aria-label="$t(&quot;关闭&quot;)" data-testid="base-modal-close" @click="closeModal">×</button>

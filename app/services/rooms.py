@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 
 from app.core.time import now_in_timezone, today_in_timezone
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_units import normalize_import_workbook
 from app.core.workbook_localization import localize_workbook
 from app.core.money import round_money
 from app.core.localization import bilingual_aliases, import_value, import_demo_tower
@@ -996,7 +997,7 @@ def update_room(
 def import_rooms_excel(content: bytes, db: Session, *, building_id: int | None = None) -> dict:
     selected_building_id = _resolve_room_write_building_id(db, building_id)
     selected_building = db.get(Building, selected_building_id)
-    wb = openpyxl.load_workbook(io.BytesIO(content))
+    wb = normalize_import_workbook(openpyxl.load_workbook(io.BytesIO(content)))
     ws = wb.active
 
     header_row = None

@@ -1140,7 +1140,7 @@ onMounted(async () => {
           <div>
             <div class="section-label">{{ $t("房源经营") }}</div>
             <h3 class="card-title">{{ $t("房态总图") }}</h3>
-            <p>{{ $t(availabilityRangeLabel) }} · {{ $t(stats?.total_rooms || 0) }}{{ $t(" 间 · ") }}{{ $t(formatArea(totalArea)) }}㎡</p>
+            <p>{{ $t(availabilityRangeLabel) }} · {{ $t(stats?.total_rooms || 0) }}{{ $t(" 间 · ") }}{{ $t(formatArea(totalArea)) }}{{ $t("㎡") }}</p>
           </div>
           <div class="rooms-command-actions">
             <button class="btn btn-compact" @click="setOccupancyFilter('空置')">{{ $t("看空置") }}</button>
@@ -1153,7 +1153,7 @@ onMounted(async () => {
           <div class="room-status-hero">
             <span>{{ $t("出租率") }}</span>
             <strong>{{ $t(occupancyRate) }}%</strong>
-            <small>{{ $t("空置 ") }}{{ $t(formatArea(stats?.vacancy_area || 0)) }}㎡ · {{ $t(stats?.vacancy_rooms || 0) }}{{ $t(" 间") }}</small>
+            <small>{{ $t("空置 ") }}{{ $t(formatArea(stats?.vacancy_area || 0)) }}{{ $t("㎡") }} · {{ $t(stats?.vacancy_rooms || 0) }}{{ $t(" 间") }}</small>
           </div>
           <div class="room-status-map" data-testid="rooms-status-strip">
             <div class="room-status-stack" :aria-label="$t(&quot;房态构成&quot;)">
@@ -1206,8 +1206,8 @@ onMounted(async () => {
               <i class="vacant" :style="{ width: `${Math.min(Math.max(segment.vacancyRate, 0), 100)}%` }"></i>
             </div>
             <div class="room-segment-values">
-              <span>{{ $t("租 ") }}{{ $t(formatArea(segment.occupiedArea)) }}㎡</span>
-              <span>{{ $t("空 ") }}{{ $t(formatArea(segment.vacantArea)) }}㎡</span>
+              <span>{{ $t("租 ") }}{{ $t(formatArea(segment.occupiedArea)) }}{{ $t("㎡") }}</span>
+              <span>{{ $t("空 ") }}{{ $t(formatArea(segment.vacantArea)) }}{{ $t("㎡") }}</span>
               <span>{{ $t("空 ") }}{{ $t(segment.vacant) }}{{ $t(" 间") }}</span>
             </div>
             <div class="room-segment-pressure-bar" data-testid="rooms-segment-pressure-bar">
@@ -1233,7 +1233,7 @@ onMounted(async () => {
               @click="applyVacancyPressureRow(row)"
             >
               <span class="rooms-vacancy-rank">{{ $t(row.segment) }}</span>
-              <strong>{{ $t(formatArea(row.vacantArea)) }}㎡</strong>
+              <strong>{{ $t(formatArea(row.vacantArea)) }}{{ $t("㎡") }}</strong>
               <span>{{ $t(zoneLabel(row.zone)) }} · {{ $t(row.floorHint) }}</span>
               <small>{{ $t(row.vacantCount) }}{{ $t(" 间空置 · 空置率 ") }}{{ $t(row.vacancyRate) }}{{ $t("% · 待办 ") }}{{ $t(row.priorityCount) }}{{ $t(" 间") }}</small>
             </button>
@@ -1272,7 +1272,7 @@ onMounted(async () => {
           >
             <span>{{ $t(item.label) }}</span>
             <strong>{{ $t(item.count) }}{{ $t(" 间") }}</strong>
-            <small>{{ $t(formatArea(item.area)) }}㎡</small>
+            <small>{{ $t(formatArea(item.area)) }}{{ $t("㎡") }}</small>
           </button>
         </div>
 
@@ -1355,7 +1355,7 @@ onMounted(async () => {
             >
               <div class="room-priority-main room-action-main">
                 <strong>{{ room.room_no }}</strong>
-                <span>{{ $t(formatArea(room.area)) }}㎡ · {{ room.contract?.tenant_name || '空置' }}</span>
+                <span>{{ $t(formatArea(room.area)) }}{{ $t("㎡") }} · {{ room.contract?.tenant_name || '空置' }}</span>
               </div>
               <div class="room-action-meta">
                 <span class="badge compact" :class="getRoomStatusTone(getRoomStatus(room))">{{ $t(getRoomStatus(room)) }}</span>
@@ -1541,7 +1541,7 @@ onMounted(async () => {
                 <small v-if="showLegacyFloorWorkspace">{{ $t(zoneLabel(getFloorZone(room))) }}</small>
               </td>
               <td class="room-money-cell">
-                <strong>{{ $t(formatArea(room.area)) }}㎡</strong>
+                <strong>{{ $t(formatArea(room.area)) }}{{ $t("㎡") }}</strong>
                 <span v-if="room.contract?.monthly_rent">{{ $t(formatCurrencyFixed(room.contract.monthly_rent)) }}{{ $t("/月") }}</span>
                 <span v-else>--</span>
                 <small v-if="room.contract?.unit_price">{{ $t(formatCurrencyFixed(room.contract.unit_price)) }}{{ $t("/㎡/天") }}</small>
@@ -1658,7 +1658,7 @@ onMounted(async () => {
           </div>
           <div>
             <span>{{ $t("面积") }}</span>
-            <strong>{{ $t(formatArea(roomContractDetail.room?.area)) }}㎡</strong>
+            <strong>{{ $t(formatArea(roomContractDetail.room?.area)) }}{{ $t("㎡") }}</strong>
           </div>
           <div>
             <span>{{ $t("合同记录") }}</span>
@@ -1749,7 +1749,7 @@ onMounted(async () => {
             </div>
             <div class="room-contract-meta">
               <span>{{ $t(formatDate(contract.start_date)) }}{{ $t(" 至 ") }}{{ $t(formatDate(contract.end_date)) }}</span>
-              <span>{{ $t(formatArea(contract.area)) }}㎡</span>
+              <span>{{ $t(formatArea(contract.area)) }}{{ $t("㎡") }}</span>
               <span>{{ $t(formatCurrencyFixed(contract.monthly_rent)) }}{{ $t("/月") }}</span>
               <span>{{ $t(contract.internal_contact_person || '--') }}</span>
             </div>

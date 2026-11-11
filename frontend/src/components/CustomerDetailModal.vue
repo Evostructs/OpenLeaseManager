@@ -681,11 +681,11 @@ watch(
         <div class="stat-grid detail-field-grid">
           <div class="detail-field">
             <div class="section-label">{{ $t("简称") }}</div>
-            <div>{{ $t(detail.short_name || '--') }}</div>
+            <div>{{ detail.short_name || '--' }}</div>
           </div>
           <div class="detail-field">
             <div class="section-label">{{ $t("信用代码") }}</div>
-            <div>{{ $t(detail.credit_code || '--') }}</div>
+            <div>{{ detail.credit_code || '--' }}</div>
           </div>
           <div class="detail-field">
             <div class="section-label">{{ $t("类型 / 行业") }}</div>
@@ -814,7 +814,7 @@ watch(
                 <td>{{ contract.room_no || '--' }}</td>
                 <td>{{ $t(contract.lease_type || '--') }}</td>
                 <td>{{ $t(formatDate(contract.start_date)) }} - {{ $t(formatDate(contract.end_date)) }}</td>
-                <td class="right">{{ $t(formatArea(contract.area)) }}㎡</td>
+                <td class="right">{{ $t(formatArea(contract.area)) }}{{ $t("㎡") }}</td>
                 <td class="right">{{ $t(formatCurrencyFixed(contract.monthly_rent)) }}</td>
                 <td class="right">{{ $t(formatCurrencyFixed(contract.deposit_summary?.unpaid_amount || 0)) }}</td>
                 <td><StatusBadge :status="contract.status" /></td>

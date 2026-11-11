@@ -29,6 +29,7 @@ globalThis.window = {
 
 globalThis.fetch = async (path) => {
   const normalizedPath = String(path)
+  if (normalizedPath.startsWith('/api/auth/status?view_currency=')) return { ok: true, json: async () => ({ presentation: { base: 'CNY', quote: 'CNY', rate: 1, date: '', available: true } }) }
   requests.push(normalizedPath)
   const requestNumber = requests.length
   const gate = responseGates.get(normalizedPath)
@@ -69,17 +70,17 @@ try {
   )
   assert.equal(
     buildScopedDownloadUrl('/api/contracts/export/excel?keyword=%E4%B8%8A%E6%B5%B7'),
-    '/api/contracts/export/excel?keyword=%E4%B8%8A%E6%B5%B7&building=DEMO_A&lang=en'
+    '/api/contracts/export/excel?keyword=%E4%B8%8A%E6%B5%B7&building=DEMO_A&lang=en&area_unit=m2&view_currency=CNY&unit_export=1'
   )
   openDownload('/api/rent-analytics/export?start_date=2026-01-01&building=OTHER')
   assert.deepEqual(downloadWindows.at(-1), [
-    '/api/rent-analytics/export?start_date=2026-01-01&building=DEMO_A&lang=en',
+    '/api/rent-analytics/export?start_date=2026-01-01&building=DEMO_A&lang=en&area_unit=m2&view_currency=CNY&unit_export=1',
     '_blank',
     'noopener,noreferrer'
   ])
   openDownload('/api/rent-analytics/export?start_date=2026-01-01&building=OTHER', { includeScope: false })
   assert.deepEqual(downloadWindows.at(-1), [
-    '/api/rent-analytics/export?start_date=2026-01-01&building=OTHER&lang=en',
+    '/api/rent-analytics/export?start_date=2026-01-01&building=OTHER&lang=en&area_unit=m2&view_currency=CNY&unit_export=1',
     '_blank',
     'noopener,noreferrer'
   ])

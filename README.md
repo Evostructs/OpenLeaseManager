@@ -1,4 +1,4 @@
-# OpenLeaseOps
+# Open Lease Manager
 
 **English** | [简体中文](README.zh-CN.md)
 
@@ -6,7 +6,7 @@ An open-source, self-hosted system for multi-building lease and property operati
 
 Built with FastAPI, SQLite, Alembic, Vue 3 and ECharts. Released under the MIT License.
 
-## What's included in v2.2.0
+## What's included in v2.3.0
 
 - Buildings, zones and leasable units, with separate workflows for detailed operations and published operating snapshots.
 - Contracts, rent terms, escalations, rent-free periods, deposits and attachments.
@@ -16,15 +16,13 @@ Built with FastAPI, SQLite, Alembic, Vue 3 and ECharts. Released under the MIT L
 - Role-, building- and capability-based access, audit trails, backups and recovery.
 - Optional AI-assisted explanations, disabled by default. Enabling them sends the relevant operating data to the model service you configure.
 
-## Language and data
+## Language and units
 
-English is the default interface language. Use **中文 / English** in the header or in an open dialog to switch immediately; your browser remembers the choice. Switching does not reload the page or clear unsaved form entries. Translations are bundled locally, with no online translation service required at runtime.
-
-Excel templates and export headings follow the selected language. Imports accept English and Chinese column labels and supported categorical values; existing Chinese templates remain compatible. Customer names, contacts, notes, identifiers and other user-entered business data retain their original text.
-
-Administrators can choose the installation-wide **currency unit** under **Tools → Currency unit** (CNY by default), including USD, EUR, GBP and others. Choosing USD labels amounts as US dollars; **1,000 remains 1,000**. The setting applies to both interface languages, charts, generated reports and operational Excel downloads. Technical snapshot-exchange packages retain their existing schema and unit codes for compatibility. It does not convert existing amounts or provide mixed-currency accounting. Areas remain **m²** and rent calculation rules are unchanged. Country-specific tax rules and accounting compliance are not included. Configure the application timezone for your deployment. Direct API clients can request English downloads with `?lang=en` or `X-OpenLease-Locale: en`; requests without a language keep the existing Chinese workbook format for compatibility.
+English / 简体中文, m² / ft², and a choice of viewing currencies. Original records stay in the book currency; reference conversions show their rate date.
 
 ## Screenshots
+
+![Switching area units and reference currency](docs/demos/units.gif)
 
 These screenshots come from an isolated demo installation. Buildings, customers, contracts and amounts are synthetic; no real business records are included. The UI shown here is in English. Click an image to view it at full size.
 

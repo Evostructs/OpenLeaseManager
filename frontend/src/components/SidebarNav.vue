@@ -69,14 +69,14 @@ watch(
         <img
           v-if="brand.logo_url"
           :src="brand.logo_url"
-          :alt="$t(brand.short_name || '租赁管理系统')"
+          :alt="brand.short_name || '租赁管理系统'"
         />
         <span v-else class="sidebar-brand-monogram" data-testid="sidebar-brand-monogram">
-          {{ $t(brand.short_name || '楼宇') }}
+          {{ brand.short_name || '楼宇' }}
         </span>
       </div>
       <div class="sidebar-brand-copy">
-        <h1>{{ $t("租赁管理系统") }}</h1>
+        <h1>Open Lease Manager</h1>
         <p class="sidebar-workspace-label" data-testid="sidebar-workspace-label">{{ $t(workspaceLabel) }}</p>
         <p v-if="scopeLabel" class="sidebar-scope-label" data-testid="sidebar-scope-label">
           {{ $t(scopeLabel) }}

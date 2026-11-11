@@ -1434,7 +1434,7 @@ onMounted(async () => {
               </td>
               <td>
                 <div>{{ $t(roomSummary(row)) }}</div>
-                <div class="table-cell-subtext">{{ $t(row.tower || '--') }} · {{ $t(formatArea(row.area)) }}㎡</div>
+                <div class="table-cell-subtext">{{ $t(row.tower || '--') }} · {{ $t(formatArea(row.area)) }}{{ $t("㎡") }}</div>
               </td>
               <td>
                 <div>{{ $t(formatDate(row.start_date)) }} - {{ $t(formatDate(row.end_date)) }}</div>

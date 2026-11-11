@@ -1,4 +1,5 @@
-import { locale, setCurrencyUnit } from '../i18n/index.js'
+import { convertUnitPayload, canonicalAreaQuery } from '../i18n/units.js'
+import { locale, currencyUnit, bookCurrency, areaUnit, fxRate, ensureDisplayUnits, t } from '../i18n/index.js'
 import { beginReadyTask, operationNow, recordApiTiming } from './operationTelemetry.js'
 import { buildScopedApiUrl, buildScopedDownloadUrl } from './propertyScope.js'
 
@@ -118,8 +119,25 @@ function extractErrorMessage(payload) {
   return '请求失败'
 }
 
+async function loadDisplayQuote(requested) {
+  const response = await fetch('/api/auth/status?view_currency=' + encodeURIComponent(requested), { credentials: 'include' })
+  if (!response.ok) throw new Error('Unable to load display units')
+  return response.json()
+}
+
 export async function api(path, options = {}) {
+  await ensureDisplayUnits(loadDisplayQuote)
   const { skipAuthRedirect = false, includeScope = true, responseType = 'json', ...requestOptions } = options
+  const method = (requestOptions.method || 'GET').toUpperCase()
+  const systemPath = /^\/api\/(auth|settings|backups|client-errors)(?:\/|$)/.test(path)
+  const forecastRead = /^\/api\/financial-planning\/(forecast|preview|compare)(?:[/?]|$)/.test(path)
+  if (!['GET', 'HEAD'].includes(method) && currencyUnit.value !== bookCurrency.value && !systemPath && !forecastRead) {
+    throw new Error(t('请切回记账币种后再编辑账目。'))
+  }
+  if (!systemPath && typeof requestOptions.body === 'string') {
+    requestOptions.body = JSON.stringify(convertUnitPayload(JSON.parse(requestOptions.body), { area: areaUnit.value, direction: 'input' }))
+  }
+  path = canonicalAreaQuery(path, areaUnit.value)
   const config = {
     headers: {
       ...(requestOptions.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
@@ -137,7 +155,6 @@ export async function api(path, options = {}) {
     const response = includeScope
       ? await fetch(buildScopedApiUrl(path), config)
       : await fetch(buildScopedApiUrl(path, { includeScope: false }), config)
-    setCurrencyUnit(response.headers.get('x-openlease-currency'))
     headerTime = operationNow()
     responseStatus = response.status
     const metric = (response.headers.get('server-timing') || '').match(/(?:^|,)\s*app\s*;\s*dur=([\d.]+)/)
@@ -159,7 +176,7 @@ export async function api(path, options = {}) {
       throw error
     }
 
-    return payload
+    return systemPath ? payload : convertUnitPayload(payload, { area: areaUnit.value, rate: fxRate.value })
   } finally {
     const ended = operationNow()
     recordApiTiming({ endpoint: path, start: started, duration: ended - started, headersMs: headerTime === null ? null : headerTime - started, bodyMs: headerTime === null ? null : ended - headerTime, serverMs, status: responseStatus })

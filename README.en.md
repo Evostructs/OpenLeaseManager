@@ -1,4 +1,4 @@
-# OpenLeaseOps
+# Open Lease Manager
 
 The English documentation is now the [repository homepage](README.md).
 

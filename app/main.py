@@ -16,6 +16,8 @@ from app.core.account_name_policy import load_account_name_policy
 from app.core.config import get_settings
 from app.core.localization import request_locale
 from app.core.currency_unit import request_currency, currency_settings
+from app.core.presentation_units import request_area, request_fx, request_fx_date, request_book_currency, reference_rate
+from starlette.concurrency import run_in_threadpool
 from app.core.maintenance import MAINTENANCE_MESSAGE, in_maintenance
 from app.core.migrations import run_migrations
 from app.core.request_limits import RequestSizeExceeded, RequestSizeLimitMiddleware
@@ -48,7 +50,7 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="OpenLeaseOps", version="2.2.0", lifespan=lifespan)
+app = FastAPI(title="Open Lease Manager", version="2.3.0", lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(RequestSizeLimitMiddleware, max_bytes=settings_obj.max_request_size_bytes)
 
@@ -90,7 +92,25 @@ async def language_context(request: Request, call_next):
         from app.database import SessionLocal
         with SessionLocal() as db:
             code = currency_settings(db)["code"]
-    currency_token = request_currency.set(code)
+    book_token = request_book_currency.set(code)
+    area = request.query_params.get("area_unit", "m2")
+    area_token = request_area.set("ft2" if area == "ft2" else "m2")
+    view_code = request.query_params.get("view_currency", code)
+    rate = {"rate": 1.0, "date": ""}
+    # JSON API data remains canonical. Explicit download links opt into a view.
+    if request.query_params.get("unit_export") == "1" and view_code != code:
+        try:
+            rate = await run_in_threadpool(reference_rate, code, view_code)
+        except Exception:
+            request_book_currency.reset(book_token)
+            request_area.reset(area_token)
+            request_locale.reset(token)
+            return JSONResponse(status_code=503, content={"detail": "Reference exchange rate unavailable"})
+    else:
+        view_code = code
+    currency_token = request_currency.set(view_code)
+    fx_token = request_fx.set(rate["rate"])
+    fx_date_token = request_fx_date.set(rate["date"])
     try:
         response = await call_next(request)
         response.headers["Content-Language"] = request_locale.get()
@@ -99,6 +119,10 @@ async def language_context(request: Request, call_next):
     finally:
         request_locale.reset(token)
         request_currency.reset(currency_token)
+        request_book_currency.reset(book_token)
+        request_area.reset(area_token)
+        request_fx.reset(fx_token)
+        request_fx_date.reset(fx_date_token)
 
 
 @app.middleware("http")

@@ -1314,7 +1314,7 @@ onBeforeUnmount(() => {
                   </span>
                   <span v-if="impact.rentDelta">{{ $t(" 租金变化 ") }}{{ $t(impact.rentDelta > 0 ? '+' : '') }}{{ $t(formatCurrency(impact.rentDelta)) }}
                   </span>
-                  <span v-if="impact.areaDelta">{{ $t(" 面积变化 ") }}{{ $t(impact.areaDelta > 0 ? '+' : '') }}{{ $t(formatArea(impact.areaDelta)) }} ㎡
+                  <span v-if="impact.areaDelta">{{ $t(" 面积变化 ") }}{{ $t(impact.areaDelta > 0 ? '+' : '') }}{{ $t(formatArea(impact.areaDelta)) }} {{ $t("㎡") }}
                   </span>
                 </section>
               </div>

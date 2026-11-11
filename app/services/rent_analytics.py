@@ -19,6 +19,7 @@ from openpyxl.utils import get_column_letter
 from sqlalchemy.orm import Session, selectinload, with_loader_criteria
 
 from app.core.excel_safety import sanitize_workbook
+from app.core.presentation_units import request_fx, area_factor
 from app.core.workbook_localization import localize_workbook
 from app.core.money import round_money
 from app.services.calculation_context import reuse_read_calculations
@@ -1306,8 +1307,8 @@ def export_rent_analytics_excel(analytics: dict, segments: list[str]) -> Streami
             summary_sheet.append(
                 [
                     f"{segment_labels.get(segment, segment)}-{phase_label}",
-                    f"有效平均日租 {metric['effective_daily_rent'] if metric['effective_daily_rent'] is not None else '--'}；"
-                    f"应计租金 {metric['rent']}；面积天数 {metric['area_days']}",
+                    f"有效平均日租 {round(metric['effective_daily_rent'] * request_fx.get() / area_factor(), 6) if metric['effective_daily_rent'] is not None else '--'}；"
+                    f"应计租金 {round(metric['rent'] * request_fx.get(), 2)}；面积天数 {round(metric['area_days'] * area_factor(), 4)}",
                 ]
             )
 

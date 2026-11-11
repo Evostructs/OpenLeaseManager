@@ -19,5 +19,5 @@ request('/api/auth/register', {'username':'smoke_admin', 'display_name':'Smoke A
 assert not request('/api/auth/status')['need_init']
 with client.open(base + '/', timeout=10) as response:
     html = response.read().decode()
-    assert 'OpenLeaseOps' in html and '/assets/' in html
+    assert 'Open Lease Manager' in html and '/assets/' in html
 print('PASS: healthy, fresh database initialized, administrator registration, frontend served.')

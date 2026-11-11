@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from html import escape
+from app.core.presentation_units import view_amount, conversion_note
 from app.core.localization import display, request_locale, localize_static_html
 from app.core.currency_unit import request_currency, currency_label
 from urllib.parse import quote
@@ -42,7 +43,7 @@ def _text(value: object, fallback: str = "--") -> str:
 
 def _money(value: object) -> str:
     try:
-        amount = float(value or 0)
+        amount = view_amount(value)
     except (TypeError, ValueError):
         amount = 0.0
     return currency_label(f"¥{amount:,.2f}")
@@ -518,5 +519,6 @@ def build_operations_daily_report_html(
     <footer>{escape(display('金额、队列和风险沿用系统当前经营看板口径。'))}</footer>
     <div class="print-footer">{escape(display('经营日报 ·'))}{escape(report_date)} · </div>
   </main>
+<p style="font-size:10px;color:#667085">{escape(conversion_note())}</p>
 </body>
 </html>"""

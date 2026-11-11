@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.core.time import now_in_timezone, today_in_timezone
 from app.core.localization import bilingual_aliases, import_value
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_units import normalize_import_workbook
 from app.core.workbook_localization import localize_workbook
 from app.database import SessionLocal
 from app.models import (
@@ -446,7 +447,7 @@ def _find_header(ws, aliases: dict[str, str], *, min_matches: int = 2) -> tuple[
 
 def _workbook_from_content(content: bytes):
     try:
-        return openpyxl.load_workbook(io.BytesIO(content), data_only=True)
+        return normalize_import_workbook(openpyxl.load_workbook(io.BytesIO(content), data_only=True))
     except Exception as exc:
         raise HTTPException(400, "Excel 文件无法读取，请确认文件格式为 xlsx/xls。") from exc
 

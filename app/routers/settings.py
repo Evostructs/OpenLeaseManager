@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
-from app.core.currency_unit import currency_settings, CURRENCY_CODES, CONFIG_KEY
+from app.core.currency_unit import currency_settings, CURRENCY_CODES, CONFIG_KEY, book_currency_locked
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -140,7 +140,7 @@ class CurrencyUnitPayload(BaseModel):
 
 @router.get("/currency")
 def get_currency_unit(db: Session = Depends(get_db)):
-    return currency_settings(db)
+    return {**currency_settings(db), "locked": book_currency_locked(db)}
 
 
 @router.put("/currency")
@@ -149,6 +149,8 @@ def set_currency_unit(data: CurrencyUnitPayload, request: Request, db: Session =
         raise HTTPException(422, "Unsupported currency unit")
     previous = currency_settings(db)["code"]
     if previous != data.code:
+        if book_currency_locked(db):
+            raise HTTPException(409, "Book currency cannot change after financial records exist")
         row = _get_config(db, CONFIG_KEY)
         if row is None:
             row = SystemConfig(key=CONFIG_KEY, value=data.code)

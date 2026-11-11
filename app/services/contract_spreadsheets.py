@@ -13,6 +13,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 import openpyxl
 
 from app.core.excel_safety import sanitize_workbook
+from app.core.workbook_units import normalize_import_workbook
 from app.core.workbook_localization import localize_workbook
 from app.core.time import today_in_timezone
 from app.core.localization import bilingual_aliases, import_value, import_demo_tower
@@ -186,7 +187,7 @@ def import_contracts_excel(
     building_id: int,
 ) -> dict:
     selected_building = db.get(Building, building_id)
-    wb = openpyxl.load_workbook(io.BytesIO(content))
+    wb = normalize_import_workbook(openpyxl.load_workbook(io.BytesIO(content)))
     ws = wb.active
 
     header_row = None

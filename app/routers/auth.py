@@ -81,9 +81,10 @@ def _set_auth_cookie(response: Response, user: User) -> None:
 
 
 @router.get("/status")
-def auth_status(db: Session = Depends(get_db)):
+def auth_status(view_currency: str = "", db: Session = Depends(get_db)):
     user_count = db.query(User).count()
-    return {"need_init": user_count == 0, "user_count": user_count}
+    from app.core.presentation_units import presentation_settings
+    return {"need_init": user_count == 0, "user_count": user_count, "presentation": presentation_settings(db, view_currency)}
 
 
 @router.post("/register")

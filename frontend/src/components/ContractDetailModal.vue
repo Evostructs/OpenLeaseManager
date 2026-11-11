@@ -448,7 +448,7 @@ function exportContractDeposits() {
                 @click="emit('open-customer', contract.customer_id)"
               >{{ $t(" 查看客户资料 ") }}</button>
               <div v-if="contract.customer?.short_name || contract.customer?.credit_code" class="table-cell-subtext">
-                {{ $t(contract.customer.short_name || '无简称') }} · {{ $t(contract.customer.credit_code || '无信用代码') }}
+                {{ contract.customer.short_name || '无简称' }} · {{ contract.customer.credit_code || '无信用代码' }}
               </div>
             </div>
             <div>
@@ -592,7 +592,7 @@ function exportContractDeposits() {
                   <div class="decision-room-list">
                     <div v-for="room in decisionRooms" :key="`${room.room_no}-${room.tower}`">
                       <strong>{{ room.room_no || '--' }}</strong>
-                      <span>{{ $t(room.tower || '--') }} · {{ $t(formatArea(room.area || 0)) }} ㎡ · {{ $t(formatCurrency(room.monthly_rent || 0)) }}{{ $t("/月") }}</span>
+                      <span>{{ $t(room.tower || '--') }} · {{ $t(formatArea(room.area || 0)) }} {{ $t("㎡") }} · {{ $t(formatCurrency(room.monthly_rent || 0)) }}{{ $t("/月") }}</span>
                     </div>
                     <div v-if="!decisionRooms.length" class="helper-text">{{ $t("暂无房源明细") }}</div>
                   </div>
@@ -795,7 +795,7 @@ function exportContractDeposits() {
                     <td>{{ $t(item.tower || '--') }}</td>
                     <td>{{ item.room_no || '--' }}</td>
                     <td>{{ $t(formatDate(item.start_date)) }} - {{ $t(formatDate(item.end_date)) }}</td>
-                    <td class="right">{{ $t(formatArea(item.area)) }} ㎡</td>
+                    <td class="right">{{ $t(formatArea(item.area)) }} {{ $t("㎡") }}</td>
                     <td class="right">{{ $t(formatCurrency(item.unit_price)) }}</td>
                     <td class="right">{{ $t(formatCurrency(item.monthly_rent)) }}</td>
                     <td v-if="showLogs" class="actions-cell">

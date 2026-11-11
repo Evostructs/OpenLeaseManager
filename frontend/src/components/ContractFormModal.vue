@@ -1,4 +1,5 @@
 <script setup>
+import { areaUnit } from '../i18n/index.js'
 import { t } from '../i18n/index.js'
 import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { api } from '../lib/api'
@@ -222,9 +223,9 @@ function syncRoomTotals() {
     if (item.tower) towers.add(item.tower)
   }
 
-  form.area = roundCurrency(totalArea)
+  form.area = areaUnit.value === 'ft2' ? totalArea : roundCurrency(totalArea)
   form.monthly_rent = roundCurrency(totalMonthlyRent)
-  form.unit_price = form.area > 0 ? roundCurrency(form.monthly_rent * 12 / 365 / form.area) : 0
+  form.unit_price = form.area > 0 ? (areaUnit.value === 'ft2' ? form.monthly_rent * 12 / 365 / form.area : roundCurrency(form.monthly_rent * 12 / 365 / form.area)) : 0
   form.room_no = activeItems.map((item) => item.room_no).join('、')
   form.tower = towers.size === 1 ? [...towers][0] : (towers.size > 1 ? '多房源' : form.tower)
   if (!brokerFeeManual.value) {

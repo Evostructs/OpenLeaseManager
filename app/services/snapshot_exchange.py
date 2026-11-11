@@ -887,6 +887,8 @@ def receive_snapshot_package(
     package: SnapshotExchangePackageV1,
     actor: User,
 ) -> ReceiveResult:
+    from app.core.presentation_units import require_snapshot_book_currency
+    require_snapshot_book_currency(db)
     try:
         return _receive_snapshot_package_once(db, package=package, actor=actor)
     except IntegrityError as exc:

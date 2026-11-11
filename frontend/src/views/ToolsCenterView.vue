@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { currencyUnit, setCurrencyUnit, locale } from '../i18n/index.js'
+import { currencyUnit, bookCurrency, setCurrencyUnit, locale } from '../i18n/index.js'
 import { currencies } from '../i18n/currency.js'
 import BaseModal from '../components/BaseModal.vue'
 import InfoHint from '../components/InfoHint.vue'
@@ -26,14 +26,25 @@ const canUseTools = computed(() => isAdmin.value)
 const canViewAudit = computed(() => isAdmin.value)
 const showTools = computed(() => canUseTools.value)
 
-const selectedCurrency = ref(currencyUnit.value)
+const selectedCurrency = ref(bookCurrency.value)
+const currencyLocked = ref(false)
+onMounted(async () => {
+  if (isAdmin.value) {
+    const setting = await api('/api/settings/currency')
+    selectedCurrency.value = setting.code
+    currencyLocked.value = setting.locked
+  }
+})
 const currencySaving = ref(false)
 async function saveCurrencyUnit() {
   currencySaving.value = true
   try {
     const result = await api('/api/settings/currency', { method: 'PUT', body: JSON.stringify({ code: selectedCurrency.value }) })
+    bookCurrency.value = result.code
     setCurrencyUnit(result.code)
-    emit('notify', { text: '货币单位已保存，金额数字未改变。' })
+    localStorage.removeItem('openleasemanager.viewCurrency')
+    window.location.reload()
+    emit('notify', { text: '记账币种已保存。' })
   } catch (error) {
     emit('notify', { type: 'error', text: error.message })
   } finally {
@@ -338,22 +349,22 @@ onMounted(async () => {
     <section v-if="showTools" class="tool-console" :class="{ admin: isAdmin, editor: !isAdmin }" data-testid="tools-page">
       <div class="tool-task-grid" data-testid="tools-task-grid">
         <section v-if="isAdmin" class="tool-task-group" data-testid="tool-section-currency">
-          <div class="tool-task-group-head"><h3>{{ $t("货币单位") }}</h3></div>
+          <div class="tool-task-group-head"><h3>{{ $t("记账币种") }}</h3></div>
           <article class="tool-task-row tool-card">
             <div class="tool-task-main">
-              <p>{{ $t("界面、业务报表和常用 Excel 导出使用同一货币单位。") }}</p>
+              <p>{{ $t("有财务记录后，记账币种不可更改。查看币种可在页头切换。") }}</p>
               <p class="helper-text">{{ $t("仅更换金额的货币单位，已有数字不变，不进行汇率换算。") }}</p>
             </div>
             <div class="tool-task-detail">
               <label class="form-field">
-                <span>{{ $t("货币单位") }}</span>
-                <select v-model="selectedCurrency" class="select" data-testid="currency-unit-select">
+                <span>{{ $t("记账币种") }}</span>
+                <select v-model="selectedCurrency" class="select" data-testid="currency-unit-select" :disabled="currencyLocked">
                   <option v-for="item in currencies" :key="item.code" :value="item.code">{{ item.code }} — {{ locale === 'en' ? item.en : item.zh }}</option>
                 </select>
               </label>
             </div>
             <div class="tool-task-actions">
-              <button class="btn btn-primary" data-testid="currency-unit-save" :disabled="currencySaving || selectedCurrency === currencyUnit" @click="saveCurrencyUnit">{{ $t(currencySaving ? '保存中' : '保存') }}</button>
+              <button class="btn btn-primary" data-testid="currency-unit-save" :disabled="currencyLocked || currencySaving || selectedCurrency === bookCurrency" @click="saveCurrencyUnit">{{ $t(currencySaving ? '保存中' : '保存') }}</button>
             </div>
           </article>
         </section>

@@ -1,4 +1,4 @@
-name: Verify OpenLeaseOps
+name: Verify Open Lease Manager
 on:
   push:
   pull_request:

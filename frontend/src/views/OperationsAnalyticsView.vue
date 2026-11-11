@@ -1032,7 +1032,7 @@ onBeforeUnmount(() => { ++loadSequence })
               <div class="customer-rank-values">
                 <div>
                   <span>{{ $t("合并面积") }}</span>
-                  <strong>{{ $t(formatArea(item.area)) }} ㎡</strong>
+                  <strong>{{ $t(formatArea(item.area)) }} {{ $t("㎡") }}</strong>
                 </div>
                 <div>
                   <span>{{ $t("月租金") }}</span>
@@ -1089,7 +1089,7 @@ onBeforeUnmount(() => { ++loadSequence })
           <div>
             <span>{{ $t("关注去化") }}</span>
             <strong>{{ $t(towerHighlights.vacancyFocus?.tower || '--') }}</strong>
-            <small>{{ $t("待租 ") }}{{ $t(formatArea(towerHighlights.vacancyFocus?.vacantArea || 0)) }} ㎡</small>
+            <small>{{ $t("待租 ") }}{{ $t(formatArea(towerHighlights.vacancyFocus?.vacantArea || 0)) }} {{ $t("㎡") }}</small>
           </div>
         </div>
 
@@ -1102,7 +1102,7 @@ onBeforeUnmount(() => { ++loadSequence })
             <div class="tower-summary-metrics">
               <div>
                 <span>{{ $t("在租面积") }}</span>
-                <strong>{{ $t(formatArea(item.area)) }} ㎡</strong>
+                <strong>{{ $t(formatArea(item.area)) }} {{ $t("㎡") }}</strong>
               </div>
               <div>
                 <span>{{ $t("出租率") }}</span>
@@ -1110,7 +1110,7 @@ onBeforeUnmount(() => { ++loadSequence })
               </div>
               <div>
                 <span>{{ $t("待租面积") }}</span>
-                <strong>{{ $t(formatArea(item.vacantArea)) }} ㎡</strong>
+                <strong>{{ $t(formatArea(item.vacantArea)) }} {{ $t("㎡") }}</strong>
               </div>
               <div>
                 <span>{{ $t("月租金") }}</span>
@@ -1119,7 +1119,7 @@ onBeforeUnmount(() => { ++loadSequence })
             </div>
             <div class="tower-summary-foot">
               <span>{{ $t("收入占比 ") }}{{ $t(item.revenueShare) }}%</span>
-              <span>{{ $t("单份合同平均面积 ") }}{{ $t(formatArea(item.avgContractArea)) }} ㎡</span>
+              <span>{{ $t("单份合同平均面积 ") }}{{ $t(formatArea(item.avgContractArea)) }} {{ $t("㎡") }}</span>
             </div>
             <div class="tower-summary-actions">
               <button

@@ -152,7 +152,7 @@
   "OPS_V1 指标定义不完整": "OPS_V1 indicator definition is incomplete",
   "OPS_V1 指标定义不完整或已发生冲突：": "OPS_V1 indicator definition is incomplete or conflicting:",
   "OPS_V1 指标定义不完整或已发生冲突：{0}": "OPS_V1 indicator definition is incomplete or conflicting: {0}",
-  "OpenLeaseOps 租赁管理系统": "OpenLeaseOps Lease Management",
+  "Open Lease Manager 租赁管理系统": "Open Lease Manager Lease Management",
   "PDF 上传成功": "PDF upload successful",
   "PDF 存储位置冲突，当前上传已停止": "PDF storage location conflict, current upload has been stopped",
   "viewer 角色不能获得编辑授权": "The viewer role cannot obtain editing authorization",
@@ -5303,5 +5303,17 @@
   "所有楼宇、表单和导出文件使用同一货币单位。": "All buildings, forms and exports use the same currency unit.",
   "仅更换金额的货币单位，已有数字不变，不进行汇率换算。": "Changing the unit leaves existing numbers unchanged. No exchange-rate conversion is applied.",
   "货币单位已保存，金额数字未改变。": "Currency unit saved. Numeric amounts are unchanged.",
-  "界面、业务报表和常用 Excel 导出使用同一货币单位。": "The interface, business reports and operational Excel exports use the same currency unit."
+  "界面、业务报表和常用 Excel 导出使用同一货币单位。": "The interface, business reports and operational Excel exports use the same currency unit.",
+  "记账币种": "Book currency",
+  "查看币种": "View currency",
+  "面积单位": "Area unit",
+  "参考汇率": "Reference rate",
+  "只读折算": "Read-only conversion",
+  "汇率暂不可用，已显示记账币种。": "Rate unavailable; showing book currency.",
+  "汇率暂不可用，请稍后重试。": "Exchange rate unavailable. Please try again later.",
+  "请切回记账币种后再编辑账目。": "Switch to the book currency to edit financial records.",
+  "；原始账目不变。": "; original records stay unchanged.",
+  "应用并刷新": "Apply and reload",
+  "记账币种已保存。": "Book currency saved.",
+  "有财务记录后，记账币种不可更改。查看币种可在页头切换。": "Book currency is fixed once financial records exist. Change the view currency in the header."
 }

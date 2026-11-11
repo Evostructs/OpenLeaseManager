@@ -1,5 +1,5 @@
 <script setup>
-import { locale, currencyUnit } from '../i18n/index.js'
+import { locale, currencyUnit, areaUnit } from '../i18n/index.js'
 import { localizeChartOption, restoreChartEvent } from '../i18n/charts.js'
 import { beginReadyTask } from '../lib/operationTelemetry'
 import { nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue'
@@ -213,7 +213,7 @@ function updateChart(echarts, target) {
   }
   if (optionDirty) {
     optionDirty = false
-    const localized = localizeChartOption(props.option, locale.value, currencyUnit.value)
+    const localized = localizeChartOption(props.option, locale.value, currencyUnit.value, areaUnit.value)
     const option = theme === 'dark' ? remapChartOptionForDark(localized) : localized
     chart.setOption(option, true)
   }

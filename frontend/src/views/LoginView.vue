@@ -38,10 +38,10 @@ function submitAuth() {
     <section class="login-entry" data-testid="login-entry">
       <aside class="login-brand-panel" data-testid="login-brand-panel">
         <div class="login-hero">
-          <img src="/lease-manager-mark.svg" :alt="$t(&quot;OpenLeaseOps 租赁管理系统&quot;)" />
+          <img src="/lease-manager-mark.svg" :alt="$t(&quot;Open Lease Manager 租赁管理系统&quot;)" />
           <div>
             <p class="login-eyebrow">{{ $t("多楼宇租赁运营平台") }}</p>
-            <h1 class="login-brand-title">{{ $t("租赁管理系统") }}</h1>
+            <h1 class="login-brand-title">Open Lease Manager</h1>
           </div>
         </div>
 
