@@ -16,6 +16,26 @@ Built with FastAPI, SQLite, Alembic, Vue 3 and ECharts. Released under the MIT L
 - Role-, building- and capability-based access, audit trails, backups and recovery.
 - Optional AI-assisted explanations, disabled by default. Enabling them sends the relevant operating data to the model service you configure.
 
+## Screenshots
+
+These screenshots come from an isolated demo installation. Buildings, customers, contracts and amounts are synthetic; no real business records are included. The UI shown here is in Chinese. Click an image to view it at full size.
+
+**Operations dashboard** — Prioritize collections, expiring leases, customer follow-ups and missing documents.
+
+![Operations dashboard: risk levels and priority actions, using synthetic data](docs/screenshots/dashboard.png)
+
+**Rent timeline analysis** — Explore effective daily rent, leased area and contract changes by date and property zone.
+
+![Rent timeline analysis: rent and leased-area trends, using synthetic data](docs/screenshots/analytics.png)
+
+**Contract management** — Review lease status, dates, units, rent and deposits, then open the relevant workflow.
+
+![Contract management: lease register and status filters, using synthetic data](docs/screenshots/contracts.png)
+
+**Unit occupancy** — Compare occupancy by property zone and identify vacancy concentrations, expiring leases and flagged units.
+
+![Unit occupancy: zone occupancy rates and vacancy distribution, using synthetic data](docs/screenshots/rooms.png)
+
 ## Deploy with Docker Compose
 
 Requires Docker Engine / Docker Desktop with Compose, plus Python 3. The first build needs network access to download dependencies and build the image.
