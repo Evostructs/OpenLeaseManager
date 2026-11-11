@@ -1,4 +1,5 @@
 <script setup>
+import { currencyUnit } from '../i18n/index.js'
 import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import EChartPanel from './EChartPanel.vue'
 import BaseModal from './BaseModal.vue'
@@ -362,6 +363,7 @@ onBeforeUnmount(() => {
       <div class="uc-actions"><button type="button" class="btn" data-tour-control data-testid="cockpit-tour" :aria-pressed="touring" :disabled="!tourStops.length" @click="toggleTour">{{ $t(touring ? '暂停巡览' : '自动巡览') }}</button><button type="button" class="btn" data-testid="cockpit-exit" @click="requestExit">{{ $t("退出大屏") }}</button></div>
     </header>
     <div class="uc-context">
+      <span class="badge">{{ currencyUnit }}</span>
       <div><strong>{{ $t(scopeTitle) }}</strong><span>{{ $t("统计日 ") }}{{ $t(asOfDate) }}</span><span v-if="sourceTime">{{ $t("来源更新 ") }}{{ $t(sourceTime) }}</span><span v-if="touring" class="uc-tour-status" data-testid="cockpit-tour-status" aria-live="off">{{ $t("巡览中 · ") }}{{ $t(tourCountdown) }}{{ $t(" 秒后切换") }}</span></div>
       <div class="uc-scope-controls"><label for="uc-building">{{ $t("楼宇") }}</label><select id="uc-building" :value="selectedCode" data-testid="cockpit-building-select" @change="chooseBuilding($event.target.value); $event.target.value = selectedCode"><option v-if="isPortfolio" value="">{{ $t("全部楼宇") }}</option><option v-for="building in buildings" :key="building.code" :value="building.code" :disabled="!building.selectable">{{ building.name }}</option></select><button v-if="selectedCode && isPortfolio" class="btn" type="button" data-testid="cockpit-back-overview" @click="backToOverview">{{ $t("返回总览") }}</button></div>
     </div>

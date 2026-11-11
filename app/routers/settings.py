@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
+from app.core.currency_unit import currency_settings, CURRENCY_CODES, CONFIG_KEY
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -130,3 +132,30 @@ def test_building_feishu(building_code: str, db: Session = Depends(get_db)):
         f"{building.name}租赁通知测试成功。",
     )
     return {"success": ok, "message": "发送成功" if ok else "发送失败，请检查 Webhook 地址"}
+
+
+class CurrencyUnitPayload(BaseModel):
+    code: str = Field(min_length=3, max_length=3, pattern="^[A-Z]{3}$")
+
+
+@router.get("/currency")
+def get_currency_unit(db: Session = Depends(get_db)):
+    return currency_settings(db)
+
+
+@router.put("/currency")
+def set_currency_unit(data: CurrencyUnitPayload, request: Request, db: Session = Depends(get_db)):
+    if data.code not in CURRENCY_CODES:
+        raise HTTPException(422, "Unsupported currency unit")
+    previous = currency_settings(db)["code"]
+    if previous != data.code:
+        row = _get_config(db, CONFIG_KEY)
+        if row is None:
+            row = SystemConfig(key=CONFIG_KEY, value=data.code)
+            db.add(row)
+        else:
+            row.value = data.code
+        db.flush()
+        log_action(db, None, "config_update", f"Currency unit: {previous} → {data.code}; numeric amounts unchanged", get_operator(request), commit=False, target_type="system_config", target_id=row.id)
+        db.commit()
+    return currency_settings(db)

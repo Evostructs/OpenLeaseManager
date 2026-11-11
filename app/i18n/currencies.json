@@ -1,0 +1,13 @@
+[
+  {"code":"CNY","en":"Chinese yuan","zh":"人民币"},
+  {"code":"USD","en":"US dollar","zh":"美元"},
+  {"code":"EUR","en":"Euro","zh":"欧元"},
+  {"code":"GBP","en":"Pound sterling","zh":"英镑"},
+  {"code":"HKD","en":"Hong Kong dollar","zh":"港元"},
+  {"code":"JPY","en":"Japanese yen","zh":"日元"},
+  {"code":"SGD","en":"Singapore dollar","zh":"新加坡元"},
+  {"code":"AUD","en":"Australian dollar","zh":"澳元"},
+  {"code":"CAD","en":"Canadian dollar","zh":"加元"},
+  {"code":"CHF","en":"Swiss franc","zh":"瑞士法郎"},
+  {"code":"NZD","en":"New Zealand dollar","zh":"新西兰元"}
+]

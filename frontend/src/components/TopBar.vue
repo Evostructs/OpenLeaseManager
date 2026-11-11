@@ -1,6 +1,7 @@
 <script setup>
 import LanguageSwitch from '../components/LanguageSwitch.vue'
 import { computed } from 'vue'
+import { currencyUnit } from '../i18n/index.js'
 import { formatRole } from '../lib/format'
 
 const props = defineProps({
@@ -78,6 +79,7 @@ const currentScopeLabel = computed(() => {
       </button>
       <div class="topbar-title">
         <h2>{{ $t(title) }}</h2>
+        <span class="badge" data-testid="current-currency-unit" :title="$t('货币单位')">{{ currencyUnit }}</span>
       </div>
     </div>
 

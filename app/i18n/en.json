@@ -5298,5 +5298,10 @@
   "应计 {0} 元": "Accrued rent CNY {0}",
   "日均在租 {0} ㎡": "Average leased area {0} m²",
   "租金 {0}": "Rent {0}",
-  "在租面积 (㎡)": "Leased area (m²)"
+  "在租面积 (㎡)": "Leased area (m²)",
+  "货币单位": "Currency unit",
+  "所有楼宇、表单和导出文件使用同一货币单位。": "All buildings, forms and exports use the same currency unit.",
+  "仅更换金额的货币单位，已有数字不变，不进行汇率换算。": "Changing the unit leaves existing numbers unchanged. No exchange-rate conversion is applied.",
+  "货币单位已保存，金额数字未改变。": "Currency unit saved. Numeric amounts are unchanged.",
+  "界面、业务报表和常用 Excel 导出使用同一货币单位。": "The interface, business reports and operational Excel exports use the same currency unit."
 }

@@ -5,6 +5,7 @@ from contextvars import ContextVar
 from functools import lru_cache
 import json
 from pathlib import Path
+from app.core.currency_unit import currency_label, CURRENCY_CODES
 import re
 
 # Unversioned integrations keep their existing Chinese workbook format unless
@@ -35,7 +36,8 @@ def english(text: str) -> str:
 
 
 def display(value):
-    return english(value) if request_locale.get() == "en" and isinstance(value, str) else value
+    translated = english(value) if request_locale.get() == "en" and isinstance(value, str) else value
+    return currency_label(translated)
 
 
 def header_key(value) -> str:
@@ -47,6 +49,9 @@ def bilingual_aliases(aliases: dict) -> dict:
     for label, field in aliases.items():
         result[header_key(label)] = field
         result[header_key(english(label))] = field
+        for code in CURRENCY_CODES:
+            result[header_key(currency_label(label, code))] = field
+            result[header_key(currency_label(english(label), code))] = field
         if field:
             result[header_key(field)] = field
     return result

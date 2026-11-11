@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from html import escape
 from app.core.localization import display, request_locale, localize_static_html
+from app.core.currency_unit import request_currency, currency_label
 from urllib.parse import quote
 from collections.abc import Sequence
 
@@ -44,7 +45,7 @@ def _money(value: object) -> str:
         amount = float(value or 0)
     except (TypeError, ValueError):
         amount = 0.0
-    return f"¥{amount:,.2f}"
+    return currency_label(f"¥{amount:,.2f}")
 
 
 def _number(value: object) -> str:
@@ -488,6 +489,7 @@ def build_operations_daily_report_html(
       </div>
       <div class="stamp">
         <div>{escape(display('报告日期：'))}{_text(report_date)}</div>
+        <div>{escape(display('货币单位'))}: {request_currency.get()}</div>
         <div>{escape(display('当前月份：'))}{_text(month)}</div>
         <div>{escape(display('生成时间：'))}{_text(generated_at)} Asia/Shanghai</div>
         <div>{escape(display('版本：'))}{_text(version)}</div>

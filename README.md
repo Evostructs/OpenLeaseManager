@@ -6,7 +6,7 @@ An open-source, self-hosted system for multi-building lease and property operati
 
 Built with FastAPI, SQLite, Alembic, Vue 3 and ECharts. Released under the MIT License.
 
-## What's included in v2.1.0
+## What's included in v2.2.0
 
 - Buildings, zones and leasable units, with separate workflows for detailed operations and published operating snapshots.
 - Contracts, rent terms, escalations, rent-free periods, deposits and attachments.
@@ -22,7 +22,7 @@ English is the default interface language. Use **中文 / English** in the heade
 
 Excel templates and export headings follow the selected language. Imports accept English and Chinese column labels and supported categorical values; existing Chinese templates remain compatible. Customer names, contacts, notes, identifiers and other user-entered business data retain their original text.
 
-Amounts remain **CNY**, areas remain **m²**, and the existing rent calculation rules are unchanged. English localization does not add currency conversion, country-specific tax rules or accounting compliance. Configure the application timezone for your deployment. Direct API clients can request English downloads with `?lang=en` or `X-OpenLease-Locale: en`; requests without a language keep the existing Chinese workbook format for compatibility.
+Administrators can choose the installation-wide **currency unit** under **Tools → Currency unit** (CNY by default), including USD, EUR, GBP and others. Choosing USD labels amounts as US dollars; **1,000 remains 1,000**. The setting applies to both interface languages, charts, generated reports and operational Excel downloads. Technical snapshot-exchange packages retain their existing schema and unit codes for compatibility. It does not convert existing amounts or provide mixed-currency accounting. Areas remain **m²** and rent calculation rules are unchanged. Country-specific tax rules and accounting compliance are not included. Configure the application timezone for your deployment. Direct API clients can request English downloads with `?lang=en` or `X-OpenLease-Locale: en`; requests without a language keep the existing Chinese workbook format for compatibility.
 
 ## Screenshots
 

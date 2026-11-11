@@ -1,4 +1,4 @@
-import { locale } from '../i18n/index.js'
+import { locale, setCurrencyUnit } from '../i18n/index.js'
 import { beginReadyTask, operationNow, recordApiTiming } from './operationTelemetry.js'
 import { buildScopedApiUrl, buildScopedDownloadUrl } from './propertyScope.js'
 
@@ -137,6 +137,7 @@ export async function api(path, options = {}) {
     const response = includeScope
       ? await fetch(buildScopedApiUrl(path), config)
       : await fetch(buildScopedApiUrl(path, { includeScope: false }), config)
+    setCurrencyUnit(response.headers.get('x-openlease-currency'))
     headerTime = operationNow()
     responseStatus = response.status
     const metric = (response.headers.get('server-timing') || '').match(/(?:^|,)\s*app\s*;\s*dur=([\d.]+)/)

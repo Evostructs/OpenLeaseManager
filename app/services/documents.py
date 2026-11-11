@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date
 from html import escape
 from app.core.localization import display, request_locale, localize_static_html
+from app.core.currency_unit import request_currency
 import re
 
 from fastapi import HTTPException
@@ -250,6 +251,7 @@ def _render_html(
     <div class="meta">
       <span>{escape(display('出具方：'))}{escape(issuer)}</span>
       <span>{escape(display('生成日期：'))}{escape(notice_date.isoformat())}</span>
+      <span>{escape(display('货币单位'))}: {request_currency.get()}</span>
     </div>
     <p class="lead">{escape(display(lead))}</p>
     <table>

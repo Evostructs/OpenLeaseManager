@@ -1,5 +1,5 @@
 <script setup>
-import { locale } from '../i18n/index.js'
+import { locale, currencyUnit } from '../i18n/index.js'
 import { localizeChartOption } from '../i18n/charts.js'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { loadChartRuntime } from '../lib/chartRuntime'
@@ -437,7 +437,7 @@ async function renderTrendChart() {
   if (!trendChartEl.value) return
   if (!echartsRuntime) echartsRuntime = await loadChartRuntime()
   if (!trendChart) trendChart = echartsRuntime.init(trendChartEl.value)
-  trendChart.setOption(localizeChartOption(trendOption(trendRows.value), locale.value))
+  trendChart.setOption(localizeChartOption(trendOption(trendRows.value), locale.value, currencyUnit.value))
 }
 
 // 面积构成环图（左列）：已租 vs 待租，字段取自 vacancy.total_area / vacancy.area
@@ -480,7 +480,7 @@ async function renderAreaChart() {
           ]
         : []
     }]
-  }, locale.value))
+  }, locale.value, currencyUnit.value))
 }
 
 // 分区平均单价走势（中列下半，近 6 个月三分区折线）
@@ -532,7 +532,7 @@ async function renderPriceChart() {
       lineStyle: { width: 2.5, color: segment.color },
       itemStyle: { color: segment.color }
     }))
-  }, locale.value))
+  }, locale.value, currencyUnit.value))
 }
 
 function onResize() {
@@ -556,7 +556,7 @@ function disposeCharts() {
   }
 }
 
-watch(locale, () => { renderTrendChart(); renderAreaChart(); renderPriceChart() })
+watch([locale, currencyUnit], () => { renderTrendChart(); renderAreaChart(); renderPriceChart() })
 watch(trendRows, () => { renderTrendChart() })
 watch(areaBreakdown, () => { renderAreaChart() })
 watch(priceTrend, () => { renderPriceChart() })
@@ -617,6 +617,7 @@ onBeforeUnmount(() => {
     data-scope-type="building"
   >
     <header class="cockpit-header">
+      <span class="badge">{{ currencyUnit }}</span>
       <div class="cockpit-brand">
         <button
           v-if="overviewOnly"

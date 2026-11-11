@@ -1,3 +1,4 @@
+import { currencyLabel } from './currency.js'
 import messages from '../../../app/i18n/en.json' with { type: 'json' }
 import patternKeys from '../../../app/i18n/patterns.json' with { type: 'json' }
 
@@ -16,8 +17,8 @@ const cache = new Map()
 
 // Only call at presentation boundaries. Never translate requests, persisted values,
 // identifiers, user-entered names, or text inside a form's model.
-export function translate(value, language = 'en') {
-  if (language !== 'en' || typeof value !== 'string' || !han.test(value)) return value
+export function translate(value, language = 'en', currency = 'CNY') {
+  if (language !== 'en' || typeof value !== 'string' || !han.test(value)) return currencyLabel(value, currency)
   const key = normalize(value)
   let translated = cache.get(key)
   if (translated === undefined) {
@@ -46,7 +47,7 @@ export function translate(value, language = 'en') {
     if (cache.size > 3000) cache.clear()
     cache.set(key, translated)
   }
-  return (value.match(/^\s*/)?.[0] || '') + translated + (value.match(/\s*$/)?.[0] || '')
+  return currencyLabel((value.match(/^\s*/)?.[0] || '') + translated + (value.match(/\s*$/)?.[0] || ''), currency)
 }
 
 export function readLocale(storage) {

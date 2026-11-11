@@ -15,6 +15,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.core.account_name_policy import load_account_name_policy
 from app.core.config import get_settings
 from app.core.localization import request_locale
+from app.core.currency_unit import request_currency, currency_settings
 from app.core.maintenance import MAINTENANCE_MESSAGE, in_maintenance
 from app.core.migrations import run_migrations
 from app.core.request_limits import RequestSizeExceeded, RequestSizeLimitMiddleware
@@ -47,7 +48,7 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="OpenLeaseOps", version="2.1.0", lifespan=lifespan)
+app = FastAPI(title="OpenLeaseOps", version="2.2.0", lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(RequestSizeLimitMiddleware, max_bytes=settings_obj.max_request_size_bytes)
 
@@ -84,12 +85,20 @@ async def maintenance_gate(request: Request, call_next):
 async def language_context(request: Request, call_next):
     requested = request.query_params.get("lang") or request.headers.get("X-OpenLease-Locale", "zh-CN")
     token = request_locale.set("en" if requested == "en" else "zh-CN")
+    code = "CNY"
+    if request.url.path.startswith("/api/"):
+        from app.database import SessionLocal
+        with SessionLocal() as db:
+            code = currency_settings(db)["code"]
+    currency_token = request_currency.set(code)
     try:
         response = await call_next(request)
         response.headers["Content-Language"] = request_locale.get()
+        response.headers["X-OpenLease-Currency"] = code
         return response
     finally:
         request_locale.reset(token)
+        request_currency.reset(currency_token)
 
 
 @app.middleware("http")

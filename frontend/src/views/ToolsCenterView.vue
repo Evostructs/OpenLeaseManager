@@ -1,5 +1,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { currencyUnit, setCurrencyUnit, locale } from '../i18n/index.js'
+import { currencies } from '../i18n/currency.js'
 import BaseModal from '../components/BaseModal.vue'
 import InfoHint from '../components/InfoHint.vue'
 import { api, openDownload } from '../lib/api'
@@ -23,6 +25,21 @@ const isAdmin = computed(() => (
 const canUseTools = computed(() => isAdmin.value)
 const canViewAudit = computed(() => isAdmin.value)
 const showTools = computed(() => canUseTools.value)
+
+const selectedCurrency = ref(currencyUnit.value)
+const currencySaving = ref(false)
+async function saveCurrencyUnit() {
+  currencySaving.value = true
+  try {
+    const result = await api('/api/settings/currency', { method: 'PUT', body: JSON.stringify({ code: selectedCurrency.value }) })
+    setCurrencyUnit(result.code)
+    emit('notify', { text: '货币单位已保存，金额数字未改变。' })
+  } catch (error) {
+    emit('notify', { type: 'error', text: error.message })
+  } finally {
+    currencySaving.value = false
+  }
+}
 
 const backups = ref([])
 const backupRestoreConfirm = reactive({ item: null, restoring: false })
@@ -320,6 +337,26 @@ onMounted(async () => {
   <section class="content">
     <section v-if="showTools" class="tool-console" :class="{ admin: isAdmin, editor: !isAdmin }" data-testid="tools-page">
       <div class="tool-task-grid" data-testid="tools-task-grid">
+        <section v-if="isAdmin" class="tool-task-group" data-testid="tool-section-currency">
+          <div class="tool-task-group-head"><h3>{{ $t("货币单位") }}</h3></div>
+          <article class="tool-task-row tool-card">
+            <div class="tool-task-main">
+              <p>{{ $t("界面、业务报表和常用 Excel 导出使用同一货币单位。") }}</p>
+              <p class="helper-text">{{ $t("仅更换金额的货币单位，已有数字不变，不进行汇率换算。") }}</p>
+            </div>
+            <div class="tool-task-detail">
+              <label class="form-field">
+                <span>{{ $t("货币单位") }}</span>
+                <select v-model="selectedCurrency" class="select" data-testid="currency-unit-select">
+                  <option v-for="item in currencies" :key="item.code" :value="item.code">{{ item.code }} — {{ locale === 'en' ? item.en : item.zh }}</option>
+                </select>
+              </label>
+            </div>
+            <div class="tool-task-actions">
+              <button class="btn btn-primary" data-testid="currency-unit-save" :disabled="currencySaving || selectedCurrency === currencyUnit" @click="saveCurrencyUnit">{{ $t(currencySaving ? '保存中' : '保存') }}</button>
+            </div>
+          </article>
+        </section>
         <section class="tool-task-group tool-task-group-materials" data-testid="tool-section-materials">
           <div class="tool-task-group-head">
             <h3>{{ $t("提醒与备份") }}</h3>
