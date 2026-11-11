@@ -38,3 +38,10 @@ test('chart localization leaves data, getters and event identities intact', () =
   assert.deepEqual(restoreChartEvent({ seriesIndex: 0, seriesName: 'Receivable', value: 10 }, source), { seriesIndex: 0, seriesName: '应收', value: 10 })
   assert.equal(localizeChartOption(source, 'zh-CN'), source)
 })
+
+test('area terminology preserves leased versus leasable definitions', () => {
+  assert.equal(translate('在租面积（㎡）'), 'Leased area (m²)')
+  assert.equal(translate('可出租面积减去在租面积。'), 'Leasable area minus leased area.')
+  assert.equal(translate('在租面积 / 可出租面积'), 'Leased area / leasable area')
+  assert.equal(translate('统计日有效在租面积去重合计。'), 'Total leased area on the reporting date, with duplicates removed.')
+})
