@@ -98,6 +98,16 @@ Version 2 uses generic building identifiers and is intended for fresh installati
 
 This repository does not include private runtime environments, internal deployment history, production databases, contract attachments, corporate logos or private configuration. Fixed passwords and encryption examples in tests are isolated test fixtures, not deployment credentials.
 
+## Why we built Open Lease Manager
+
+The project started with contracts and units: keeping lease dates, rent, occupancy status and related documents together so they were easier to find and check.
+
+Receivables, payments, deposits and customer follow-ups came next. Supporting multiple buildings also meant agreeing on metric definitions, setting access boundaries and making data sources clear. The system then grew to include operating analysis, budgets, forecasts and finance handoff.
+
+Along the way, we kept returning to everyday details: preventing duplicate entries, protecting unsaved work, keeping historical calculations traceable and reducing loading times. As the system grew, these details needed just as much attention as new features.
+
+We made the project open source so others with similar needs can use it and adapt it to their own work, spending less effort finding records, checking figures and handling routine tasks.
+
 ## Feedback and contributions
 
-Issues and pull requests are welcome. Do not upload screenshots, logs or databases containing customer information, personal data or access credentials. Do not disclose secrets or identifiable business data in public security reports.
+Issues and pull requests are welcome. Do not upload screenshots, logs or databases containing customer information, personal data or access credentials. Do not disclose secrets or identifiable business data in public Issues.
