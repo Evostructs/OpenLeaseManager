@@ -1,0 +1,396 @@
+/*
+ * 暗色主题：通过 <html data-theme="dark"> 激活（见 src/lib/theme.js 与 index.html 内联脚本）。
+ * 第一层覆盖 design token（base.css :root），第二层归一历史样式中未走 token 的浅色硬编码 surface。
+ * 新增组件只允许引用 token，不要在本文件追加覆盖。
+ */
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* 表面与玻璃 */
+  --surface: #1e293b;
+  --surface-muted: rgba(148, 163, 184, 0.14);
+  --glass-surface: rgba(30, 41, 59, 0.72);
+  --glass-surface-strong: rgba(30, 41, 59, 0.86);
+  --glass-border: rgba(148, 163, 184, 0.22);
+  --glass-shadow: 0 22px 48px rgba(2, 6, 23, 0.5);
+  --shadow-glow: 0 18px 40px rgba(2, 6, 23, 0.38);
+  --shadow-sm: 0 1px 2px rgba(2, 6, 23, 0.4);
+  --shadow-1: 0 1px 2px rgba(2, 6, 23, 0.4);
+  --shadow-2: 0 10px 26px rgba(2, 6, 23, 0.44);
+  --shadow-3: 0 22px 48px rgba(2, 6, 23, 0.52);
+
+  /* 品牌与文字 */
+  --primary: #60a5fa;
+  --primary-strong: #3b82f6;
+  --text-strong: #f1f5f9;
+  --text: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --border: rgba(148, 163, 184, 0.22);
+  --border-strong: rgba(148, 163, 184, 0.38);
+
+  /* 状态色 */
+  --success-text: #34d399;
+  --success-bg: rgba(16, 185, 129, 0.16);
+  --warning-text: #fbbf24;
+  --warning-bg: rgba(245, 158, 11, 0.16);
+  --error-text: #f87171;
+  --error-bg: rgba(239, 68, 68, 0.16);
+  --info-text: #60a5fa;
+  --info-bg: rgba(59, 130, 246, 0.18);
+  --tone-info: #60a5fa;
+  --tone-info-soft: rgba(59, 130, 246, 0.18);
+  --tone-success: #34d399;
+  --tone-success-soft: rgba(16, 185, 129, 0.16);
+  --tone-warning: #fbbf24;
+  --tone-warning-soft: rgba(245, 158, 11, 0.16);
+  --tone-danger: #f87171;
+  --tone-danger-soft: rgba(239, 68, 68, 0.16);
+  --tone-muted: #94a3b8;
+  --tone-muted-soft: rgba(148, 163, 184, 0.16);
+
+  /* 控件与容器底色 */
+  --control-bg: rgba(30, 41, 59, 0.66);
+  --control-bg-hover: rgba(51, 65, 85, 0.86);
+  --input-bg: rgba(15, 23, 42, 0.6);
+  --focus-ring: rgba(59, 130, 246, 0.32);
+  --card-border: rgba(148, 163, 184, 0.2);
+  --topbar-bg: rgba(15, 23, 42, 0.78);
+  --topbar-border: rgba(148, 163, 184, 0.18);
+  --table-bg: rgba(30, 41, 59, 0.6);
+  --table-head-bg: rgba(15, 23, 42, 0.92);
+  --table-row-alt: rgba(15, 23, 42, 0.42);
+  --table-row-hover: rgba(51, 65, 85, 0.52);
+  --table-sticky-bg: rgba(30, 41, 59, 0.97);
+  --table-sticky-head-bg: rgba(15, 23, 42, 0.98);
+}
+
+/* 页面底色 */
+:root[data-theme='dark'] body {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 30%),
+    radial-gradient(circle at top right, rgba(51, 65, 85, 0.42), transparent 26%),
+    linear-gradient(180deg, #0b1220 0%, #0f172a 42%, #111c33 100%);
+}
+
+:root[data-theme='dark'] .main-area {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(148, 163, 184, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(148, 163, 184, 0.05) 0%, transparent 28%);
+}
+
+/* 输入控件去掉浅色内阴影高光 */
+:root[data-theme='dark'] .input,
+:root[data-theme='dark'] .select,
+:root[data-theme='dark'] .textarea,
+:root[data-theme='dark'] .date-picker-trigger {
+  box-shadow: none;
+}
+
+/* 浮层（下拉/菜单/气泡） */
+:root[data-theme='dark'] .risk-more-panel,
+:root[data-theme='dark'] .room-row-more-popover,
+:root[data-theme='dark'] .customer-batch-popover,
+:root[data-theme='dark'] .room-batch-popover,
+:root[data-theme='dark'] .contract-batch-popover,
+:root[data-theme='dark'] .info-hint-popover {
+  background: rgba(15, 23, 42, 0.97);
+  border-color: var(--border-strong);
+}
+
+/* 模态与通知 */
+:root[data-theme='dark'] .modal-panel {
+  background: rgba(15, 23, 42, 0.94);
+  border-color: var(--border-strong);
+}
+
+:root[data-theme='dark'] .modal-body {
+  background: rgba(15, 23, 42, 0.62);
+}
+
+:root[data-theme='dark'] .toast {
+  background: rgba(30, 41, 59, 0.92);
+}
+
+/* 登录页 */
+:root[data-theme='dark'] .login-card {
+  background: rgba(30, 41, 59, 0.88);
+}
+
+:root[data-theme='dark'] .login-card .input {
+  background: rgba(15, 23, 42, 0.62);
+}
+
+:root[data-theme='dark'] .login-card .section-label {
+  color: var(--text-muted);
+}
+
+:root[data-theme='dark'] .login-mode-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+:root[data-theme='dark'] .login-mode-badge.init {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fcd34d;
+}
+
+:root[data-theme='dark'] .forgot-password-link:hover {
+  color: #93c5fd;
+}
+
+:root[data-theme='dark'] .forgot-password-note,
+:root[data-theme='dark'] .login-init-strip {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: var(--text-muted);
+}
+
+/* 历史白色半透明面板 → 深色板 */
+:root[data-theme='dark'] .risk-summary-tile,
+:root[data-theme='dark'] .risk-focus-signal,
+:root[data-theme='dark'] .risk-selected-reason,
+:root[data-theme='dark'] .risk-selected-next,
+:root[data-theme='dark'] .risk-severity-chip,
+:root[data-theme='dark'] .risk-type-chip,
+:root[data-theme='dark'] .risk-matrix-label,
+:root[data-theme='dark'] .room-status-chip,
+:root[data-theme='dark'] .room-status-legend-item,
+:root[data-theme='dark'] .room-segment-card,
+:root[data-theme='dark'] .room-segment-pressure-bar,
+:root[data-theme='dark'] .rooms-vacancy-pressure-row,
+:root[data-theme='dark'] .room-lane-view-all,
+:root[data-theme='dark'] .room-lane-expand,
+:root[data-theme='dark'] .page-size-switch,
+:root[data-theme='dark'] .room-operation-detail,
+:root[data-theme='dark'] .room-contract-row,
+:root[data-theme='dark'] .contract-lifecycle-total,
+:root[data-theme='dark'] .contract-lifecycle-lead,
+:root[data-theme='dark'] .contract-document-card,
+:root[data-theme='dark'] .contract-next-step-card,
+:root[data-theme='dark'] .contract-action-queue,
+:root[data-theme='dark'] .contract-lifecycle-board,
+:root[data-theme='dark'] .contract-status-chips button,
+:root[data-theme='dark'] .contract-next-action-strip strong,
+:root[data-theme='dark'] .customer-filter-chips button,
+:root[data-theme='dark'] .receivable-visual-details,
+:root[data-theme='dark'] .receivable-detail-ledger,
+:root[data-theme='dark'] .ledger-flow,
+:root[data-theme='dark'] .ledger-flow-lane,
+:root[data-theme='dark'] .metric-skeleton-item,
+:root[data-theme='dark'] .chart-skeleton,
+:root[data-theme='dark'] .table-skeleton,
+:root[data-theme='dark'] .chart-card,
+:root[data-theme='dark'] .control-help-current,
+:root[data-theme='dark'] .info-hint-button,
+:root[data-theme='dark'] .demo-secondary-details[open] > summary {
+  background: rgba(30, 41, 59, 0.62);
+}
+
+/* 历史浅灰面板（248/241 底）→ 更深一档 */
+:root[data-theme='dark'] .risk-selected-fact,
+:root[data-theme='dark'] .risk-more-section,
+:root[data-theme='dark'] .risk-matrix,
+:root[data-theme='dark'] .risk-matrix-segment:disabled,
+:root[data-theme='dark'] .room-heatmap-signal,
+:root[data-theme='dark'] .room-status-stack,
+:root[data-theme='dark'] .room-segment-values span,
+:root[data-theme='dark'] .room-action-lane,
+:root[data-theme='dark'] .contract-action-row,
+:root[data-theme='dark'] .contract-lifecycle-bars,
+:root[data-theme='dark'] .contract-lifecycle-segment,
+:root[data-theme='dark'] .customer-batch-section,
+:root[data-theme='dark'] .room-batch-section,
+:root[data-theme='dark'] .receivable-ledger-entry,
+:root[data-theme='dark'] .receivable-ledger-preset,
+:root[data-theme='dark'] .ledger-flow-track,
+:root[data-theme='dark'] .ledger-flow-lane.neutral,
+:root[data-theme='dark'] .table-skeleton-head,
+:root[data-theme='dark'] .chart-card-insight,
+:root[data-theme='dark'] .demo-secondary-details,
+:root[data-theme='dark'] .ai-flow-strip span {
+  background: rgba(15, 23, 42, 0.42);
+}
+
+/* 历史面板浅色描边归一 */
+:root[data-theme='dark'] .risk-focus-signal,
+:root[data-theme='dark'] .risk-selected-fact,
+:root[data-theme='dark'] .risk-selected-reason,
+:root[data-theme='dark'] .risk-selected-next,
+:root[data-theme='dark'] .risk-matrix,
+:root[data-theme='dark'] .room-status-stack,
+:root[data-theme='dark'] .room-heatmap-signal,
+:root[data-theme='dark'] .contract-lifecycle-total,
+:root[data-theme='dark'] .contract-lifecycle-lead,
+:root[data-theme='dark'] .contract-document-card,
+:root[data-theme='dark'] .contract-next-step-card,
+:root[data-theme='dark'] .contract-action-queue,
+:root[data-theme='dark'] .contract-lifecycle-board,
+:root[data-theme='dark'] .contract-lifecycle-bars,
+:root[data-theme='dark'] .contract-action-row,
+:root[data-theme='dark'] .receivable-visual-details,
+:root[data-theme='dark'] .receivable-detail-ledger,
+:root[data-theme='dark'] .receivable-ledger-entry,
+:root[data-theme='dark'] .receivable-ledger-preset,
+:root[data-theme='dark'] .ledger-flow,
+:root[data-theme='dark'] .ledger-flow-track,
+:root[data-theme='dark'] .ledger-flow-lane,
+:root[data-theme='dark'] .metric-skeleton-item,
+:root[data-theme='dark'] .chart-skeleton,
+:root[data-theme='dark'] .table-skeleton,
+:root[data-theme='dark'] .chart-card,
+:root[data-theme='dark'] .demo-secondary-details,
+:root[data-theme='dark'] .demo-secondary-details[open] > summary,
+:root[data-theme='dark'] .info-hint-button {
+  border-color: var(--border);
+}
+
+/* 保留左侧强调条 */
+:root[data-theme='dark'] .contract-action-row,
+:root[data-theme='dark'] .room-heatmap-signal {
+  border-left-color: var(--tone-info);
+}
+
+/* 彩色 tinted 面板 */
+:root[data-theme='dark'] .risk-selected-fact.warning {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+:root[data-theme='dark'] .ledger-flow-lane.info {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+/* 严重度筛选 chip */
+:root[data-theme='dark'] .risk-severity-chip:hover,
+:root[data-theme='dark'] .risk-severity-chip.active {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: var(--info-text);
+}
+
+:root[data-theme='dark'] .risk-severity-chip.danger.active,
+:root[data-theme='dark'] .risk-severity-chip.danger:hover {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
+:root[data-theme='dark'] .risk-severity-chip.warning.active,
+:root[data-theme='dark'] .risk-severity-chip.warning:hover {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #fcd34d;
+}
+
+:root[data-theme='dark'] .risk-severity-chip.success.active,
+:root[data-theme='dark'] .risk-severity-chip.success:hover {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: #6ee7b7;
+}
+
+/* 应收流转分段 */
+:root[data-theme='dark'] .ledger-flow-segment.success {
+  background: rgba(16, 185, 129, 0.16);
+  color: #6ee7b7;
+}
+
+:root[data-theme='dark'] .ledger-flow-segment.warning {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fcd34d;
+}
+
+:root[data-theme='dark'] .ledger-flow-segment.error {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+}
+
+:root[data-theme='dark'] .ledger-flow-segment.info {
+  background: rgba(59, 130, 246, 0.16);
+  color: var(--info-text);
+}
+
+/* 研判流程条 */
+:root[data-theme='dark'] .ai-flow-strip span:first-child {
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #93c5fd;
+}
+
+:root[data-theme='dark'] .ai-flow-strip span:nth-child(2) {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+:root[data-theme='dark'] .ai-flow-strip span:nth-child(3) {
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fcd34d;
+}
+
+:root[data-theme='dark'] .ai-flow-strip span:nth-child(4) {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+}
+
+/* 附件徽标 */
+:root[data-theme='dark'] .attachment-category-chip {
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #93c5fd;
+}
+
+:root[data-theme='dark'] .attachment-category {
+  background: rgba(59, 130, 246, 0.14);
+  color: #93c5fd;
+}
+
+:root[data-theme='dark'] .attachment-summary-gap {
+  color: #fcd34d;
+}
+
+:root[data-theme='dark'] .attachment-summary-gap.is-complete {
+  color: #6ee7b7;
+}
+
+/* 租金分析选中态 */
+:root[data-theme='dark'] .rent-segment-button.active {
+  background: color-mix(in srgb, var(--segment-color) 22%, #0f172a);
+}
+
+:root[data-theme='dark'] .rent-preset-button.active,
+:root[data-theme='dark'] .rent-comparison-picker button.active {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+/* 权限提示 */
+:root[data-theme='dark'] .permission-notice {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: var(--text-muted);
+}
+
+/* 迷你行深色文字 */
+:root[data-theme='dark'] .receivable-mini-row span,
+:root[data-theme='dark'] .receivable-mini-row strong {
+  color: var(--text-strong);
+}
+
+/* hover 态 */
+:root[data-theme='dark'] .room-row-more-section button:hover {
+  background: rgba(51, 65, 85, 0.82);
+}
+
+:root[data-theme='dark'] .room-lane-view-all:hover,
+:root[data-theme='dark'] .room-lane-expand:hover {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #93c5fd;
+}

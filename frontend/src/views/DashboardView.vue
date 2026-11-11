@@ -1,573 +1,747 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import EChartPanel from '../components/EChartPanel.vue'
-import { api } from '../lib/api'
-import { formatArea, formatCurrency, formatNumber } from '../lib/format'
+import { computed, ref } from 'vue'
+import { formatArea, formatCurrency, formatDate, formatNumber } from '../lib/format'
+import { openDownload } from '../lib/api'
+import { buildBuildingOperationsProfileView } from '../lib/buildingOperationsProfile'
+import MetricTile from '../components/MetricTile.vue'
+import AnimatedNumber from '../components/AnimatedNumber.vue'
 
 const props = defineProps({
   stats: {
     type: Object,
     default: () => ({})
-  }
+  },
+  operations: {
+    type: Object,
+    default: () => ({})
+  },
+  user: {
+    type: Object,
+    default: null
+  },
+  snapshot: {
+    type: Object,
+    default: () => ({})
+  },
+  operationsProfile: {
+    type: Object,
+    default: () => ({})
+  },
+  availableTabs: {
+    type: Array,
+    default: () => []
+  },
+  loading: Boolean,
+  operationsLoading: Boolean
 })
 
-const statusOrder = ['在租', '即将到期', '待生效', '已退租', '逾期占用']
-const statusPalette = {
-  在租: { color: '#3b82f6', bg: '#dbeafe' },
-  即将到期: { color: '#d97706', bg: '#fef3c7' },
-  待生效: { color: '#10b981', bg: '#d1fae5' },
-  已退租: { color: '#64748b', bg: '#e2e8f0' },
-  逾期占用: { color: '#dc2626', bg: '#fee2e2' }
+const emit = defineEmits(['open-contract', 'open-customer', 'select-tab'])
+
+const metrics = computed(() => props.operations.metrics || {})
+const operations = computed(() => props.operations || {})
+const riskSummary = computed(() => operations.value.risks?.summary || { total: 0, by_severity: { high: 0 } })
+const receivables = computed(() => props.stats.receivables || {})
+const queueCounts = computed(() => operations.value.queue_counts || {})
+const queues = computed(() => operations.value.queues || {})
+const currentMonth = computed(() => operations.value.current_month || {})
+const vacancy = computed(() => operations.value.vacancy || {})
+// Fail closed while the scope is changing or a request fails.  Only a live
+// detail adapter with verifiable operating facts may opt into the business dashboard.
+const detailListsAvailable = computed(() => (
+  operations.value?.projection?.detail_lists_available === true
+  && operations.value?.projection?.detail_facts_available !== false
+))
+const detailFactsUnavailableReason = computed(() => (
+  operations.value?.projection?.detail_facts_unavailable_reason
+  || '当前明细源尚无可核验的经营事实'
+))
+const isLiveDetailProjection = computed(() => (
+  operations.value?.projection?.source === 'live_detail'
+))
+const dashboardDataModeLabel = computed(() => (
+  isLiveDetailProjection.value ? '明细数据状态' : '已发布经营快照'
+))
+const operationsProfileView = computed(() => (
+  buildBuildingOperationsProfileView(props.operationsProfile)
+))
+const isSimulatedData = computed(() => (
+  String(
+    props.snapshot?.data_classification
+    || props.snapshot?.presentation?.data_classification
+    || ''
+  ).trim().toLowerCase() === 'simulated'
+))
+const snapshotMetricSourceLabel = computed(() => (
+  isLiveDetailProjection.value
+    ? '来自当前明细适配器的可核验经营事实'
+    : operationsProfileView.value.primaryGroup?.name
+    ? `来自“${operationsProfileView.value.primaryGroup.name}”已发布经营快照`
+    : '来自当前已发布经营快照'
+))
+
+function snapshotMetricValue(metric) {
+  if (metric?.value === null || metric?.value === undefined) return '--'
+  const value = Number(metric.value)
+  if (!Number.isFinite(value)) return String(metric.value)
+  if (metric.unit === 'percent') return `${value.toLocaleString('zh-CN', { maximumFractionDigits: 1 })}%`
+  if (metric.unit === 'CNY') return `${formatCurrency(value)} 元`
+  if (metric.unit === 'sqm') return `${formatArea(value)} ㎡`
+  if (metric.unit === 'CNY/sqm/day') return `${formatNumber(value)} 元/㎡·天`
+  if (metric.unit === 'building') return `${formatNumber(value)} 栋`
+  if (metric.unit === 'contract') return `${formatNumber(value)} 份`
+  if (metric.unit === 'item') return `${formatNumber(value)} 项`
+  return formatNumber(value)
 }
 
-const towerRoomArea = ref({})
-
-function roundTo(value, digits = 0) {
-  const factor = 10 ** digits
-  return Math.round(Number(value || 0) * factor) / factor
-}
-
-function shortValue(value, unit = '') {
-  const numeric = Number(value || 0)
-  if (Math.abs(numeric) >= 10000) return `${roundTo(numeric / 10000, 1)}万${unit}`
-  return `${formatNumber(roundTo(numeric, 0))}${unit}`
-}
-
-function formatPercentDiff(value) {
-  const numeric = Number(value || 0)
-  const prefix = numeric > 0 ? '+' : ''
-  return `${prefix}${roundTo(numeric, 1)}%`
-}
-
-function formatPointDiff(value) {
-  const numeric = Number(value || 0)
-  const prefix = numeric > 0 ? '+' : ''
-  return `${prefix}${roundTo(numeric, 1)} 个百分点`
-}
-
-const metrics = computed(() => props.stats.metrics || {})
-const trends = computed(() => props.stats.metrics_trends || {})
-
-const leasedContractCount = computed(() => {
-  const statuses = props.stats.statuses || {}
-  return Number(statuses.在租 || 0) + Number(statuses.即将到期 || 0) + Number(statuses.逾期占用 || 0)
+const snapshotFacts = computed(() => {
+  const facts = props.snapshot?.metrics || {}
+  return [
+    'occupancy.area_rate',
+    'area.rentable_sqm',
+    'area.leased_sqm',
+    'collection.rate_month',
+    'arrears.balance',
+    'expiry.contract_count_90d'
+  ].map((code) => {
+    const metric = facts[code] || {}
+    return {
+      code,
+      label: metric.name || code,
+      value: snapshotMetricValue(metric),
+      available: metric.value !== null && metric.value !== undefined,
+      reason: metric.unavailable_reason || '当前快照未提供该指标'
+    }
+  })
 })
 
-const kpis = computed(() => {
-  const totalContracts = Number(props.stats.total || 0)
-  const currentArea = Number(metrics.value.total_area || 0)
-  const currentRent = Number(metrics.value.total_monthly_rent || 0)
-  const currentOccupancy = Number(metrics.value.occupancy_rate || 0)
-  const contractShare = totalContracts ? Math.round((leasedContractCount.value / totalContracts) * 100) : 0
+const todayActions = computed(() => (operations.value.todos || []).slice(0, 3))
+const todayActionCount = computed(() => Number((operations.value.todos || []).length || 0))
+const selectedTrafficTone = ref('')
+
+function metricNumber(value) {
+  const number = Number(value || 0)
+  return Number.isFinite(number) ? number : 0
+}
+
+function clampPercent(value) {
+  return Math.max(0, Math.min(100, metricNumber(value)))
+}
+
+function countTone(value, warningTone = 'warning') {
+  return metricNumber(value) > 0 ? warningTone : 'success'
+}
+
+function groupTone(items) {
+  if (items.some((item) => item.tone === 'danger' || item.tone === 'error')) return 'danger'
+  if (items.some((item) => item.tone === 'warning')) return 'warning'
+  if (items.some((item) => item.tone === 'info')) return 'info'
+  return 'success'
+}
+
+const judgementText = computed(() => {
+  const urgent = mostUrgentLane.value
+  const hasPressure = trafficOverview.value.some((item) => item.key !== 'green' && item.value > 0)
+  if (!hasPressure) return '今日暂无待处理风险。'
+  return `最紧急：${urgent?.label || '经营'}。先处理 Top 3 急项。`
+})
+
+const judgementChips = computed(() => {
+  const m = metrics.value
+  const overdueCount = metricNumber(operations.value.overdue?.contract_count || queueCounts.value.overdue_contracts)
+  const chips = [
+    { key: 'todos', label: '优先动作', value: `${formatNumber(todayActionCount.value)} 项`, tone: countTone(todayActionCount.value, 'warning') },
+    { key: 'overdue', label: '历史逾期', value: `${formatNumber(overdueCount)} 份`, tone: countTone(overdueCount, 'danger') },
+    { key: 'expiring', label: '90天到期', value: `${formatNumber(m.expiring_contract_count_90 || 0)} 份`, tone: countTone(m.expiring_contract_count_90, 'warning') },
+    { key: 'followups', label: '待跟进', value: `${formatNumber(m.due_follow_up_customer_count || 0)} 个`, tone: countTone(m.due_follow_up_customer_count, 'warning') },
+    { key: 'attachments', label: '附件待补', value: `${formatNumber(m.missing_contract_body_count || 0)} 份`, tone: countTone(m.missing_contract_body_count, 'warning') }
+  ]
+  const pressure = chips.filter((item) => item.tone !== 'success').slice(0, 3)
+  return pressure.length ? pressure : chips.slice(0, 1)
+})
+
+const healthMetrics = computed(() => {
+  const m = metrics.value
+  const receivedRate = metricNumber(m.received_rate ?? receivables.value.received_rate)
+  const currentReceivable = metricNumber(m.current_month_receivable)
+  const overdueBalance = metricNumber(m.overdue_balance)
+  const unpaidBalance = metricNumber(m.current_month_unpaid_balance)
+  const occupancyRate = metricNumber(vacancy.value.occupancy_rate)
+  const expiringCount = metricNumber(m.expiring_contract_count_90)
+  const followUpCount = metricNumber(m.due_follow_up_customer_count)
+  const unpaidDepositAmount = metricNumber(m.unpaid_deposit_amount)
+  const missingBodyCount = metricNumber(m.missing_contract_body_count)
+  const highRiskCount = metricNumber(m.high_risk_count ?? riskSummary.value.by_severity?.high)
+  return [
+    {
+      key: 'received_rate',
+      label: '本月回款率',
+      value: `${formatNumber(receivedRate)}%`,
+      helper: `${formatCurrency(m.current_month_received || 0)} / ${formatCurrency(m.current_month_receivable || 0)}`,
+      progress: currentReceivable > 0 ? clampPercent(receivedRate) : null,
+      tone: currentReceivable <= 0 || receivedRate >= 90 ? 'success' : receivedRate >= 70 ? 'warning' : 'danger'
+    },
+    {
+      key: 'overdue_balance',
+      label: '历史逾期',
+      value: formatCurrency(overdueBalance),
+      helper: `${formatNumber(operations.value.overdue?.contract_count || 0)} 份合同有历史逾期`,
+      tone: overdueBalance > 0 ? 'danger' : 'success'
+    },
+    {
+      key: 'current_month_unpaid_balance',
+      label: '本月未收',
+      value: formatCurrency(unpaidBalance),
+      helper: `其中本月逾期 ${formatCurrency(m.current_month_overdue_balance || 0)}`,
+      tone: unpaidBalance > 0 ? 'warning' : 'success'
+    },
+    {
+      key: 'vacancy',
+      label: '空置房间',
+      value: `${formatNumber(m.vacancy_room_count || 0)} 间`,
+      helper: `${formatArea(m.vacancy_area || 0)} ㎡空置 / 入驻率 ${formatNumber(occupancyRate)}%`,
+      progress: clampPercent(occupancyRate),
+      tone: metricNumber(m.vacancy_room_count) > 0 ? 'info' : 'success'
+    },
+    {
+      key: 'expiring_contract_count_90',
+      label: '90天到期',
+      value: formatNumber(expiringCount),
+      helper: '影响续租、退租和招商安排',
+      tone: expiringCount > 0 ? 'warning' : 'success'
+    },
+    {
+      key: 'due_follow_up_customer_count',
+      label: '待跟进客户',
+      value: formatNumber(followUpCount),
+      helper: `${formatNumber(operations.value.follow_ups?.follow_up_count || followUpCount)} 条跟进记录`,
+      tone: followUpCount > 0 ? 'warning' : 'success'
+    },
+    {
+      key: 'unpaid_deposit_amount',
+      label: '未收押金',
+      value: formatCurrency(unpaidDepositAmount),
+      helper: `${formatNumber(m.unpaid_deposit_count || 0)} 笔未收/不足`,
+      tone: unpaidDepositAmount > 0 ? 'warning' : 'success'
+    },
+    {
+      key: 'missing_contract_body_count',
+      label: '附件待补',
+      value: formatNumber(missingBodyCount),
+      helper: '合同正文未归档',
+      tone: missingBodyCount > 0 ? 'warning' : 'success'
+    },
+    {
+      key: 'high_risk_count',
+      label: '高风险数量',
+      value: formatNumber(highRiskCount),
+      helper: `${formatNumber(riskSummary.value.total || m.risk_count || 0)} 个风险项`,
+      tone: highRiskCount > 0 ? 'danger' : 'success'
+    }
+  ]
+})
+
+const healthSignalGroups = computed(() => {
+  const byKey = Object.fromEntries(healthMetrics.value.map((item) => [item.key, item]))
+  const groups = [
+    {
+      key: 'cash',
+      label: '回款健康',
+      headline: '本月 / 历史逾期',
+      keys: ['received_rate', 'current_month_unpaid_balance', 'overdue_balance']
+    },
+    {
+      key: 'lease',
+      label: '履约节奏',
+      headline: '空置 / 到期',
+      keys: ['vacancy', 'expiring_contract_count_90', 'due_follow_up_customer_count']
+    },
+    {
+      key: 'materials',
+      label: '资料与押金',
+      headline: '押金 / 资料',
+      keys: ['unpaid_deposit_amount', 'missing_contract_body_count', 'high_risk_count']
+    }
+  ]
+
+  return groups.map((group) => {
+    const items = group.keys.map((key) => byKey[key]).filter(Boolean)
+    return { ...group, items, tone: groupTone(items) }
+  })
+})
+
+const priorityLanes = computed(() => {
+  const m = metrics.value
+  const q = queues.value
+  const counts = queueCounts.value
+  const current = currentMonth.value
+  const overdueRows = q.overdue_contracts || []
+  const followUpRows = q.due_follow_up_customers || []
+  const expiryRows = q.expiring_contracts || []
+  const depositRows = q.unpaid_deposits || []
+  const missingRows = q.missing_contract_body || []
+  const overdueBalance = metricNumber(m.overdue_balance)
+  const unpaidBalance = metricNumber(m.current_month_unpaid_balance ?? current.unpaid_balance ?? receivables.value.total_unpaid_balance)
+  const receivedRate = metricNumber(m.received_rate ?? current.received_rate ?? receivables.value.received_rate)
+  const followUpRecords = metricNumber(operations.value.follow_ups?.follow_up_count || m.due_follow_up_customer_count)
+  const materialCount = metricNumber(counts.unpaid_deposits) + metricNumber(counts.missing_contract_body)
+  const highRiskCount = metricNumber(m.high_risk_count ?? riskSummary.value.by_severity?.high)
 
   return [
     {
-      key: 'area',
-      label: '在租面积',
-      value: `${formatArea(currentArea)} ㎡`,
-      helper: `环比 ${formatPercentDiff(trends.value.area?.mom)} · 同比 ${formatPercentDiff(trends.value.area?.yoy)}`
+      key: 'payment',
+      testId: 'today-signal-lane-payment',
+      label: '收款',
+      title: overdueBalance > 0 ? formatCurrency(overdueBalance) : `回款率 ${formatNumber(receivedRate)}%`,
+      helper: `历史逾期 ${formatNumber(counts.overdue_contracts || overdueRows.length)} 份 · 本月未收 ${formatCurrency(unpaidBalance)}`,
+      tone: overdueBalance > 0 ? 'danger' : unpaidBalance > 0 ? 'warning' : 'success',
+      action: props.user?.role === 'viewer' ? '看合同' : '看应收',
+      tab: props.user?.role === 'viewer' ? 'contracts' : 'receivables'
     },
     {
-      key: 'occupancy',
-      label: '出租率',
-      value: `${formatNumber(currentOccupancy)}%`,
-      helper: `环比 ${formatPointDiff(trends.value.occupancy_rate?.mom)} · 同比 ${formatPointDiff(trends.value.occupancy_rate?.yoy)}`
+      key: 'expiry',
+      testId: 'today-signal-lane-expiry',
+      label: '到期',
+      title: `${formatNumber(counts.expiring_contracts || expiryRows.length)} 份合同`,
+      helper: expiryRows[0]?.days_left != null ? `最近 ${formatNumber(expiryRows[0].days_left)} 天到期` : '续租、退租和招商排期',
+      tone: expiryRows.some((item) => item.severity === 'danger') ? 'danger' : countTone(counts.expiring_contracts || expiryRows.length, 'warning'),
+      action: '排合同',
+      tab: 'contracts'
     },
     {
-      key: 'contracts',
-      label: '执行中合同',
-      value: formatNumber(leasedContractCount.value),
-      helper: `占全部合同 ${contractShare}%`
+      key: 'followup',
+      testId: 'today-signal-lane-followup',
+      label: '跟进',
+      title: `${formatNumber(counts.due_follow_up_customers || followUpRows.length)} 个客户`,
+      helper: `${formatNumber(followUpRecords)} 条跟进记录`,
+      tone: followUpRows.some((item) => item.severity === 'danger') ? 'danger' : countTone(counts.due_follow_up_customers || followUpRows.length, 'warning'),
+      action: '看客户',
+      tab: 'customers'
     },
     {
-      key: 'rent',
-      label: '月租金',
-      value: formatCurrency(currentRent),
-      helper: `环比 ${formatPercentDiff(trends.value.rent?.mom)} · 同比 ${formatPercentDiff(trends.value.rent?.yoy)}`
+      key: 'materials',
+      testId: 'today-signal-lane-materials',
+      label: '资料',
+      title: `${formatNumber(materialCount)} 项缺口`,
+      helper: `押金 ${formatNumber(counts.unpaid_deposits || depositRows.length)} 笔 · 附件 ${formatNumber(counts.missing_contract_body || missingRows.length)} 份 · 高风险 ${formatNumber(highRiskCount)} 项`,
+      tone: highRiskCount > 0 ? 'danger' : materialCount > 0 ? 'warning' : 'success',
+      action: '看风险',
+      tab: 'risks'
     }
   ]
 })
 
-const statusRows = computed(() => {
-  const entries = Object.entries(props.stats.statuses || {})
-  const total = entries.reduce((sum, [, count]) => sum + Number(count || 0), 0)
-  return entries
-    .map(([label, count]) => ({
-      label,
-      count: Number(count || 0),
-      percent: total ? Math.round((Number(count || 0) / total) * 100) : 0,
-      ...(statusPalette[label] || { color: '#94a3b8', bg: '#e5e7eb' }),
-      order: statusOrder.indexOf(label) === -1 ? 999 : statusOrder.indexOf(label)
-    }))
-    .sort((a, b) => a.order - b.order || b.count - a.count)
+const businessSignalCounts = computed(() => {
+  const m = metrics.value
+  const counts = queueCounts.value
+  const redCount = Math.max(
+    metricNumber(counts.overdue_contracts),
+    metricNumber(m.high_risk_count ?? riskSummary.value.by_severity?.high)
+  )
+  const yellowCount =
+    metricNumber(counts.expiring_contracts) +
+    metricNumber(counts.due_follow_up_customers) +
+    metricNumber(counts.unpaid_deposits) +
+    metricNumber(counts.missing_contract_body)
+  const activeCount = metricNumber(props.stats.active_count || m.active_contract_count)
+  return {
+    red: redCount,
+    yellow: yellowCount,
+    green: Math.max(activeCount - redCount - yellowCount, 0),
+    active: activeCount
+  }
 })
 
-const statusOption = computed(() => ({
-  tooltip: {
-    trigger: 'item',
-    formatter: ({ name, value, percent }) => `${name}<br/>数量：${formatNumber(value)}<br/>占比：${percent}%`
-  },
-  series: [
-    {
-      type: 'pie',
-      radius: ['56%', '76%'],
-      center: ['42%', '54%'],
-      avoidLabelOverlap: true,
-      label: { show: false },
-      itemStyle: { borderColor: '#ffffff', borderWidth: 4 },
-      data: statusRows.value.map((item) => ({
-        name: item.label,
-        value: item.count,
-        itemStyle: { color: item.color }
-      }))
-    }
-  ]
-}))
-
-const towerRows = computed(() => {
-  const totalRent = Object.values(props.stats.tower_data || {}).reduce((sum, item) => sum + Number(item.rent || 0), 0)
-  return Object.entries(props.stats.tower_data || {})
-    .map(([tower, item]) => {
-      const area = Number(item.area || 0)
-      const rent = Number(item.rent || 0)
-      const roomArea = Number(towerRoomArea.value[tower] || 0)
-      const occupancyRate = roomArea > 0 ? roundTo((area / roomArea) * 100, 1) : 0
-      return {
-        tower,
-        count: Number(item.count || 0),
-        area,
-        roomArea,
-        vacantArea: Math.max(roomArea - area, 0),
-        rent,
-        rentWan: roundTo(rent / 10000, 1),
-        avgDailyRent: area > 0 ? roundTo(rent / area / 30, 2) : 0,
-        occupancyRate,
-        revenueShare: totalRent > 0 ? roundTo((rent / totalRent) * 100, 1) : 0,
-        avgContractArea: item.count ? roundTo(area / item.count, 0) : 0
-      }
-    })
-    .sort((a, b) => b.rent - a.rent || b.area - a.area || a.tower.localeCompare(b.tower, 'zh-CN'))
-})
-
-const towerMixOption = computed(() => ({
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: { type: 'shadow' },
-    formatter: (params) => {
-      const leased = params.find((item) => item.seriesName === '已租面积')
-      const vacant = params.find((item) => item.seriesName === '待租面积')
-      const rate = params.find((item) => item.seriesName === '出租率')
-      return [
-        params[0]?.name || '',
-        `已租面积：${formatArea(leased?.value || 0)} ㎡`,
-        `待租面积：${formatArea(vacant?.value || 0)} ㎡`,
-        `出租率：${rate?.value || 0}%`
-      ].join('<br/>')
-    }
-  },
-  legend: {
-    top: 0,
-    itemWidth: 10,
-    itemHeight: 10,
-    textStyle: { color: '#6b7280', fontSize: 12 }
-  },
-  grid: { left: 64, right: 132, top: 44, bottom: 40, containLabel: true },
-  xAxis: [
-    {
-      type: 'value',
-      name: '面积（㎡）',
-      nameLocation: 'middle',
-      nameGap: 22,
-      splitLine: { lineStyle: { color: '#e5e7eb' } },
-      axisLabel: {
-        color: '#6b7280',
-        formatter: (value) => shortValue(value)
-      },
-      nameTextStyle: { color: '#6b7280' }
-    },
-    {
-      type: 'value',
-      name: '出租率（%）',
-      nameLocation: 'middle',
-      nameGap: 22,
-      min: 0,
-      max: 100,
-      splitLine: { show: false },
-      axisLabel: { color: '#6b7280' },
-      nameTextStyle: { color: '#6b7280' }
-    }
-  ],
-  yAxis: {
-    type: 'category',
-    data: towerRows.value.map((item) => item.tower),
-    axisTick: { show: false },
-    axisLine: { show: false },
-    axisLabel: { color: '#374151' }
-  },
-  series: [
-    {
-      name: '已租面积',
-      type: 'bar',
-      stack: 'area',
-      barWidth: 16,
-      itemStyle: { color: '#3b82f6', borderRadius: [0, 8, 8, 0] },
-      data: towerRows.value.map((item) => item.area)
-    },
-    {
-      name: '待租面积',
-      type: 'bar',
-      stack: 'area',
-      barWidth: 16,
-      itemStyle: { color: '#dbeafe', borderRadius: [0, 8, 8, 0] },
-      data: towerRows.value.map((item) => item.vacantArea)
-    },
-    {
-      name: '出租率',
-      type: 'line',
-      xAxisIndex: 1,
-      smooth: true,
-      symbol: 'circle',
-      symbolSize: 7,
-      lineStyle: { width: 3, color: '#0f766e' },
-      itemStyle: { color: '#0f766e' },
-      data: towerRows.value.map((item) => item.occupancyRate)
-    }
-  ]
-}))
-
-const towerRentOption = computed(() => ({
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: { type: 'line' },
-    formatter: (params) => {
-      const daily = params.find((item) => item.seriesName === '平均日租')
-      const monthly = params.find((item) => item.seriesName === '月租金')
-      return [
-        params[0]?.axisValue || '',
-        `平均日租：${formatCurrency(daily?.value || 0)} 元/㎡/天`,
-        `月租金：${formatCurrency(monthly?.value || 0)} 万元/月`
-      ].join('<br/>')
-    }
-  },
-  legend: {
-    top: 0,
-    itemWidth: 10,
-    itemHeight: 10,
-    textStyle: { color: '#6b7280', fontSize: 12 }
-  },
-  grid: { left: 60, right: 72, top: 68, bottom: 36, containLabel: true },
-  graphic: [
-    {
-      type: 'text',
-      left: 60,
-      top: 34,
-      style: {
-        text: '平均日租（元/㎡/天）',
-        fill: '#6b7280',
-        fontSize: 12,
-        fontWeight: 600
-      }
-    },
-    {
-      type: 'text',
-      right: 72,
-      top: 34,
-      style: {
-        text: '月租金（万元/月）',
-        fill: '#6b7280',
-        fontSize: 12,
-        fontWeight: 600,
-        textAlign: 'right'
-      }
-    }
-  ],
-  xAxis: {
-    type: 'category',
-    data: towerRows.value.map((item) => item.tower),
-    axisLine: { lineStyle: { color: '#d1d5db' } },
-    axisLabel: { color: '#374151' }
-  },
-  yAxis: [
-    {
-      type: 'value',
-      name: '平均日租（元/㎡/天）',
-      nameLocation: 'middle',
-      nameGap: 16,
-      min: 0,
-      max: 6,
-      splitLine: { lineStyle: { color: '#e5e7eb' } },
-      axisLabel: { color: '#6b7280' },
-      nameTextStyle: { color: 'transparent', fontSize: 0 }
-    },
-    {
-      type: 'value',
-      name: '月租金（万元/月）',
-      nameLocation: 'middle',
-      nameGap: 16,
-      splitLine: { show: false },
-      axisLabel: { color: '#6b7280' },
-      nameTextStyle: { color: 'transparent', fontSize: 0 }
-    }
-  ],
-  series: [
-    {
-      name: '平均日租',
-      type: 'bar',
-      barMaxWidth: 34,
-      itemStyle: { color: '#60a5fa', borderRadius: [8, 8, 0, 0] },
-      data: towerRows.value.map((item) => item.avgDailyRent)
-    },
-    {
-      name: '月租金',
-      type: 'line',
-      yAxisIndex: 1,
-      smooth: true,
-      symbol: 'circle',
-      symbolSize: 6,
-      lineStyle: { width: 3, color: '#1d4ed8' },
-      itemStyle: { color: '#1d4ed8' },
-      label: {
-        show: true,
-        position: 'top',
-        color: '#1d4ed8',
-        fontSize: 11,
-        formatter: ({ value }) => `${value} 万`
-      },
-      data: towerRows.value.map((item) => item.rentWan)
-    }
-  ]
-}))
-
-const alerts = computed(() => (props.stats.expiring_soon || []).slice(0, 6))
-
-const expirySummary = computed(() => {
-  const urgent = alerts.value.filter((item) => item.days_left <= 30).length
-  const watch = alerts.value.filter((item) => item.days_left > 30).length
-  return { urgent, watch }
-})
-
-const alertHighlights = computed(() => {
-  const leaseTypes = props.stats.lease_types || {}
-  const dominantLeaseType = Object.entries(leaseTypes).sort((a, b) => Number(b[1]) - Number(a[1]))[0]?.[0] || '--'
+const trafficOverview = computed(() => {
+  const counts = businessSignalCounts.value
   return [
-    { label: '保证金存量', value: formatCurrency(metrics.value.total_deposit || 0) },
-    { label: '主力签约类型', value: dominantLeaseType }
+    { key: 'red', label: '红', value: counts.red, helper: '优先处理', tone: 'danger' },
+    { key: 'yellow', label: '黄', value: counts.yellow, helper: '需要提醒', tone: 'warning' },
+    { key: 'green', label: '绿', value: counts.green, helper: '正常推进', tone: 'success' }
   ]
 })
 
-const forecastRows = computed(() => props.stats.income_forecast || [])
-
-const forecastOption = computed(() => ({
-  tooltip: {
-    trigger: 'axis',
-    formatter: (params) => {
-      const bar = params.find((item) => item.seriesName === '月租金预测')
-      const line = params.find((item) => item.seriesName === '趋势线')
-      return [
-        params[0]?.axisValue || '',
-        `月租金预测：${formatCurrency(bar?.value || 0)}`,
-        `趋势线：${formatCurrency(line?.value || 0)}`
-      ].join('<br/>')
-    }
-  },
-  legend: {
-    top: 0,
-    itemWidth: 10,
-    itemHeight: 10,
-    textStyle: { color: '#6b7280', fontSize: 12 }
-  },
-  grid: { left: 64, right: 28, top: 44, bottom: 32, containLabel: true },
-  xAxis: {
-    type: 'category',
-    data: forecastRows.value.map((item) => item.month),
-    axisLabel: { color: '#6b7280' },
-    axisLine: { lineStyle: { color: '#d1d5db' } }
-  },
-  yAxis: {
-    type: 'value',
-    name: '月租金（元）',
-    nameGap: 18,
-    splitLine: { lineStyle: { color: '#e5e7eb' } },
-    axisLabel: {
-      color: '#6b7280',
-      formatter: (value) => shortValue(value)
-    },
-    nameTextStyle: { color: '#6b7280' }
-  },
-  series: [
-    {
-      name: '月租金预测',
-      type: 'bar',
-      barMaxWidth: 28,
-      itemStyle: { color: '#bfdbfe', borderRadius: [8, 8, 0, 0] },
-      data: forecastRows.value.map((item) => item.income)
-    },
-    {
-      name: '趋势线',
-      type: 'line',
-      smooth: true,
-      symbol: 'circle',
-      symbolSize: 7,
-      lineStyle: { width: 3, color: '#2563eb' },
-      itemStyle: { color: '#2563eb' },
-      label: {
-        show: true,
-        formatter: ({ value }) => shortValue(value),
-        color: '#1d4ed8'
-      },
-      data: forecastRows.value.map((item) => item.income)
-    }
-  ]
+const normalProgressLane = computed(() => ({
+  key: 'normal-progress',
+  testId: 'today-signal-lane-normal',
+  label: '正常',
+  title: `${formatNumber(businessSignalCounts.value.green)} 份合同`,
+  helper: businessSignalCounts.value.active > 0 ? '未进入红黄灯，正常履约推进' : '暂无可判断合同',
+  tone: 'success',
+  action: '看合同',
+  tab: 'contracts'
 }))
 
-async function fetchTowerRoomArea() {
-  try {
-    const rooms = await api('/api/rooms')
-    const summary = {}
-    for (const room of rooms) {
-      if (!room?.tower) continue
-      summary[room.tower] = (summary[room.tower] || 0) + Number(room.area || 0)
-    }
-    towerRoomArea.value = summary
-  } catch {
-    towerRoomArea.value = {}
+const filteredPriorityLanes = computed(() => {
+  const tone = selectedTrafficTone.value
+  if (!tone) return priorityLanes.value
+  if (tone === 'green') return businessSignalCounts.value.green > 0 ? [normalProgressLane.value] : []
+  return priorityLanes.value.filter((lane) => laneMatchesTrafficTone(lane, tone))
+})
+
+const mostUrgentLane = computed(() => {
+  const lanes = priorityLanes.value
+  return lanes.find((lane) => lane.tone === 'danger' || lane.tone === 'error') || lanes.find((lane) => lane.tone === 'warning') || lanes[0]
+})
+
+const selectedTrafficLabel = computed(() => {
+  return trafficOverview.value.find((item) => item.key === selectedTrafficTone.value)?.label || ''
+})
+
+function laneMatchesTrafficTone(lane, tone) {
+  if (tone === 'green') return lane.tone === 'success'
+  if (tone === 'yellow') return lane.tone === 'warning'
+  if (tone === 'red') return lane.tone === 'danger' || lane.tone === 'error'
+  return true
+}
+
+function selectTrafficTone(tone) {
+  selectedTrafficTone.value = selectedTrafficTone.value === tone ? '' : tone
+}
+
+function actionTone(action) {
+  if (action.severity === 'danger') return 'error'
+  if (action.severity === 'warning') return 'warning'
+  return 'info'
+}
+
+function actionTitle(action) {
+  return action.title || action.tenant_name || action.customer_name || action.meta?.tenant_name || action.meta?.customer_name || action.contract_no || action.meta?.contract_no || action.label || '--'
+}
+
+function actionMeta(action) {
+  const meta = action.meta || action || {}
+  switch (action.type) {
+    case 'overdue_contract':
+      return `${meta.contract_no || '--'} · ${meta.room_no || '--'} · 逾期 ${meta.max_aging_days || 0} 天`
+    case 'expiring_contract':
+      return `${meta.contract_no || '--'} · ${meta.room_no || '--'} · ${formatDate(action.due_date || meta.end_date)} 到期`
+    case 'due_follow_up_customer':
+      return `${meta.owner || '--'} · ${formatDate(action.due_date || meta.next_follow_up_date)} · ${meta.next_action || '待跟进'}`
+    case 'unpaid_deposit':
+      return `${meta.contract_no || '--'} · ${meta.deposit_type || '押金'} · 应收 ${formatDate(action.due_date || meta.due_date)}`
+    case 'missing_contract_body':
+      return `${meta.contract_no || '--'} · ${meta.room_no || '--'} · 缺 ${meta.missing_category || '合同正文'}`
+    default:
+      return action.label || '--'
   }
 }
 
-onMounted(fetchTowerRoomArea)
+function actionValue(action) {
+  const amount = Number(action.amount || action.overdue_balance || action.unpaid_amount || 0)
+  if (amount > 0) return formatCurrency(amount)
+  if (action.days_left != null) return `${action.days_left} 天`
+  if (action.due_date) return formatDate(action.due_date)
+  return ''
+}
+
+function actionCta(action) {
+  if (action.type === 'overdue_contract') return props.user?.role === 'viewer' ? '查看合同' : '查看应收'
+  if (action.type === 'expiring_contract') return '排续租'
+  if (action.type === 'due_follow_up_customer') return '客户跟进'
+  if (action.type === 'unpaid_deposit') return '确认押金'
+  if (action.type === 'missing_contract_body') return '补附件'
+  if (action.contract_id) return '打开合同'
+  return '查看队列'
+}
+
+function actionContextCta(action) {
+  if (action.target_type === 'customer' && action.customer_id) return '客户详情'
+  if (action.contract_id) return '合同详情'
+  if (action.room_no) return '房源台账'
+  return '待办队列'
+}
+
+function hasActionNavigation(action) {
+  return ['overdue_contract', 'expiring_contract', 'due_follow_up_customer', 'unpaid_deposit', 'missing_contract_body'].includes(action.type)
+}
+
+function openAction(action) {
+  if (action.target_type === 'customer' && action.customer_id) {
+    emit('open-customer', action.customer_id)
+    return
+  }
+  if (action.contract_id) {
+    emit('open-contract', action.contract_id)
+    return
+  }
+  if (action.room_no) {
+    emit('select-tab', 'rooms')
+    return
+  }
+  emit('select-tab', 'operations')
+}
+
+function navigateAction(action) {
+  if (action.type === 'overdue_contract') {
+    emit('select-tab', props.user?.role === 'viewer' ? 'contracts' : 'receivables')
+    return
+  }
+  if (action.type === 'due_follow_up_customer') {
+    emit('select-tab', 'customers')
+    return
+  }
+  if (action.type === 'missing_contract_body') {
+    emit('select-tab', 'risks')
+    return
+  }
+  if (action.contract_id) {
+    emit('select-tab', 'contracts')
+    return
+  }
+  if (action.room_no) {
+    emit('select-tab', 'rooms')
+    return
+  }
+  emit('select-tab', 'operations')
+}
+
+function navigateLane(lane) {
+  emit('select-tab', lane.tab || 'operations')
+}
+
+function exportOperationsDailyReport() {
+  openDownload('/api/reports/operations-daily')
+}
 </script>
 
 <template>
-  <section class="content dashboard-page">
-    <div class="kpi-grid">
-      <article v-for="item in kpis" :key="item.key" class="card kpi-card">
-        <div class="section-label">{{ item.label }}</div>
-        <h3>{{ item.value }}</h3>
-        <p>{{ item.helper }}</p>
-      </article>
-    </div>
+  <section class="content dashboard-page dashboard-summary-page" data-testid="dashboard-page">
+    <article v-if="detailListsAvailable" class="card dashboard-summary-card dashboard-actions-card" data-testid="dashboard-actions">
+      <div class="card-header compact">
+        <div>
+          <div class="section-label">今日指挥板</div>
+          <h3 class="card-title">今日先看这三件事</h3>
+        </div>
+        <div class="pill-group">
+          <button class="btn btn-compact" data-testid="dashboard-export-daily-report" @click="exportOperationsDailyReport">导出经营日报</button>
+          <span v-if="loading || operationsLoading" class="metric-pill info">读取中</span>
+          <span class="metric-pill info">月份 {{ operations.month || '--' }}</span>
+          <span class="metric-pill warning">Top 3 / {{ operations.todos?.length || 0 }}</span>
+        </div>
+      </div>
 
-    <div class="dashboard-grid">
-      <article class="card dashboard-card">
-        <div class="card-header compact">
-          <div>
-            <div class="section-label">到期预警</div>
-            <h3 class="card-title">到期预警</h3>
+      <div class="today-health-overview" data-testid="today-health-overview">
+        <button
+          v-for="item in trafficOverview"
+          :key="item.key"
+          type="button"
+          class="today-health-card"
+          :class="[item.tone, { 'is-active': selectedTrafficTone === item.key }]"
+          :data-testid="`today-health-${item.key}`"
+          :aria-pressed="selectedTrafficTone === item.key"
+          @click="selectTrafficTone(item.key)"
+        >
+          <span>{{ item.label }}</span>
+          <AnimatedNumber :value="formatNumber(item.value)" />
+          <small>{{ item.helper }}</small>
+        </button>
+      </div>
+
+      <div class="dashboard-judgement" data-testid="dashboard-judgement">
+        <strong>{{ judgementText }}</strong>
+        <div class="dashboard-judgement-chips">
+          <span v-for="item in judgementChips" :key="item.key" class="dashboard-chip" :class="item.tone">
+            <b>{{ item.value }}</b>
+            <small>{{ item.label }}</small>
+          </span>
+        </div>
+      </div>
+
+      <div class="dashboard-priority-lanes today-signal-lanes" data-testid="today-signal-lanes">
+        <section
+          v-for="lane in filteredPriorityLanes"
+          :key="lane.key"
+          class="dashboard-priority-lane"
+          :class="lane.tone"
+          :data-testid="lane.testId"
+        >
+          <div class="dashboard-lane-head">
+            <span>{{ lane.label }}</span>
+            <strong>{{ lane.title }}</strong>
+            <small>{{ lane.helper }}</small>
           </div>
-          <div class="pill-group">
-            <span class="metric-pill warning">30 天内 {{ expirySummary.urgent }}</span>
-            <span class="metric-pill info">90 天内 {{ alerts.length }}</span>
+          <button type="button" class="dashboard-lane-nav" @click="navigateLane(lane)">
+            {{ lane.action }}
+          </button>
+        </section>
+        <div v-if="selectedTrafficTone && !filteredPriorityLanes.length" class="compact-empty">
+          暂无{{ selectedTrafficLabel }}色经营信号
+        </div>
+      </div>
+
+      <div class="dashboard-action-list today-top-actions" data-testid="today-top-actions">
+        <div class="today-top-actions-head">
+          <div>
+            <span>Top 3 急项</span>
+            <strong>先处理最影响今日节奏的事项</strong>
+          </div>
+          <button type="button" class="btn btn-compact" data-testid="today-open-operations-queue" @click="emit('select-tab', 'operations')">
+            查看完整待办队列
+          </button>
+        </div>
+        <div
+          v-for="(action, index) in todayActions"
+          :key="`${index}-${action.type}-${action.contract_id || action.customer_id || action.room_no || action.title}`"
+          class="dashboard-action-item"
+          :data-testid="`dashboard-action-item-${index}`"
+        >
+          <button
+            type="button"
+            class="dashboard-action-row"
+            :data-testid="`dashboard-action-row-${index}`"
+            @click="openAction(action)"
+          >
+            <span class="dashboard-action-rank" :class="actionTone(action)">{{ index + 1 }}</span>
+            <span class="dashboard-action-main">
+              <span class="dashboard-action-title-line">
+                <span class="badge" :class="actionTone(action)">{{ action.label || '待办' }}</span>
+                <strong>{{ actionTitle(action) }}</strong>
+              </span>
+              <small>{{ actionMeta(action) }}</small>
+            </span>
+            <span class="dashboard-action-side">
+              <b>{{ actionValue(action) || '查看' }}</b>
+              <small>{{ actionContextCta(action) }}</small>
+            </span>
+          </button>
+          <button
+            v-if="hasActionNavigation(action)"
+            type="button"
+            class="dashboard-action-nav"
+            :data-testid="`dashboard-action-nav-${index}`"
+            @click="navigateAction(action)"
+          >
+            {{ actionCta(action) }}
+          </button>
+        </div>
+        <div v-if="!todayActions.length" class="compact-empty">
+          今日暂无需要优先处理的经营动作
+        </div>
+      </div>
+    </article>
+
+    <article v-else class="card dashboard-summary-card dashboard-snapshot-card" data-testid="snapshot-dashboard-summary">
+      <div class="card-header compact">
+        <div>
+          <div class="section-label">{{ dashboardDataModeLabel }}</div>
+          <h3 class="card-title">{{ operationsProfileView.positioning || '当前楼宇按整楼口径展示' }}</h3>
+        </div>
+        <div class="dashboard-snapshot-meta">
+          <span
+            v-if="isSimulatedData"
+            class="metric-pill warning"
+            data-testid="snapshot-dashboard-simulated-data"
+          >模拟数据</span>
+          <span class="metric-pill info">统计日 {{ snapshot.as_of_date || '--' }}</span>
+        </div>
+      </div>
+      <p class="compact-empty">
+        {{ detailFactsUnavailableReason }}，因此不展示空白明细模块，也不把未知数据当作 0。
+      </p>
+      <section
+        v-if="operationsProfileView.configured"
+        class="building-profile-brief"
+        data-testid="building-operations-profile"
+        :data-structure="operationsProfileView.structureType"
+      >
+        <div class="building-profile-identity">
+          <span>{{ isSimulatedData ? '模拟运营形态' : '楼宇运营形态' }}</span>
+          <strong>{{ operationsProfileView.structureLabel }}</strong>
+          <small>当前数据粒度：{{ operationsProfileView.granularityLabel }}</small>
+          <p>{{ operationsProfileView.structureDetail }}</p>
+        </div>
+        <div class="building-profile-focus">
+          <span>当前运营重点</span>
+          <div>
+            <b v-for="item in operationsProfileView.focus" :key="item">{{ item }}</b>
           </div>
         </div>
-
-        <div class="alert-stack">
-          <article v-for="item in alerts" :key="item.id" class="alert-panel" :class="{ urgent: item.days_left <= 30 }">
-            <div>
-              <strong>{{ item.tenant_name || item.contract_no }}</strong>
-              <p>{{ item.contract_no }} · {{ item.room_no }} · 到期日 {{ item.end_date }}</p>
-            </div>
-            <div class="alert-days">
-              <span>剩余天数</span>
-              <strong>{{ item.days_left }}</strong>
-            </div>
+        <div class="building-profile-groups">
+          <article
+            v-for="group in operationsProfileView.groups"
+            :key="group.code"
+            :class="{ unavailable: !group.available }"
+            :data-testid="`building-profile-group-${group.code}`"
+          >
+            <header>
+              <span>{{ group.name }}</span>
+              <strong>{{ group.statusLabel }}</strong>
+            </header>
+            <p>{{ group.note }}</p>
+            <small>范围：{{ group.zoneLabel }}</small>
           </article>
-          <div v-if="!alerts.length" class="compact-empty">90 天内暂无到期合同</div>
         </div>
+        <p
+          v-if="operationsProfileView.unavailableGroupSafety"
+          class="building-profile-safety"
+          data-testid="building-profile-safety"
+        >{{ operationsProfileView.unavailableGroupSafety }}</p>
+      </section>
+      <div class="health-signal-items" data-testid="snapshot-dashboard-metrics">
+        <MetricTile
+          v-for="item in snapshotFacts"
+          :key="item.code"
+          :label="item.label"
+          :value="item.value"
+          :helper="item.available ? snapshotMetricSourceLabel : item.reason"
+          :tone="item.available ? 'info' : 'warning'"
+        />
+      </div>
+      <div class="pill-group">
+        <button
+          v-if="availableTabs.includes('evidence')"
+          type="button"
+          class="btn btn-compact"
+          data-testid="snapshot-dashboard-open-evidence"
+          @click="emit('select-tab', 'evidence')"
+        >查看数据依据</button>
+        <button
+          v-if="availableTabs.includes('exchange')"
+          type="button"
+          class="btn btn-compact"
+          data-testid="snapshot-dashboard-open-exchange"
+          @click="emit('select-tab', 'exchange')"
+        >进入文件交换</button>
+      </div>
+    </article>
 
-        <div class="dashboard-inline-stats">
-          <div v-for="item in alertHighlights" :key="item.label" class="mini-stat">
-            <span>{{ item.label }}</span>
-            <strong>{{ item.value }}</strong>
+    <details v-if="detailListsAvailable" class="demo-secondary-details dashboard-health-details">
+      <summary>
+        <span>核心指标</span>
+        <strong>经营健康度</strong>
+      </summary>
+    <article class="card dashboard-summary-card" data-testid="dashboard-health">
+      <div class="card-header compact">
+        <div>
+          <div class="section-label">核心指标</div>
+          <h3 class="card-title">经营健康度</h3>
+        </div>
+      </div>
+
+      <div class="health-signal-band" data-testid="dashboard-signal-band">
+        <div v-for="group in healthSignalGroups" :key="group.key" class="health-signal-group" :class="group.tone">
+          <div class="health-signal-label">
+            <span>{{ group.label }}</span>
+            <strong>{{ group.headline }}</strong>
           </div>
-        </div>
-      </article>
-
-      <article class="card dashboard-card">
-        <div class="card-header compact">
-          <div>
-            <div class="section-label">状态分布</div>
-            <h3 class="card-title">合同状态概览</h3>
-          </div>
-        </div>
-
-        <div class="chart-layout">
-          <EChartPanel :option="statusOption" :empty="!statusRows.length" empty-text="暂无合同状态分布数据" :height="240" />
-          <div class="legend-list">
-            <div v-for="item in statusRows" :key="item.label" class="legend-row">
-              <div class="legend-meta">
-                <div class="legend-title">
-                  <span class="status-swatch" :style="{ background: item.color }" />
-                  <span>{{ item.label }}</span>
-                </div>
-                <small>{{ item.percent }}%</small>
+          <div class="health-signal-items">
+            <MetricTile
+              v-for="item in group.items"
+              :key="item.key"
+              :label="item.label"
+              :value="item.value"
+              :helper="item.helper"
+              :tone="item.tone"
+            >
+              <div v-if="item.progress != null" class="health-meter" :class="item.tone">
+                <i :style="{ width: `${item.progress}%` }"></i>
               </div>
-              <strong>{{ item.count }}</strong>
-            </div>
+            </MetricTile>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
+    </details>
 
-      <article class="card dashboard-card wide">
-        <div class="card-header compact">
-          <div>
-            <div class="section-label">楼栋表现</div>
-            <h3 class="card-title">楼栋/区域表现</h3>
-          </div>
-        </div>
-
-        <div class="tower-summary-grid">
-          <article v-for="item in towerRows" :key="item.tower" class="tower-summary-card">
-            <div class="tower-summary-head">
-              <strong>{{ item.tower }}</strong>
-              <span>{{ item.count }} 份执行中合同</span>
-            </div>
-            <div class="tower-summary-metrics">
-              <div>
-                <span>在租面积</span>
-                <strong>{{ formatArea(item.area) }} ㎡</strong>
-              </div>
-              <div>
-                <span>出租率</span>
-                <strong>{{ item.occupancyRate }}%</strong>
-              </div>
-              <div>
-                <span>平均日租</span>
-                <strong>{{ formatCurrency(item.avgDailyRent) }} 元/㎡/天</strong>
-              </div>
-              <div>
-                <span>月租金</span>
-                <strong>{{ formatCurrency(item.rent) }}</strong>
-              </div>
-            </div>
-            <div class="tower-summary-foot">
-              <span>收入占比 {{ item.revenueShare }}%</span>
-                <span>单份合同平均面积 {{ formatArea(item.avgContractArea) }} ㎡</span>
-            </div>
-          </article>
-        </div>
-
-        <div class="tower-chart-grid">
-          <div class="tower-chart-panel">
-            <div class="section-label">面积去化</div>
-            <EChartPanel :option="towerMixOption" :empty="!towerRows.length" empty-text="暂无楼栋面积数据" :height="300" />
-          </div>
-          <div class="tower-chart-panel">
-            <div class="section-label">租金表现</div>
-            <EChartPanel :option="towerRentOption" :empty="!towerRows.length" empty-text="暂无楼栋租金数据" :height="300" />
-          </div>
-        </div>
-      </article>
-
-      <article class="card dashboard-card wide">
-        <div class="card-header compact">
-          <div>
-            <div class="section-label">收入预测</div>
-            <h3 class="card-title">未来 12 个月收入预测</h3>
-          </div>
-        </div>
-
-        <EChartPanel :option="forecastOption" :empty="!forecastRows.length" empty-text="暂无未来收入预测" :height="320" />
-      </article>
-    </div>
   </section>
 </template>

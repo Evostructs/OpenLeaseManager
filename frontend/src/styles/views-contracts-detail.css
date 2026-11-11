@@ -1,0 +1,283 @@
+.contract-detail-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.82fr);
+}
+
+.contract-detail-grid .table-wrapper {
+  max-width: 100%;
+}
+
+.contract-receivables-context.focused {
+  border-radius: 8px;
+  outline: 2px solid rgba(37, 99, 235, 0.24);
+  outline-offset: 8px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.stat-grid > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.stat-grid > div > :not(.section-label) {
+  overflow-wrap: anywhere;
+}
+
+.decision-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 14px;
+}
+
+.contract-detail-lifecycle-strip {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.86);
+  padding: 14px;
+}
+
+.contract-detail-lifecycle-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.contract-detail-lifecycle-head h3 {
+  margin: 2px 0 0;
+  color: var(--text-strong);
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.contract-detail-lifecycle-head small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.contract-detail-stage-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.contract-detail-stage {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-top: 4px solid rgba(148, 163, 184, 0.72);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 8px 9px;
+}
+
+.contract-detail-stage b,
+.contract-detail-stage small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contract-detail-stage b {
+  color: var(--text-strong);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.contract-detail-stage small {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.contract-detail-stage.done {
+  border-top-color: var(--tone-success);
+  background: rgba(236, 253, 245, 0.72);
+}
+
+.contract-detail-stage.active {
+  border-color: rgba(37, 99, 235, 0.34);
+  border-top-color: var(--tone-info);
+  box-shadow: 0 0 0 2px rgba(191, 219, 254, 0.48);
+}
+
+.contract-detail-stage.warning.active {
+  border-top-color: var(--tone-warning);
+  background: rgba(255, 251, 235, 0.84);
+}
+
+.contract-detail-stage.muted {
+  opacity: 0.64;
+}
+
+.decision-card-heading {
+  margin: 4px 0 0;
+  color: var(--text-strong);
+  font-size: 17px;
+  font-weight: 680;
+}
+
+.decision-card-body,
+.decision-room-list,
+.decision-risk-list {
+  display: grid;
+  gap: 10px;
+}
+
+.decision-signal-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.decision-brief-grid,
+.decision-support-grid {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.decision-brief-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.decision-support-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.decision-brief-item,
+.decision-support-item {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--tone-info);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.84);
+  padding: 10px 12px;
+}
+
+.decision-brief-item span,
+.decision-support-item span,
+.decision-brief-item small,
+.decision-support-item small {
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.decision-brief-item strong,
+.decision-support-item strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-strong);
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.decision-brief-item.success,
+.decision-support-item.success {
+  border-left-color: var(--tone-success);
+  background: rgba(240, 253, 244, 0.88);
+}
+
+.decision-brief-item.warning,
+.decision-support-item.warning {
+  border-left-color: var(--tone-warning);
+  background: rgba(255, 251, 235, 0.9);
+}
+
+.decision-brief-item.error,
+.decision-support-item.error {
+  border-left-color: var(--tone-danger);
+  background: rgba(254, 242, 242, 0.9);
+}
+
+.decision-metric-grid,
+.decision-subgrid {
+  display: grid;
+  gap: 10px;
+}
+
+.decision-metric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.decision-subgrid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.decision-metric-grid > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+  padding: 10px 12px;
+}
+
+.decision-metric-grid span,
+.decision-line > span:first-child,
+.decision-room-list span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.decision-metric-grid strong {
+  color: var(--text-strong);
+  font-size: 16px;
+}
+
+.decision-list {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.decision-line,
+.decision-room-list > div,
+.decision-risk-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.decision-line:last-child,
+.decision-room-list > div:last-child,
+.decision-risk-list > div:last-child {
+  border-bottom: 0;
+}
+
+.decision-line > span:last-child,
+.decision-room-list span,
+.decision-risk-list strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+

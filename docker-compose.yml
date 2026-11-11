@@ -1,25 +1,40 @@
+name: openleaseops
 services:
-  lease-manager:
+  web:
+    image: openleaseops:2.0.0
     build:
       context: .
-      args:
-        VITE_APP_TITLE: ${APP_TITLE:-OpenLeaseOps}
-        VITE_APP_SUBTITLE: ${APP_SUBTITLE:-租赁运营后台}
-        VITE_APP_MARK: ${APP_MARK:-LM}
-    container_name: ${CONTAINER_NAME:-lease-manager}
+      target: runtime
     restart: unless-stopped
-    env_file:
-      - .env
-    ports:
-      - "${APP_PORT:-8080}:8080"
-    volumes:
-      - ./data:/data
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 128
+    mem_limit: 1g
+    cpus: 2.0
+    env_file: .env
     environment:
-      - DATA_DIR=/data
-      - TZ=Asia/Shanghai
-      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET is required}
-      - COOKIE_SECURE=${COOKIE_SECURE:-false}
-      - APP_VERSION=${APP_VERSION:-local}
-      - CONTRACT_NO_PREFIX=${CONTRACT_NO_PREFIX:-LEASE}
-      - DATA_ENCRYPTION_ENABLED=${DATA_ENCRYPTION_ENABLED:-false}
-      - DATA_ENCRYPTION_KEY=${DATA_ENCRYPTION_KEY:-}
+      DATA_DIR: /data
+      JWT_SECRET: ${JWT_SECRET:?Run python scripts/configure.py first}
+    ports:
+      - "${LEASE_BIND_ADDRESS:-127.0.0.1}:${LEASE_PORT:-8080}:8080"
+    volumes:
+      - lease-data:/data
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
+  lease-data:

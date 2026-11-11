@@ -1,0 +1,147 @@
+@media (max-width: 1024px) {
+  .contract-form-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .contract-form-grid,
+  .contract-form-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .contract-form-summary,
+  .contract-form-grid,
+  .contract-form-grid.compact {
+    grid-template-columns: 1fr;
+  }
+
+  .contract-form-section {
+    padding: 12px;
+  }
+
+  .contract-form-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .contract-form-section-heading .btn {
+    width: 100%;
+  }
+}
+
+.text-danger {
+  color: var(--error-text);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.success {
+  color: var(--tone-success);
+  background: var(--tone-success-soft);
+}
+
+.badge.warning {
+  color: var(--tone-warning);
+  background: var(--tone-warning-soft);
+}
+
+.badge.error,
+.badge.danger {
+  color: var(--tone-danger);
+  background: var(--tone-danger-soft);
+}
+
+.badge.info {
+  color: var(--tone-info);
+  background: var(--tone-info-soft);
+}
+
+.badge.muted {
+  color: var(--tone-muted);
+  background: var(--tone-muted-soft);
+}
+
+.kpi-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.kpi-card {
+  padding: 18px 20px;
+}
+
+.kpi-card h3 {
+  margin: 10px 0 2px;
+  font-size: 34px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--text-strong);
+}
+
+.kpi-card h3,
+.alert-days strong,
+.mini-stat strong,
+.tool-summary-card strong,
+.tower-summary-metrics strong,
+.tower-summary-values strong,
+.legend-row strong,
+.data-table td.right {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', 'Segoe UI Variable Display', 'Inter', 'Roboto', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+.kpi-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(360px, 1.1fr) minmax(340px, 0.9fr);
+}
+
+.dashboard-card {
+  padding: 22px;
+}
+
+.dashboard-card.wide {
+  grid-column: span 2;
+}
+
+.operations-dashboard-card {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 20px;
+}
+
+.operations-workbench-page,
+.operations-analytics-page,
+.ai-assist-page,
+.risk-center-page {
+  width: min(100%, 1280px);
+}
+
+.operations-workbench-page {
+  width: min(100%, 1360px);
+  gap: 14px;
+}
+
+.operations-analytics-page {
+  width: min(100%, 1360px);
+  gap: 14px;
+}
+

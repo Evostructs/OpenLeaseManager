@@ -27,3 +27,28 @@ export function sortTableRows(rows, getter, direction) {
   const factor = direction === 'desc' ? -1 : 1
   return [...rows].sort((left, right) => factor * compareTableValues(getter(left), getter(right)))
 }
+
+export function listTotalPages(total, pageSize) {
+  return pageSize === 0 ? 1 : Math.max(1, Math.ceil(total / pageSize))
+}
+
+export function pageRows(rows, pager) {
+  if (pager.pageSize === 0) return rows
+  const start = (pager.page - 1) * pager.pageSize
+  return rows.slice(start, start + pager.pageSize)
+}
+
+export function pageLabel(pager, totalPages) {
+  return pager.pageSize === 0 ? '全部' : `${pager.page} / ${totalPages}`
+}
+
+export function showingText(total, pager) {
+  if (pager.pageSize === 0) return `显示全部 ${total} 条`
+  const start = total ? (pager.page - 1) * pager.pageSize + 1 : 0
+  const end = Math.min(pager.page * pager.pageSize, total)
+  return `显示 ${start}-${end} 条`
+}
+
+export function clampPager(pager, totalPages) {
+  pager.page = Math.min(Math.max(1, pager.page), totalPages)
+}

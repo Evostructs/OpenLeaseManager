@@ -29,7 +29,7 @@ def migrate_plaintext_pdfs_at_startup() -> dict:
     # The backup archive itself is encrypted by create_backup_archive when data encryption is enabled.
     from app.services.backup import create_backup_archive
 
-    safety_backup = create_backup_archive()
+    safety_backup = create_backup_archive("safety")
     result = encrypt_plaintext_pdfs_without_backup()
     result["safety_backup"] = safety_backup.get("filename")
     return result

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from datetime import date
 import io
 import os
 from collections import Counter
@@ -12,7 +11,10 @@ from openpyxl.styles import Font
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.time import today_in_timezone
+from app.core.excel_safety import sanitize_workbook
 from app.models import Contract, OperationLog, Room, User
+from app.services.common import contract_room_items
 
 
 def run_integrity_check(db: Session) -> dict:
@@ -40,10 +42,18 @@ def run_integrity_check(db: Session) -> dict:
         ]
         if any((value or 0) < 0 for value in numeric_fields):
             issues.append({"type": "negative_values", "severity": "high", "contract_no": contract.contract_no, "detail": "面积、租金、单价、保证金、物业费或免租期存在负数"})
-        if contract.status in active_statuses and contract.room_no and contract.room_no not in room_no_set:
-            issues.append({"type": "missing_room_reference", "severity": "medium", "contract_no": contract.contract_no, "detail": f"合同关联的房间 {contract.room_no} 不在房间台账中"})
+        for room_item in contract_room_items(contract):
+            room_no = room_item["room_no"]
+            if contract.status in active_statuses and room_no and room_no not in room_no_set:
+                issues.append({"type": "missing_room_reference", "severity": "medium", "contract_no": contract.contract_no, "detail": f"合同关联的房间 {room_no} 不在房间台账中"})
 
-    active_rooms = [item.room_no for item in contracts if item.room_no and item.status in active_statuses]
+    active_rooms = [
+        room_item["room_no"]
+        for contract in contracts
+        if contract.status in active_statuses
+        for room_item in contract_room_items(contract)
+        if room_item["room_no"]
+    ]
     for room_no, count in Counter(active_rooms).items():
         if count > 1:
             issues.append({"type": "duplicate_room", "severity": "medium", "contract_no": room_no, "detail": f"室号 {room_no} 存在 {count} 份有效合同"})
@@ -133,10 +143,11 @@ def export_integrity_report(db: Session) -> StreamingResponse:
         for column, width in enumerate([18, 12, 20, 80], 1):
             sheet.column_dimensions[openpyxl.utils.get_column_letter(column)].width = width
 
+    sanitize_workbook(workbook)
     buffer = io.BytesIO()
     workbook.save(buffer)
     buffer.seek(0)
-    filename = f"完整性检查_{date.today().strftime('%Y%m%d')}.xlsx"
+    filename = f"完整性检查_{today_in_timezone().strftime('%Y%m%d')}.xlsx"
     return StreamingResponse(
         buffer,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

@@ -1,5 +1,6 @@
 <script setup>
-import { reactive, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
+import { profileSpaceOptions } from '../lib/roomsDomain'
 import BaseModal from './BaseModal.vue'
 
 const blank = () => ({
@@ -17,15 +18,34 @@ const props = defineProps({
   room: {
     type: Object,
     default: null
+  },
+  operationsProfile: {
+    type: Object,
+    default: () => ({})
   }
 })
 
 const emit = defineEmits(['close', 'save'])
 const form = reactive(blank())
+const configuredSpaceOptions = computed(() => profileSpaceOptions(props.operationsProfile))
+const roomSpaceOptions = computed(() => {
+  const options = [...configuredSpaceOptions.value]
+  const current = String(form.tower || '').trim()
+  if (current && !options.some((item) => item.value === current)) {
+    options.push({ code: current, value: current, label: current, kind: '' })
+  }
+  return options
+})
+const defaultSpaceValue = computed(() => (
+  configuredSpaceOptions.value.length === 1 ? configuredSpaceOptions.value[0].value : ''
+))
 
 watch(
-  () => props.room,
-  (value) => Object.assign(form, blank(), value || {}),
+  () => [props.room, props.operationsProfile],
+  ([value]) => {
+    Object.assign(form, blank(), value || {})
+    if (!form.tower) form.tower = defaultSpaceValue.value
+  },
   { immediate: true }
 )
 </script>
@@ -34,8 +54,12 @@ watch(
   <BaseModal :open="open" :title="room?.id ? '编辑房间' : '新增房间'" size="small" @close="emit('close')">
     <div class="form-grid">
       <label class="form-field">
-        <span class="section-label">楼栋/区域</span>
-        <input v-model="form.tower" class="input" placeholder="如 A 座、1 号楼、商业区" />
+        <span class="section-label">空间分区</span>
+        <select v-model="form.tower" class="select">
+          <option v-for="option in roomSpaceOptions" :key="option.code || option.value" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
       </label>
 
       <label class="form-field">
@@ -50,7 +74,12 @@ watch(
 
       <label class="form-field">
         <span class="section-label">类型</span>
-        <input v-model="form.room_type" class="input" placeholder="办公 / 商业 / 自定义业态" />
+        <select v-model="form.room_type" class="select">
+          <option value="办公">办公</option>
+          <option value="商业">商业</option>
+          <option value="餐饮">餐饮</option>
+          <option value="健身">健身</option>
+        </select>
       </label>
 
       <label class="form-field">

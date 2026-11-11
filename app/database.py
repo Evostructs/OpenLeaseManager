@@ -26,8 +26,12 @@ def _set_sqlite_pragmas(dbapi_connection, _connection_record) -> None:
         try:
             cursor.execute("PRAGMA journal_mode=WAL")
         except sqlite3.OperationalError:
-            pass
-        cursor.execute("PRAGMA synchronous=NORMAL")
+            print("警告: 无法启用 WAL 模式，SQLite 并发性能将下降")
+        # Money/closing records should sync the WAL before acknowledging a
+        # commit. NORMAL can lose recent commits after OS/power failure.
+        cursor.execute("PRAGMA synchronous=FULL")
+        # SQLite 默认不开外键约束；不开的话硬删除会留悬挂引用（孤儿数据）
+        cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 
 

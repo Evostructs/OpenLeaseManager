@@ -1,0 +1,305 @@
+.chart-panel {
+  width: 100%;
+}
+
+.chart-empty,
+.compact-empty {
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  color: var(--text-faint);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.92) 100%);
+}
+
+.compact-empty {
+  min-height: 96px;
+  padding: 20px;
+}
+
+.skeleton-line {
+  display: block;
+  min-width: 0;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(226, 232, 240, 0.72), rgba(241, 245, 249, 0.96), rgba(226, 232, 240, 0.72));
+  background-size: 220% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton-line-short {
+  width: 42%;
+}
+
+.skeleton-line-xs {
+  width: 48px;
+}
+
+.skeleton-line-sm {
+  width: 96px;
+}
+
+.skeleton-line-md {
+  width: 72%;
+}
+
+.skeleton-line-medium {
+  width: 68%;
+}
+
+.skeleton-line-label {
+  width: 96px;
+}
+
+.skeleton-line-title {
+  width: min(280px, 74%);
+  height: 18px;
+}
+
+.skeleton-line-value {
+  width: 58%;
+  height: 24px;
+}
+
+.metric-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.risk-command-grid > .metric-skeleton-grid,
+.receivables-loading-layout > .metric-skeleton-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.metric-skeleton-item,
+.chart-skeleton,
+.table-skeleton {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--shadow-sm);
+}
+
+.metric-skeleton-item {
+  display: grid;
+  gap: 10px;
+  min-height: 96px;
+  padding: 14px;
+}
+
+.chart-skeleton {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 16px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.chart-skeleton-bars {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  min-height: 150px;
+}
+
+.chart-skeleton-bars i {
+  flex: 1;
+  min-width: 0;
+  border-radius: 8px 8px 0 0;
+  background: rgba(226, 232, 240, 0.82);
+}
+
+.table-skeleton {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+}
+
+.table-skeleton-row {
+  display: grid;
+  grid-template-columns: repeat(var(--skeleton-columns), minmax(0, 1fr));
+  gap: 14px;
+  min-height: 52px;
+  align-items: center;
+  padding: 0 16px;
+  border-top: 1px solid rgba(226, 232, 240, 0.72);
+}
+
+.table-skeleton-head {
+  min-height: 44px;
+  border-top: 0;
+  background: rgba(248, 250, 252, 0.86);
+}
+
+.page-skeleton-card {
+  display: grid;
+  gap: 16px;
+}
+
+.page-skeleton-heading {
+  display: grid;
+  gap: 10px;
+}
+
+.page-skeleton-grid,
+.receivables-loading-layout .page-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.receivables-loading-layout,
+.risk-loading-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.contracts-table-loading {
+  margin: 16px 24px 0;
+}
+
+.refreshing-indicator {
+  opacity: 0.78;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-position: 120% 0;
+  }
+
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .metric-skeleton-grid,
+  .risk-command-grid > .metric-skeleton-grid,
+  .receivables-loading-layout > .metric-skeleton-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .page-skeleton-grid,
+  .receivables-loading-layout .page-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .metric-skeleton-grid,
+  .risk-command-grid > .metric-skeleton-grid,
+  .receivables-loading-layout > .metric-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-skeleton-row {
+    gap: 8px;
+    padding: 0 12px;
+  }
+}
+
+.chart-card {
+  min-width: 0;
+  max-width: 100%;
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.chart-card.tone-info {
+  border-top: 3px solid var(--tone-info);
+}
+
+.chart-card.tone-success {
+  border-top: 3px solid var(--tone-success);
+}
+
+.chart-card.tone-warning {
+  border-top: 3px solid var(--tone-warning);
+}
+
+.chart-card.tone-danger {
+  border-top: 3px solid var(--tone-danger);
+}
+
+.chart-card.tone-muted {
+  border-top: 3px solid var(--tone-muted);
+}
+
+.chart-card-header {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chart-card-copy {
+  min-width: 0;
+}
+
+.chart-card .chart-panel,
+.chart-card .chart-empty {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.chart-card-copy h3 {
+  margin: 2px 0 0;
+  color: var(--text-strong);
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.chart-card-copy p,
+.chart-card-insight {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.chart-card-insight {
+  margin: 0;
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.86);
+  padding: 8px 10px;
+}
+
+.chart-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.visual-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.legend-list,
+.detail-list,
+.backup-list {
+  display: grid;
+  gap: 12px;
+}
+
+.split-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(320px, 0.94fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.split-grid > * {
+  min-width: 0;
+}
+

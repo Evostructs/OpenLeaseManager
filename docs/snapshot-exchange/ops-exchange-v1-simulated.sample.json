@@ -1,0 +1,322 @@
+{
+  "exchange_version": "OPS_EXCHANGE_V1",
+  "delivery_id": "DELIVERY-20260805-SAMPLE-001",
+  "source_system_code": "DEMO-B-OPS",
+  "building_code": "DEMO_B",
+  "metric_definition_version": "OPS_V1",
+  "period_start": "2026-08-01",
+  "period_end": "2026-08-31",
+  "as_of_date": "2026-08-05",
+  "source_observed_at": "2026-08-05T08:00:00Z",
+  "source_updated_at": "2026-08-05T07:30:00Z",
+  "source_published_at": "2026-08-05T09:00:00Z",
+  "source_publication_revision": 1,
+  "source_publication_ref": "PUB-20260805-SAMPLE-001",
+  "correction_of_delivery_id": null,
+  "correction_reason": null,
+  "data_classification": "simulated",
+  "digest_profile": "OPS_CANONICAL_V1",
+  "digest_algorithm": "sha-256",
+  "content_digest": "f0c33c3f4e58a833155aaa369258a13c542b093ddb7ac2baf1256e6397456917",
+  "metrics": [
+    {
+      "code": "area.leased_sqm",
+      "value": "75000",
+      "numerator": "75000",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:area.leased_sqm"
+      ]
+    },
+    {
+      "code": "area.rentable_sqm",
+      "value": "100000",
+      "numerator": "100000",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:area.rentable_sqm"
+      ]
+    },
+    {
+      "code": "arrears.balance",
+      "value": "1500000",
+      "numerator": "1500000",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:arrears.balance"
+      ]
+    },
+    {
+      "code": "billing.receivable_month",
+      "value": "12000000",
+      "numerator": "12000000",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:billing.receivable_month"
+      ]
+    },
+    {
+      "code": "collection.rate_month",
+      "value": "90",
+      "numerator": "10800000",
+      "denominator": "12000000",
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:collection.rate_month"
+      ]
+    },
+    {
+      "code": "collection.received_month",
+      "value": "10800000",
+      "numerator": "10800000",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:collection.received_month"
+      ]
+    },
+    {
+      "code": "expiry.area_pressure_180d",
+      "value": "21.333333",
+      "numerator": "16000",
+      "denominator": "75000",
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:expiry.area_pressure_180d"
+      ]
+    },
+    {
+      "code": "expiry.area_pressure_365d",
+      "value": "33.333333",
+      "numerator": "25000",
+      "denominator": "75000",
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:expiry.area_pressure_365d"
+      ]
+    },
+    {
+      "code": "expiry.area_pressure_90d",
+      "value": "10.666667",
+      "numerator": "8000",
+      "denominator": "75000",
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:expiry.area_pressure_90d"
+      ]
+    },
+    {
+      "code": "expiry.contract_count_90d",
+      "value": "12",
+      "numerator": "12",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:expiry.contract_count_90d"
+      ]
+    },
+    {
+      "code": "expiry.rent_12m",
+      "value": null,
+      "numerator": null,
+      "denominator": null,
+      "covered_area_sqm": null,
+      "eligible_area_sqm": "100000",
+      "covered_days": 0,
+      "eligible_days": 31,
+      "estimate_share": null,
+      "estimate_method": "",
+      "completeness_status": "unknown",
+      "freshness_status": "unknown",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:expiry.rent_12m"
+      ]
+    },
+    {
+      "code": "occupancy.area_rate",
+      "value": "75",
+      "numerator": "75000",
+      "denominator": "100000",
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:occupancy.area_rate"
+      ]
+    },
+    {
+      "code": "rent.effective_daily",
+      "value": "1.022222",
+      "numerator": "2300000",
+      "denominator": "2250000",
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:rent.effective_daily"
+      ]
+    },
+    {
+      "code": "risk.open_items",
+      "value": "0",
+      "numerator": "0",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:risk.open_items"
+      ]
+    },
+    {
+      "code": "vacancy.area_sqm",
+      "value": "25000",
+      "numerator": "25000",
+      "denominator": null,
+      "covered_area_sqm": "100000",
+      "eligible_area_sqm": "100000",
+      "covered_days": 31,
+      "eligible_days": 31,
+      "estimate_share": "0",
+      "estimate_method": "",
+      "completeness_status": "complete",
+      "freshness_status": "current",
+      "calculation_version": "ops-source-v1",
+      "source_batch_ref": "BATCH-20260805-SAMPLE-001",
+      "source_record_refs": [
+        "REC:vacancy.area_sqm"
+      ]
+    }
+  ],
+  "workflow": {
+    "submitted": {
+      "actor_ref": "user:submitter",
+      "occurred_at": "2026-08-05T08:10:00Z"
+    },
+    "reviewed": {
+      "actor_ref": "user:reviewer",
+      "occurred_at": "2026-08-05T08:30:00Z"
+    },
+    "published": {
+      "actor_ref": "user:publisher",
+      "occurred_at": "2026-08-05T09:00:00Z"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+/*
+ * 超宽屏与超大屏适配（27 寸 2K、32/42 寸 4K 显示器及电视）。
+ *
+ * 策略：对 body 使用 CSS zoom 做整站等比放大，等价于浏览器页面缩放的逆向，
+ * px / vw / vh / 栅格 / 弹窗 / toast 全部在同一缩放坐标系内自洽；
+ * 同时放宽 .content 上限，提高大屏空间利用率。
+ * 媒体查询按物理视口宽度评估，不受 zoom 影响，无循环依赖。
+ * Firefox 126 以下不支持 zoom，自动降级为原有 1480px 居中布局，功能无损。
+ *
+ * 注意（标准化 zoom 行为准则，Chrome/Firefox 126+ 实测）：
+ * 1. getBoundingClientRect / computedStyle / clientWidth 与 fixed 定位的 left/top
+ *    同属一套逻辑坐标系，JS 定位无需也不应再按 body zoom 换算；
+ * 2. vw/vh/dvh 不随 zoom 缩放（始终按物理视口解析），高度类规则须按 1/zoom 归一（见下方各档）；
+ * 3. Vue scoped 样式 teleport 后祖孙选择器失效，状态类须绑到 teleport 元素自身；
+ * 4. backdrop-filter 会为 fixed 后代创建包含块，fixed 弹层一律 teleport 到 body。
+ */
+
+/* 2560×1440（27 寸 2K）及更宽：放大 1.25 倍，等效逻辑视口 2048×1152 */
+@media (min-width: 2560px) {
+  body {
+    zoom: 1.25;
+  }
+
+  .content {
+    width: min(100%, 1700px);
+  }
+
+  /* viewport 单位不随 zoom 缩放（始终按物理视口解析），
+     高度类规则按 1/1.25 = 0.8 归一，避免超高与多余滚动 */
+  .app-shell {
+    min-height: 80vh;
+  }
+
+  .sidebar {
+    height: 80vh;
+  }
+
+  .page-switcher,
+  .page-switcher > .content {
+    min-height: calc(80vh - 60px);
+  }
+
+  .login-shell {
+    min-height: 80vh;
+    min-height: 80dvh;
+  }
+
+  .modal-panel {
+    max-height: min(72vh, calc(80dvh - 48px));
+  }
+}
+
+/* 3840×2160（32/42 寸 4K）及更宽：放大 1.5 倍，等效逻辑视口 2560×1440 */
+@media (min-width: 3840px) {
+  body {
+    zoom: 1.5;
+  }
+
+  .content {
+    width: min(100%, 1900px);
+  }
+
+  /* 按 1/1.5 ≈ 0.6667 归一 */
+  .app-shell {
+    min-height: 66.667vh;
+  }
+
+  .sidebar {
+    height: 66.667vh;
+  }
+
+  .page-switcher,
+  .page-switcher > .content {
+    min-height: calc(66.667vh - 60px);
+  }
+
+  .login-shell {
+    min-height: 66.667vh;
+    min-height: 66.667dvh;
+  }
+
+  .modal-panel {
+    max-height: min(60vh, calc(66.667dvh - 48px));
+  }
+}

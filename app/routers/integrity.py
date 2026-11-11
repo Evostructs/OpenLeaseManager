@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.core.access import require_admin
+from app.services.property_scope import require_platform_admin
 from app.core.config import get_settings
 from app.database import get_db
 from app.services.integrity import export_integrity_report, run_integrity_check
 
 
-router = APIRouter(prefix="/api/system", tags=["system"], dependencies=[Depends(require_admin)])
+router = APIRouter(prefix="/api/system", tags=["system"], dependencies=[Depends(require_platform_admin)])
 
 
 @router.get("/health")
@@ -18,8 +19,8 @@ def health_check(db: Session = Depends(get_db)):
     try:
         db.execute(text("SELECT 1"))
         return {"status": "ok", "db": "connected"}
-    except Exception as exc:
-        return {"status": "error", "db": str(exc)}
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "error", "db": "unavailable"})
 
 
 @router.get("/integrity-check")

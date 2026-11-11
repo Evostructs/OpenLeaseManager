@@ -1,0 +1,84 @@
+/*
+ * 打印适配：台账/报表类页面的纸面输出。
+ * 隐藏全部交互元素（导航/按钮/筛选/分页/弹层），数据内容全宽排版；
+ * 卡片去阴影边框化、表格加框防断行，徽章补边框（浏览器默认不打印背景色）。
+ */
+@media print {
+  .sidebar,
+  .topbar,
+  .sidebar-scrim,
+  .mobile-bottom-nav,
+  .toast-stack,
+  .modal-backdrop,
+  .context-modal-backdrop,
+  .app-mobile-sheet,
+  .control-help-panel,
+  .btn,
+  .icon-btn,
+  .table-row-actions,
+  .pager-bar,
+  .table-footer,
+  [class*="toolbar"],
+  [class*="filters"],
+  [class*="command-bar"],
+  [class*="query-row"],
+  [class*="status-chips"] {
+    display: none !important;
+  }
+
+  .app-shell,
+  .main-area,
+  .content {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body {
+    zoom: 1 !important;
+    background: #fff !important;
+  }
+
+  .card,
+  .stat-card,
+  .hero-card,
+  .panel,
+  .table-card,
+  .summary-card {
+    box-shadow: none !important;
+    border: 1px solid #999 !important;
+    border-radius: 4px !important;
+    break-inside: avoid;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 12px !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  th,
+  td {
+    border: 1px solid #999 !important;
+    padding: 4px 6px !important;
+  }
+
+  .badge,
+  [class*="tone-"] {
+    border: 1px solid currentColor !important;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+}

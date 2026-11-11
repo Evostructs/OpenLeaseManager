@@ -1,0 +1,253 @@
+.backup-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.legend-meta {
+  display: grid;
+  gap: 6px;
+}
+
+.legend-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.status-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex: 0 0 10px;
+}
+
+.legend-meta small {
+  color: var(--text-faint);
+}
+
+.pill-group,
+.legend-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.metric-pill,
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.metric-pill.warning,
+.legend-chip.warning {
+  color: var(--tone-warning);
+  background: var(--tone-warning-soft);
+}
+
+.metric-pill.info,
+.legend-chip.info {
+  color: var(--tone-info);
+  background: var(--tone-info-soft);
+}
+
+.metric-pill.success,
+.legend-chip.success {
+  color: var(--tone-success);
+  background: var(--tone-success-soft);
+}
+
+.metric-pill.danger,
+.metric-pill.error,
+.legend-chip.error {
+  color: var(--tone-danger);
+  background: var(--tone-danger-soft);
+}
+
+.metric-pill.muted,
+.legend-chip.muted {
+  color: var(--tone-muted);
+  background: var(--tone-muted-soft);
+}
+
+.alert-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.alert-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-left: 4px solid var(--warning-text);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+.alert-panel p,
+.compact-list-item p,
+.integrity-card p {
+  margin: 4px 0 0;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.alert-panel.urgent {
+  border-left-color: var(--error-text);
+}
+
+.alert-days {
+  text-align: right;
+}
+
+.alert-days span,
+.mini-stat span,
+.tool-summary-card span {
+  display: block;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.alert-days strong,
+.mini-stat strong,
+.tool-summary-card strong {
+  color: var(--text-strong);
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.tool-summary-card small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.mini-stat small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dashboard-inline-stats,
+.upload-summary,
+.tool-summary-grid,
+.maintenance-grid,
+.admin-config-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.dashboard-inline-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.report-insight-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 0.88fr) minmax(340px, 1.08fr) minmax(300px, 0.9fr);
+  margin-top: 16px;
+}
+
+.receivable-visual-grid {
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.92fr) minmax(300px, 0.8fr);
+  margin-top: 16px;
+}
+
+.receivable-priority-card {
+  margin-top: 14px;
+}
+
+.receivable-workspace .receivable-priority-card {
+  margin-top: 0;
+}
+
+.report-insight-panel {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.64);
+  box-shadow: var(--shadow-sm);
+}
+
+.aging-bucket-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 10px;
+}
+
+.aging-bucket {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--surface-muted);
+}
+
+.aging-bucket span,
+.aging-bucket small,
+.debtor-row p {
+  display: block;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.aging-bucket strong,
+.debtor-row span {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-strong);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums lining-nums;
+  overflow-wrap: anywhere;
+}
+
+.debtor-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.debtor-row {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.debtor-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.debtor-row strong {
+  display: block;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+
+.debtor-row p {
+  margin: 2px 0 0;
+}
+

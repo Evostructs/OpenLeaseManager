@@ -1,0 +1,101 @@
+{
+  "version": "2026-08-22.4",
+  "rules": [
+    {
+      "id": "cn-prohibited-organization-name",
+      "mode": "regex",
+      "terms": [
+        "法轮功(?!(?:能(?:测试|校验|检查|模块|研发|验证|评估)|率(?:测试|计算|分析|校验|评估))$)",
+        "法轮大法",
+        "falungong",
+        "falundafa"
+      ]
+    },
+    {
+      "id": "cn-separatism-short-name",
+      "mode": "exact",
+      "terms": [
+        "台独",
+        "臺獨",
+        "藏独",
+        "藏獨",
+        "疆独",
+        "疆獨",
+        "港独",
+        "港獨"
+      ]
+    },
+    {
+      "id": "cn-separatism-promotion",
+      "mode": "regex",
+      "terms": [
+        "台湾独立",
+        "西藏独立",
+        "新疆独立",
+        "香港独立",
+        "东突厥斯坦",
+        "(?:台独|藏独|疆独|港独)(?:组织|宣传|招募|总部|平台|账号|帐号|客服|官方|推广|支持|支持者|分子|势力|联盟|主张|拥护|鼓吹|倡导)",
+        "taiwanindependence",
+        "tibetindependence",
+        "xinjiangindependence",
+        "hongkongindependence"
+      ]
+    },
+    {
+      "id": "cn-sensitive-political-event",
+      "mode": "contains",
+      "terms": [
+        "六四事件",
+        "六四运动",
+        "六四運動",
+        "天安门事件",
+        "天安門事件",
+        "tiananmenmassacre",
+        "june4thincident"
+      ]
+    },
+    {
+      "id": "government-impersonation",
+      "mode": "regex",
+      "terms": [
+        "(?:中央人民政府|国务院|中共中央|中央军委|国家网信办|公安部|最高人民法院|最高人民检察院)(?:官方|客服|账号|帐号|发布|通知|平台|中心|服务)",
+        "(?:人民政府|公安局|税务局|税务总局|网信办|人民法院|人民检察院|教育局|市场监督管理局|住房和城乡建设局|财政局|民政局|国家安全局|应急管理局)(?:官方|客服|账号|帐号|发布|通知|平台|中心|服务)",
+        "(?:demoa|demob|democ|demod|demoe|示例双塔中心|示例主裙楼中心|示例办公中心|示例商务中心|示例单栋中心)(?:官方|客服|账号|帐号|发布|通知|平台|中心|服务)",
+        "(?:官方|官号)(?:账号|帐号|客服|发布|通知|平台|中心|服务)",
+        "official(?:account|support|service|admin|notice|news)"
+      ]
+    },
+    {
+      "id": "extremism-and-recruitment",
+      "mode": "contains",
+      "terms": [
+        "伊斯兰国官方",
+        "伊斯蘭國官方",
+        "恐怖组织招募",
+        "恐怖組織招募",
+        "isisofficial"
+      ]
+    },
+    {
+      "id": "illegal-service-promotion",
+      "mode": "regex",
+      "terms": [
+        "(?:招嫖|裸聊(?:服务|客服)|色情(?:服务|客服))",
+        "(?:博彩|赌博)平台(?!(?:风险研究|合规研究|治理研究|案件研究|问题研究|监测|检查|审核|举报)$)",
+        "(?:博彩|赌博)客服",
+        "(?<!反)洗钱(?:服务|客服)",
+        "代开发票(?!(?:审核员|审核组|风险研究|合规研究|治理研究|案件研究|问题研究|监测|检查|举报)$)"
+      ]
+    },
+    {
+      "id": "severe-abuse",
+      "mode": "contains",
+      "terms": [
+        "操你妈",
+        "操你媽",
+        "傻逼",
+        "去死吧"
+      ]
+    }
+  ]
+}

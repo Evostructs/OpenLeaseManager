@@ -1,0 +1,40 @@
+/*
+ * 演示驾驶舱模式（会议室大屏/电视展示）。
+ * 驾驶舱视觉由 components/PresentationView.vue 全屏覆盖层承担（专用深色大屏配色）；
+ * 此处仅保留全局行为：隐藏鼠标指针与 toast，≤1080p 投影放大一档
+ * （4K 电视由 base-widescreen 的 3840 档 zoom 1.5 接管）。
+ */
+body.presentation-mode {
+  cursor: none;
+}
+
+body.presentation-mode .toast-stack {
+  display: none !important;
+}
+
+@media (max-width: 2559px) {
+  body.presentation-mode {
+    zoom: 1.3;
+  }
+}
+
+/* Daytime portfolio presentation follows the selected application theme. */
+html[data-theme="light"] .leadership-overview-page,
+html[data-theme="light"] .portfolio-cockpit { background: #f4f8fd; color: #1c3b60; }
+html[data-theme="light"] .portfolio-cockpit * { color: #385573; border-color: #d4e0ee; }
+html[data-theme="light"] .portfolio-cockpit article,
+html[data-theme="light"] .portfolio-cockpit button,
+html[data-theme="light"] .portfolio-cockpit [class*="card"],
+html[data-theme="light"] .portfolio-cockpit [class*="tile"] { background: #fff; }
+html[data-theme="light"] .portfolio-cockpit h1,
+html[data-theme="light"] .portfolio-cockpit h2,
+html[data-theme="light"] .portfolio-cockpit h3,
+html[data-theme="light"] .portfolio-cockpit strong,
+html[data-theme="light"] .portfolio-cockpit b { color: #173b67; }
+html[data-theme="light"] .portfolio-cockpit [class*="badge"] { background: #fff7de; color: #966100; }
+html[data-theme="light"] .portfolio-cockpit .red { color: #b42318; }
+html[data-theme="light"] .portfolio-cockpit .amber { color: #996300; }
+html[data-theme="light"] .portfolio-cockpit .cockpit-kpi { background: #fff !important; border-color: #d4e0ee !important; }
+html[data-theme="light"] .portfolio-cockpit .cockpit-kpi * { color: #173b67 !important; }
+html[data-theme="light"] .portfolio-cockpit .portfolio-risk-card b.red { color: #b42318; }
+html[data-theme="light"] .portfolio-cockpit .portfolio-risk-card b.amber { color: #996300; }

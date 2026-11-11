@@ -1,0 +1,418 @@
+.detail-field-grid {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.detail-field {
+  min-height: 68px;
+  padding: 10px 12px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.78);
+}
+
+.detail-field > div:last-child {
+  color: var(--text-strong);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.detail-note-section p {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 560;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.customer-detail .attachment-summary-line {
+  margin-top: 2px;
+}
+
+.customer-detail .attachment-upload-row {
+  grid-template-columns: minmax(140px, 190px) minmax(220px, 1fr) auto;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.72);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.74);
+}
+
+.customer-detail .attachment-list {
+  gap: 10px;
+}
+
+.customer-detail .attachment-item,
+.customer-detail .follow-up-item,
+.customer-detail .table-wrapper {
+  border-color: rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
+}
+
+.customer-detail .attachment-item,
+.customer-detail .follow-up-item {
+  padding: 14px 16px;
+}
+
+.customer-detail .table-wrapper {
+  margin-top: 0 !important;
+}
+
+.follow-up-item {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.follow-up-head > div,
+.follow-up-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.follow-up-meta {
+  gap: 8px 14px;
+}
+
+.follow-up-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.customer-next-action-input {
+  min-height: 84px;
+}
+
+.attachment-panel {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.attachment-status {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 8px;
+  background: rgba(240, 253, 244, 0.82);
+}
+
+.attachment-status.is-missing {
+  border-color: rgba(245, 158, 11, 0.36);
+  background: rgba(255, 251, 235, 0.88);
+}
+
+.attachment-status-main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.attachment-status-label {
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.attachment-status-main strong {
+  color: var(--text-strong);
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.attachment-status-main p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.attachment-summary-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+.attachment-summary-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  white-space: nowrap;
+}
+
+.attachment-summary-pill b {
+  color: var(--text-strong);
+  font-size: 15px;
+}
+
+.attachment-summary-pill small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.attachment-summary-gap {
+  max-width: 100%;
+  color: #92400e;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.attachment-summary-gap.is-complete {
+  color: #047857;
+}
+
+.attachment-category-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.attachment-category-chip {
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid rgba(37, 99, 235, 0.16);
+  border-radius: 999px;
+  background: rgba(239, 246, 255, 0.72);
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.attachment-upload-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) minmax(180px, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+  min-width: 0;
+}
+
+.attachment-upload-field,
+.attachment-edit-fields {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.attachment-upload-field span {
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.attachment-upload-field .select,
+.attachment-upload-field .input {
+  min-width: 0;
+}
+
+.attachment-list {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.attachment-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: flex-start;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 12px;
+}
+
+.attachment-item-editing {
+  align-items: end;
+}
+
+.attachment-edit-fields {
+  grid-template-columns: minmax(120px, 180px) minmax(180px, 1fr);
+}
+
+.attachment-evidence {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+}
+
+.attachment-category {
+  align-self: start;
+  max-width: 112px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.attachment-meta {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.attachment-file-name {
+  display: block;
+  color: var(--text-strong);
+  font-size: 14px;
+  line-height: 1.35;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.attachment-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 0;
+  color: var(--text-faint);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.attachment-facts span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.attachment-notes {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.attachment-notes span {
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.attachment-notes.is-empty {
+  color: var(--text-faint);
+}
+
+.attachment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.attachment-empty {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.74);
+}
+
+.attachment-empty strong {
+  color: var(--text-strong);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.attachment-empty p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .attachment-status,
+  .attachment-upload-row,
+  .attachment-item,
+  .attachment-item-editing,
+  .attachment-edit-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .attachment-summary-line,
+  .attachment-actions {
+    justify-content: flex-start;
+  }
+
+  .attachment-evidence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .attachment-category {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .attachment-actions {
+    width: 100%;
+  }
+}
+
+.legend-row,
+.compact-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.64);
+  backdrop-filter: blur(14px) saturate(135%);
+}
+
+.status-legend-list .legend-row {
+  min-height: 54px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.status-legend-list .legend-meta {
+  gap: 2px;
+}
+
+.status-legend-list .legend-title {
+  gap: 8px;
+}
+
+.status-legend-list .legend-row strong {
+  font-size: 17px;
+}
+

@@ -1,0 +1,145 @@
+.sidebar-scrim {
+  display: none;
+}
+
+.toast-stack {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  gap: 10px;
+  z-index: var(--z-toast);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 260px;
+  max-width: 340px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: var(--glass-shadow);
+  padding: 12px 14px;
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+.toast.error {
+  border-left-color: var(--error-text);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: auto;
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(8px);
+}
+
+.modal-panel {
+  width: min(1160px, 100%);
+  max-width: calc(100vw - 48px);
+  max-height: min(90vh, calc(100dvh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 18px;
+  background: rgba(248, 250, 252, 0.92);
+  box-shadow: 0 26px 56px rgba(15, 23, 42, 0.22);
+  backdrop-filter: blur(22px) saturate(160%);
+}
+
+.modal-panel.small {
+  width: min(680px, 100%);
+}
+
+.modal-panel.wide {
+  width: min(1360px, 100%);
+}
+
+.modal-header,
+.modal-footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px;
+  background: rgba(248, 250, 252, 0.56);
+}
+
+@media (max-width: 640px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 12px;
+  }
+
+  .modal-panel {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 24px);
+    border-radius: 14px 14px 0 0;
+  }
+
+  .modal-header,
+  .modal-footer {
+    padding: 16px;
+  }
+
+  .modal-header {
+    align-items: flex-start;
+  }
+
+  .modal-footer {
+    justify-content: stretch;
+  }
+
+  .modal-footer > * {
+    min-width: 0;
+  }
+
+  .modal-footer .btn,
+  .modal-footer button {
+    flex: 1 1 140px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+}
+
+
+.toast-stack { pointer-events: none; }
+.toast-dismiss { pointer-events: auto; background: transparent; border: 0; min-width: 44px; min-height: 44px; cursor: pointer; font-size: 22px; }
+.toast span { overflow-wrap: anywhere; }
+.contract-detail-link { border: 0; padding: 6px 0; background: none; color: var(--primary); cursor: pointer; font: inherit; font-weight: 700; text-align: left; }
+.receivable-mobile-shortcuts { display: none; }
+@media (max-width: 640px) {
+  .receivable-mobile-shortcuts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toast-stack { top: calc(env(safe-area-inset-top, 0px) + 8px); bottom: auto; right: 8px; left: 8px; }
+  .toast { min-width: 0; max-width: none; padding: 4px 10px; }
+  .contract-detail-link, .attachment-actions .btn, .follow-up-actions .btn { min-height: 44px; }
+}

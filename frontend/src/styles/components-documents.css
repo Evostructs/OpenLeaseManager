@@ -1,0 +1,152 @@
+.document-action-row {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+}
+
+.document-action-row > div {
+  width: 168px;
+}
+
+.document-form {
+  display: grid;
+  gap: 18px;
+}
+
+.document-summary {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+}
+
+.document-summary div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.document-summary strong {
+  overflow: hidden;
+  color: var(--text-strong);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.document-generate-error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: var(--error-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.document-result-panel {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+}
+
+.document-result-meta {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.document-result-meta > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.document-result-meta strong {
+  overflow: hidden;
+  color: var(--text-strong);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.document-result-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.document-result-actions .btn {
+  width: 100%;
+  min-width: 0;
+}
+
+.document-generate-submit:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.document-generate-submit:disabled:hover {
+  transform: none;
+}
+
+@media (max-width: 640px) {
+  .document-summary,
+  .document-result-meta,
+  .document-result-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .document-result-actions .btn {
+    padding-inline: 8px;
+  }
+}
+
+.badge.compact {
+  min-height: 24px;
+  padding: 3px 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.check-cell {
+  width: 44px;
+  text-align: center !important;
+}
+
+.check-cell input {
+  width: 16px;
+  height: 16px;
+}
+
+.actions-cell {
+  width: 164px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  padding: 0;
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.table-sort-btn.centered {
+  justify-content: center;
+  text-align: center;
+}
+
