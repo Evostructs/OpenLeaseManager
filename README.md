@@ -6,7 +6,7 @@ An open-source, self-hosted system for multi-building lease and property operati
 
 Built with FastAPI, SQLite, Alembic, Vue 3 and ECharts. Released under the MIT License.
 
-**Developed throughout using GPT-6 Astra through OpenAI Codex.**
+**Developed over approximately six months with assistance from OpenAI Codex, using GPT-6 Astra for recent development.**
 
 ## What's included in v2.3.0
 

@@ -6,7 +6,7 @@
 
 基于 FastAPI、SQLite、Alembic、Vue 3 和 ECharts，采用 MIT 许可证。
 
-**本项目全程通过 OpenAI Codex 使用 GPT-6 Astra 模型开发。**
+**本项目在约六个月的开发过程中借助 OpenAI Codex 逐步完成，近期开发使用 GPT-6 Astra 模型。**
 
 ## v2.3.0 的主要功能
 
