@@ -6,6 +6,8 @@
 
 基于 FastAPI、SQLite、Alembic、Vue 3 和 ECharts，采用 MIT 许可证。
 
+**本项目全程通过 OpenAI Codex 使用 GPT-6 Astra 模型开发。**
+
 ## v2.3.0 的主要功能
 
 - 多楼宇、分区和房间管理，区分明细运营与已发布经营快照。
